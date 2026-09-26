@@ -36,7 +36,7 @@ def main():
                 page.on('pageerror', lambda err: errors.append(str(err)))
                 page.route('https://api.github.com/**', lambda route: route.fulfill(json={'body':json.dumps(feed)}))
                 page.goto('http://127.0.0.1:8765',wait_until='networkidle')
-                assert page.locator('h2').first.inner_text()=='Session 4: test region-wide lidar scarp evidence.'
+                assert page.locator('h2').first.inner_text()=='Current H1 test: region-wide lidar scarp evidence.'
                 assert page.evaluate('document.documentElement.scrollWidth <= innerWidth + 1')
                 page.screenshot(path=str(OUT/f'home-{width}.png'),full_page=True)
                 page.locator('.copy-note').first.click()

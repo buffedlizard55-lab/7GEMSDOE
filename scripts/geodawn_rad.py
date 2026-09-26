@@ -157,9 +157,20 @@ def main() -> None:
     try:
         chosen = select_rad_files(files)
     except ValueError as e:
+        # Keep enough metadata to diagnose naming/ambiguity without publishing
+        # signed download URLs or other query-string credentials.
+        diagnostic = {
+            "status": "review_required",
+            "item": SCIENCEBASE_ITEM,
+            "doi": DOI,
+            "error": str(e),
+            "observed_files": [
+                {"name": str(f.get("name", "")), "size": f.get("size", 0)}
+                for f in files
+            ],
+        }
         (args.out / "observed_files.json").write_text(
-            json.dumps({"item": SCIENCEBASE_ITEM, "doi": DOI,
-                        "files": sorted(f["name"] for f in files)}, indent=1))
+            json.dumps(diagnostic, indent=1, ensure_ascii=False) + "\n")
         raise SystemExit(f"FAIL CLOSED: {e}")
 
     shape, transform, crs, template = official_grid()
