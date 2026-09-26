@@ -55,6 +55,9 @@ OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 .venv/bin/python scripts/train_model.py
 .venv/bin/python scripts/build_submission.py
 ```
 
+Detailed [requirements matrix](knowledge/session2/requirements_matrix.md) and
+[next-session plan](knowledge/session2/next_session.md).
+
 ## Limits and next-session priorities
 
 1. **Rules:** three feedback submissions/week per participating entity, one final

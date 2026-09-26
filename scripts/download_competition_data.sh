@@ -1,29 +1,11 @@
 #!/usr/bin/env bash
-# Download the official GEMS Prize competition rasters into $GEMS_DATA_DIR
-# (default: ~/gems_data). Every file is sha256-verified against the pins in
-# knowledge/inherited_evidence/data_bridge_manifest.json (measured from the
-# official downloads on 2026-09-17, scripts/make_data_bridge.py).
-#
-# Sources, in order of preference:
-#   1. User-supplied Dropbox mirrors (not independently authenticated):
-#        example_submission.tif  https://www.dropbox.com/scl/fi/6rgvnuady818ol8yqgis4/example_submission.tif?rlkey=kbykilvau066xuogoosbf4cq8&st=8junzdyw&dl=1
-#        existing_faults.tif     https://www.dropbox.com/scl/fi/t7fyt03qdh9egyme0itwo/existing_faults.tif?rlkey=yiao96uluqdkipf0h5vju71jf&st=rnino7ya&dl=1
-#        gems-geodawn-numerical-features.tif
-#                                https://www.dropbox.com/scl/fi/3vz9o0wwavi26xaeoxlwr/gems-geodawn-numerical-features.tif?rlkey=je8d8fepqfbst9lnwsq9rkplu&st=zj1lag1r&dl=1
-#      (login-free mirrors of the files on the DrivenData data tab:
-#       https://www.drivendata.org/competitions/306/competition-doe-gems/data/ )
-#   2. Fallback: the hash-pinned git data bridge in the sibling public repo
-#      buffedlizard55-lab/GEMSDOE (data/bridge/), which reassembles the same
-#      bytes via scripts/assemble_data_bridge.py.
-#
-# The full DrivenData data tab itself requires login (training_features.tif,
-# labels.tif, sample_submission.tif, 1m_DEM_links.csv) - NOT auto-downloadable
-# without credentials. The mirrors above match inherited team sha256 pins (not independent official authentication)
-# for the three rasters; labels.tif == existing_faults.tif and
-# sample_submission.tif == example_submission.tif per the manifest's
-# canonical-name mapping. 1m_DEM_links.csv is not mirrored yet (see
-# knowledge/02_data_sources.md - DEM links were OCR-recovered to
-# data/dem_links.json in the sibling repo).
+# Place mirrored competition rasters in GEMS_DATA_DIR (default ~/gems_data).
+# URLs below were supplied by the user. Hashes are inherited team pins from
+# knowledge/inherited_evidence/data_bridge_manifest.json, not independently
+# authenticated sponsor checksums. Do not call these mirrors official downloads.
+# Try Dropbox first, then the public sibling repository's data bridge.
+# The bridge assembler checks all parts; this script rechecks final file hashes.
+# Large rasters stay outside Git. This does not retrieve the official DEM CSV.
 
 set -euo pipefail
 

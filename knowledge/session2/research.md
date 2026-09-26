@@ -50,7 +50,7 @@ absent from the 100 m feature raster. We recover an exact USGS bucket URL from t
 OCR inventory and attempt a bounded native-resolution crop. The official competition
 CSV has **not** been authenticated or mirrored here.
 
-Pilot: 2048×2048 pixels, smooth at 3 m, gradient of slope, exclude 40 m around nodata
+Pilot: 2048×2048 native pixels selected from a valid-interior overview location, smooth at 3 m, gradient of slope, exclude 40 m around nodata
 and crop boundary. This verifies engineering access and feature construction only.
 Roads, river banks, lithological contacts and landslides can produce the same signal.
 A region-wide inference layer requires tile overlap, CRS reprojection, spatial holdout,

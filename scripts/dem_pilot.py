@@ -1,6 +1,6 @@
 """H4 bounded native-1m scarp-feature pilot; never a full-grid submission.
 
-Uses a 2048x2048 central window of an official USGS 3DEP tile. Reports uncalibrated
+Uses a 2048x2048 valid-interior window of an official USGS 3DEP tile. Reports uncalibrated
 break-in-slope statistics, not fault detections. Erodes nodata/window edges by
 40m before derivative statistics so missing-data edges cannot masquerade as scarps.
 """
@@ -44,7 +44,7 @@ def main():
         with rasterio.Env(GDAL_HTTP_TIMEOUT='60', GDAL_DISABLE_READDIR_ON_OPEN='EMPTY_DIR',
                           CPL_VSIL_CURL_ALLOWED_EXTENSIONS='.tif'):
             with rasterio.open(url) as src:
-                if not src.crs or not src.crs.is_projected or not np.allclose(src.res, (1,1)):
+                if not src.crs or not src.crs.is_projected or not np.allclose(src.res, (1,1)) or src.crs.linear_units_factor[1] != 1.0:
                     raise ValueError('expected projected 1m DEM')
                 size = min(2048, src.width, src.height)
                 # Partial-coverage tiles can have an all-nodata center. Locate an

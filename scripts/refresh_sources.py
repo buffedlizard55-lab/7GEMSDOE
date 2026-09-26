@@ -8,6 +8,7 @@ from __future__ import annotations
 import hashlib
 import json
 import re
+from urllib.parse import urljoin, urlsplit
 from datetime import datetime, timezone
 from pathlib import Path
 import requests
@@ -51,16 +52,35 @@ def refresh(previous, getter=requests.get):
     try:
         response = getter(URL, timeout=(10, 40))
         response.raise_for_status()
-        rows = parse_leaderboard(response.text)
+        try:
+            rows = parse_leaderboard(response.text)
+        except ValueError:
+            # DrivenData loads the public table as an HTMX fragment. Follow only
+            # an explicit same-origin leaderboard endpoint, never guessed URLs.
+            soup = BeautifulSoup(response.text, 'html.parser')
+            fragments = []
+            for element in soup.select('[hx-get], [data-hx-get]'):
+                endpoint = urljoin(URL, element.get('hx-get') or element.get('data-hx-get'))
+                parsed = urlsplit(endpoint)
+                if parsed.scheme == 'https' and parsed.netloc == urlsplit(URL).netloc and '/competition-doe-gems/' in parsed.path and 'leaderboard' in parsed.path:
+                    fragments.append(endpoint)
+            if not fragments:
+                raise ValueError('no table or recognized public leaderboard fragment')
+            response = getter(fragments[0], timeout=(10,40), headers={'HX-Request':'true'})
+            response.raise_for_status()
+            rows = parse_leaderboard(response.text)
+            result['table_source'] = response.url
         result.update(status='ok', verified_utc=now, rows=rows,
                       source=URL, response_sha256=hashlib.sha256(response.content).hexdigest(),
-                      method='automated HTML table parse', error=None)
+                      method='automated official HTML/HTMX table parse', error=None)
+        result.pop('page_diagnostics',None)
+        result.pop('parse_diagnostics',None)
     except (requests.RequestException, ValueError) as exc:
         result.update(status='refresh_failed', error=str(exc)[:500])
         if response is not None:
             soup = BeautifulSoup(response.text, 'html.parser')
             pos=response.text.find('DARD')
-            result['page_diagnostics'] = dict(url=response.url, length=len(response.content), title=str(soup.title), participant_context=response.text[max(0,pos-3000):pos+1500] if pos>=0 else soup.get_text(' ',strip=True)[:5000], scripts=[s.get('src') for s in soup.find_all('script') if s.get('src')])
+            result['page_diagnostics'] = dict(url=response.url, length=len(response.content), title=str(soup.title), participant_context=response.text[max(0,pos-3000):pos+1500] if pos>=0 else soup.get_text(' ',strip=True)[:5000], fragments=[e.get('hx-get') or e.get('data-hx-get') for e in soup.select('[hx-get], [data-hx-get]')])
             result['parse_diagnostics'] = [dict(cells=[td.get_text(' ', strip=True) for td in tr.find_all(['td','th'])], html=str(tr)[:3000]) for tr in soup.select('table tr')[:3]]
     return result
 
@@ -85,9 +105,9 @@ def main():
         results.append(record)
     feed['source_checks'] = results
     temp = dest.with_suffix('.tmp')
-    temp.write_text(json.dumps(feed, indent=2) + '\n')
+    temp.write_text(json.dumps(feed, indent=2, ensure_ascii=False) + '\n')
     temp.replace(dest)
-    print(json.dumps(feed, indent=2))
+    print(json.dumps(feed, indent=2, ensure_ascii=False))
 
 if __name__ == '__main__':
     main()
