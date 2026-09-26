@@ -22,10 +22,11 @@ import dem_features as DF
 
 # name: (xmax, transform) ; q = 1 + round(254 * t(min(x/xmax,1))) ; 0 = nodata
 QUANT = {
-    "s1_max": (2.0, "sqrt"), "ex_max": (1.5, "sqrt"), "ex_mean": (0.3, "sqrt"),
-    "step_max": (1.0, "sqrt"), "lapneg_max": (0.3, "sqrt"), "lappos_max": (0.3, "sqrt"),
-    "rough": (5.0, "sqrt"), "relief": (300.0, "sqrt"), "coh100": (1.0, "linear"),
-    "strike": (180.0, "linear"), "valid": (1.0, "linear"),
+    "ex_max": (1.5, "sqrt"), "ex_mean": (0.3, "sqrt"), "step_max": (1.0, "sqrt"),
+    "lapneg_max": (0.05, "sqrt"), "lappos_max": (0.05, "sqrt"),
+    "downface_max": (1.0, "sqrt"), "upface_max": (1.0, "sqrt"), "cross_max": (1.0, "sqrt"),
+    "relief": (300.0, "sqrt"), "coh100": (1.0, "linear"), "strike": (180.0, "linear"),
+    "valid": (1.0, "linear"),
 }
 BANDS = list(QUANT)
 
@@ -92,13 +93,11 @@ def derive(raw):
         grad_dir = 0.5 * np.degrees(np.arctan2(-raw["j2xy"], raw["jxx_m_jyy"]))  # from +x (east), CCW
         strike_from_east = grad_dir + 90.0
         strike = np.mod(90.0 - strike_from_east, 180.0)  # azimuth clockwise from north
-    return {
-        "s1_max": raw["s1_max"], "ex_max": raw["ex_max"], "ex_mean": raw["ex_mean"],
-        "step_max": raw["step_max"], "lapneg_max": raw["lapneg_max"],
-        "lappos_max": raw["lappos_max"], "rough": np.sqrt(raw["rough"]),
-        "relief": raw["zmax"] - raw["zmin"], "coh100": np.clip(coh, 0, 1),
-        "strike": strike, "valid": raw["valid"],
-    }
+    out = {n: raw[n] for n in ("ex_max", "ex_mean", "step_max", "lapneg_max", "lappos_max",
+                                "downface_max", "upface_max", "cross_max") if n in raw}
+    out.update({"relief": raw["zmax"] - raw["zmin"], "coh100": np.clip(coh, 0, 1),
+                "strike": strike, "valid": raw["valid"]})
+    return out
 
 
 def main(argv=None):
@@ -108,6 +107,9 @@ def main(argv=None):
     ap.add_argument("--inp", default="scratch/dem")
     ap.add_argument("--out", default="external/dem")
     ap.add_argument("--float-out", default="")
+    ap.add_argument("--footprint", default="",
+                    help="GeoTIFF on the official grid whose NaN cells are outside the footprint "
+                         "(e.g. a committed submission); those cells are stored as nodata")
     args = ap.parse_args(argv)
     files = sorted(glob.glob(f"{args.inp}/**/*.npz", recursive=True))
     logs = []
@@ -116,6 +118,13 @@ def main(argv=None):
     if not files:
         raise SystemExit("no tile outputs found")
     der = derive(mosaic(files))
+    if args.footprint:
+        with rasterio.open(args.footprint) as fp:
+            if fp.shape != DF.GRID_SHAPE or tuple(fp.transform)[:6] != DF.GRID_TRANSFORM:
+                raise SystemExit("footprint raster is not on the official grid")
+            outside = ~np.isfinite(fp.read(1))
+        for n in der:
+            der[n] = np.where(outside, np.nan, der[n]).astype(np.float32)
     out = Path(args.out); out.mkdir(parents=True, exist_ok=True)
     prof = dict(driver="GTiff", width=DF.GRID_SHAPE[1], height=DF.GRID_SHAPE[0],
                 crs=DF.GRID_CRS, transform=Affine(*DF.GRID_TRANSFORM), tiled=True,

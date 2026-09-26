@@ -39,13 +39,14 @@ WORK_RES = 2.0  # metres; scarps are ~5-50 m wide so 2 m keeps them resolved
 
 CHANNELS = [
     # name, aggregation, short meaning
-    ("s1_max", "max", "max 2 m slope (m/m) after 2 m smoothing"),
-    ("ex_max", "max", "max slope in excess of 30 m regional slope"),
+    ("ex_max", "max", "max 2 m slope in excess of 30 m regional slope (m/m)"),
     ("ex_mean", "average", "mean slope excess (short-wavelength steepness)"),
-    ("step_max", "max", "max 10 m-scale slope minus 50 m-scale slope"),
-    ("lapneg_max", "max", "max crest convexity (-Laplacian of Gaussian, 6 m)"),
-    ("lappos_max", "max", "max base concavity (+Laplacian of Gaussian, 6 m)"),
-    ("rough", "average", "mean squared residual from 10 m surface (sqrt later)"),
+    ("step_max", "max", "max 10 m-scale slope minus 50 m-scale slope (m/m)"),
+    ("lapneg_max", "max", "max crest convexity: -LoG(6 m) of the 50 m band-passed surface (1/m)"),
+    ("lappos_max", "max", "max base concavity: +LoG(6 m) of the 50 m band-passed surface (1/m)"),
+    ("downface_max", "max", "max band-passed step gradient along the 100 m regional upslope direction"),
+    ("upface_max", "max", "max band-passed step gradient against the regional slope (uphill-facing/antislope)"),
+    ("cross_max", "max", "max band-passed gradient across the regional slope (channel-bank-like)"),
     ("jxx_m_jyy", "average", "structure tensor Jxx-Jyy (doubled-angle cos)"),
     ("j2xy", "average", "structure tensor 2*Jxy (doubled-angle sin)"),
     ("jtrace", "average", "structure tensor trace (gradient energy)"),
@@ -81,40 +82,60 @@ def scarp_channels(z: np.ndarray, valid: np.ndarray, res: float = WORK_RES) -> d
     # Odd (point) reflection keeps planar surfaces planar across the tile edge.
     # scipy's default even reflection makes a V-shaped surface whose smoothed
     # gradient collapses at the edge, i.e. a spurious step along every tile seam.
-    pad = int(np.ceil(4 * px(50.0))) + 2
+    pad = int(np.ceil(4 * px(100.0))) + 2
     zp = np.pad(zf, pad, mode="reflect", reflect_type="odd")
     del zf
     crop = (slice(pad, -pad), slice(pad, -pad))
 
-    def smooth(sig_m):
-        return gaussian_filter(zp, px(sig_m), mode="nearest")
+    def smooth(a, sig_m):
+        return gaussian_filter(a, px(sig_m), mode="nearest")
 
     def grad(a):
         gy, gx = np.gradient(a, res)
         return gx, gy
 
-    z1 = smooth(2.0); gx, gy = grad(z1); s1 = np.hypot(gx, gy)
-    z15 = smooth(30.0); gx, gy = grad(z15); s15 = np.hypot(gx, gy); del z15
-    z5 = smooth(10.0); gx, gy = grad(z5); s5 = np.hypot(gx, gy)
-    z25 = smooth(50.0); gx, gy = grad(z25); s25 = np.hypot(gx, gy)
-    ex = np.maximum(s1 - s15, 0); del s15
+    z1 = smooth(zp, 2.0); gx, gy = grad(z1); s1 = np.hypot(gx, gy)
+    z15 = smooth(zp, 30.0); gx, gy = grad(z15); s15 = np.hypot(gx, gy); del z15
+    ex = np.maximum(s1 - s15, 0); del s1, s15
+    z5 = smooth(zp, 10.0); gx, gy = grad(z5); s5 = np.hypot(gx, gy)
+    z25 = smooth(zp, 50.0); gx, gy = grad(z25); s25 = np.hypot(gx, gy)
     step = np.maximum(s5 - s25, 0); del s5, s25
-    lap = gaussian_laplace(zp, px(6.0), mode="nearest")
-    rough = (zp - z5) ** 2
-    # Orientation from the band-passed (10 m - 50 m) surface so a regional fan
-    # or range-front gradient does not rotate the scarp strike estimate.
-    gxb, gyb = grad(z5 - z25)
-    del z25, z5, gx, gy
+    bp = z5 - z25  # 10-50 m band-passed surface (metres, near zero mean)
+    del z5, z25
+    # LoG of the band-passed surface: scipy's truncated 2nd-derivative kernel
+    # does not sum to zero, so LoG(raw elevation) carries a bias proportional to
+    # elevation (-0.176 at 1500 m for sigma = 3 px). Divide by res^2 -> 1/m.
+    lap = gaussian_laplace(bp, px(6.0), mode="nearest") / (res * res)
+    gxb, gyb = grad(bp)
+    del bp
+    # facing relative to the 100 m regional upslope direction: scarps face up or
+    # down the regional slope; channel banks face across it.
+    zr = smooth(zp, 100.0); gxr, gyr = grad(zr); del zr
+    mag = np.hypot(gxr, gyr)
+    ok = mag > 0.01
+    ux = np.where(ok, gxr / np.where(ok, mag, 1), 0).astype(np.float32)
+    uy = np.where(ok, gyr / np.where(ok, mag, 1), 0).astype(np.float32)
+    del gxr, gyr, mag
+    proj = gxb * ux + gyb * uy
+    cross = np.abs(gxb * uy - gyb * ux)
+    cross[~ok] = np.nan
+    del ux, uy
+    down = np.where(ok, np.maximum(proj, 0), np.nan)
+    up = np.where(ok, np.maximum(-proj, 0), np.nan)
+    del proj, ok
+    # Orientation from the band-passed surface so a regional fan or range-front
+    # gradient does not rotate the scarp strike estimate.
     sig_t = px(20.0)
     jxx = gaussian_filter(gxb * gxb, sig_t, mode="nearest")
     jyy = gaussian_filter(gyb * gyb, sig_t, mode="nearest")
     jxy = gaussian_filter(gxb * gyb, sig_t, mode="nearest")
-    del gxb, gyb
+    del gxb, gyb, gx, gy
     safe = binary_erosion(valid, iterations=int(np.ceil(px(50.0))), border_value=1)
     out = {
-        "s1_max": s1, "ex_max": ex, "ex_mean": ex, "step_max": step,
+        "ex_max": ex, "ex_mean": ex, "step_max": step,
         "lapneg_max": np.maximum(-lap, 0), "lappos_max": np.maximum(lap, 0),
-        "rough": rough, "jxx_m_jyy": jxx - jyy, "j2xy": 2 * jxy, "jtrace": jxx + jyy,
+        "downface_max": down, "upface_max": up, "cross_max": cross,
+        "jxx_m_jyy": jxx - jyy, "j2xy": 2 * jxy, "jtrace": jxx + jyy,
         "zmax": z1, "zmin": z1,
     }
     for k in out:

@@ -75,7 +75,7 @@ jobs:
       - name: Mosaic onto the official grid
         run: |
           cd scripts
-          python dem_merge.py --inp ../scratch/shards --out ../external/dem --float-out ../scratch/lidar_scarp_features_f32.tif
+          python dem_merge.py --inp ../scratch/shards --out ../external/dem --float-out ../scratch/lidar_scarp_features_f32.tif --footprint ../downloads/submission.tif
           cd ..
           python - <<'PY'
           import json, os

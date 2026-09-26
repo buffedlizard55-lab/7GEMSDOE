@@ -44,8 +44,8 @@ def test_strike_recovered_through_merge_derivation():
         ch = DF.scarp_channels(z, np.ones_like(z, bool))
         near = dist < 10
         raw = {k: np.array([np.nanmean(ch[k][near])]) for k in ("jxx_m_jyy", "j2xy", "jtrace")}
-        raw.update({k: np.array([1.0]) for k in ("s1_max", "ex_max", "ex_mean", "step_max",
-                                                 "lapneg_max", "lappos_max", "rough", "zmax", "zmin", "valid")})
+        raw.update({k: np.array([1.0]) for k in ("ex_max", "ex_mean", "step_max", "lapneg_max",
+                                                 "lappos_max", "zmax", "zmin", "valid")})
         got = DM.derive(raw)["strike"][0]
         err = min(abs(got - strike), 180 - abs(got - strike))
         assert err < 3.0, (strike, got)
@@ -81,10 +81,10 @@ def test_aggregate_onto_official_grid_window():
 
 def test_quantise_roundtrip_monotone():
     x = np.array([np.nan, 0.0, 0.01, 0.1, 0.5, 1.0, 5.0], np.float32)
-    q = DM.quantise("s1_max", x)
+    q = DM.quantise("step_max", x)
     assert q[0] == 0 and q[1] == 1 and np.all(np.diff(q[1:].astype(int)) >= 0)
-    back = DM.dequantise("s1_max", q)
-    assert np.isnan(back[0]) and back[-1] == pytest.approx(2.0)
+    back = DM.dequantise("step_max", q)
+    assert np.isnan(back[0]) and back[-1] == pytest.approx(1.0)
     assert abs(back[4] - 0.5) < 0.02
 
 
@@ -108,3 +108,44 @@ def test_tilted_plane_has_no_tile_seam_artifact():
     ch = DF.scarp_channels(z.astype(np.float32), np.ones((n, n), bool))
     assert np.nanmax(ch["ex_max"]) < 1e-3
     assert np.nanmax(ch["step_max"]) < 1e-3
+
+
+def test_curvature_has_no_elevation_bias():
+    """Regression: LoG of raw elevation was ~ -1.2e-4 * z (kernel-sum error)."""
+    n = 300
+    yy, xx = np.mgrid[0:n, 0:n].astype(np.float32)
+    for base in (200.0, 1500.0, 3000.0):
+        z = (base + 0.05 * xx * 2.0).astype(np.float32)  # plane: zero true curvature
+        ch = DF.scarp_channels(z, np.ones((n, n), bool))
+        assert np.nanmax(ch["lapneg_max"]) < 1e-4 and np.nanmax(ch["lappos_max"]) < 1e-4, base
+
+
+def test_scarp_curvature_crest_and_base_are_symmetric_in_magnitude():
+    z, dist = synthetic_scarp(strike_deg=0.0, fan=0.0)
+    ch = DF.scarp_channels(z, np.ones_like(z, bool))
+    neg, pos = np.nanmax(ch["lapneg_max"]), np.nanmax(ch["lappos_max"])
+    assert neg > 1e-3 and pos > 1e-3 and 0.5 < neg / pos < 2.0
+
+
+@pytest.mark.parametrize("height,expect", [(4.0, "upface_max"), (-4.0, "downface_max")])
+def test_facing_relative_to_regional_slope(height, expect):
+    # E-W trending scarp (strike 90) on a fan rising to the north.
+    z, dist = synthetic_scarp(strike_deg=90.0, height=height, fan=0.05)
+    ch = DF.scarp_channels(z, np.ones_like(z, bool))
+    other = "downface_max" if expect == "upface_max" else "upface_max"
+    near = dist < 6
+    assert np.nanmean(ch[expect][near]) > 5 * np.nanmean(ch[other][near])
+    assert np.nanmean(ch[expect][near]) > 3 * np.nanmean(ch["cross_max"][near])
+
+
+def test_slope_parallel_step_reads_as_cross_not_facing():
+    # N-S trending step (strike 0) on a fan rising north: face looks across slope,
+    # like a channel bank, so cross_max must dominate the facing channels.
+    # A tall step also tilts the 100 m regional gradient towards itself (a 4 m
+    # step on a 0.05 fan rotates it ~18 deg, leaking sin(18)=0.31 into "facing"),
+    # so use a 2 m step, typical of subtle piedmont scarps.
+    z, dist = synthetic_scarp(strike_deg=0.0, height=2.0, fan=0.05)
+    ch = DF.scarp_channels(z, np.ones_like(z, bool))
+    near = dist < 6
+    c = np.nanmean(ch["cross_max"][near])
+    assert c > 4 * np.nanmean(ch["upface_max"][near]) and c > 4 * np.nanmean(ch["downface_max"][near])
