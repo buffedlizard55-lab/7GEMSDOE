@@ -81,6 +81,10 @@ def main() -> int:
             print(f"  grid {src.width}x{src.height} {src.crs} res={src.res} "
                   f"bands={src.count} dtype={src.dtypes[0]}")
 
+    if failures:
+        print("IRREGULARITIES:\n - " + "\n - ".join(failures))
+        return 1
+
     with rasterio.open(FEATURES_TIF) as src:
         if src.count != 19:
             failures.append(f"features: expected 19 bands, got {src.count}")

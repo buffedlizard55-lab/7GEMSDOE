@@ -2,7 +2,7 @@ name: Research refresh
 on:
   workflow_dispatch:
   push:
-    branches: [main]
+    branches: [main, "arena/**"]
   schedule:
     - cron: '17 8 * * *'
 permissions:

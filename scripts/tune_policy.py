@@ -28,7 +28,7 @@ import time
 
 import numpy as np
 import rasterio
-from scipy.ndimage import distance_transform_edt
+from scipy.ndimage import distance_transform_edt, binary_dilation
 from sklearn.ensemble import HistGradientBoostingClassifier
 
 sys.path.insert(0, str(__import__("pathlib").Path(__file__).parent))
@@ -72,16 +72,21 @@ def block_holdout(truth: np.ndarray, rng):
 
 def train_blind(X, valid, truth, train_fault_mask, row_of, seed):
     H, W = truth.shape
-    flat_valid = valid.ravel()
-    pos_idx = np.flatnonzero(flat_valid & (truth & ~train_fault_mask).ravel())
-    neg_pool = np.flatnonzero(flat_valid & ~truth.ravel())
-    dist_fault = distance_transform_edt(~truth)
+    # Exclude held geography and a 300 m context/metric buffer from ALL samples.
+    excluded = binary_dilation(train_fault_mask, iterations=3)
+    eligible = valid & ~excluded
+    visible_truth = truth & eligible
+    flat_valid = eligible.ravel()
+    pos_idx = np.flatnonzero(flat_valid & visible_truth.ravel())
+    neg_pool = np.flatnonzero(flat_valid & ~visible_truth.ravel())
+    # Previously used full truth here: hidden labels leaked into hard-negative sampling.
+    dist_fault = distance_transform_edt(~visible_truth)
     near = (dist_fault <= 15.0).ravel()
     hard_pool = neg_pool[near[neg_pool]]
     bg_pool = neg_pool[~near[neg_pool]]
     rng = np.random.default_rng(seed)
-    n_hard = len(pos_idx) * NEG_PER_POS_HARD
-    n_bg = len(pos_idx) * NEG_PER_POS_BG
+    n_hard = min(len(hard_pool), len(pos_idx) * NEG_PER_POS_HARD)
+    n_bg = min(len(bg_pool), len(pos_idx) * NEG_PER_POS_BG)
     neg_idx = np.concatenate([
         rng.choice(hard_pool, size=n_hard, replace=False),
         rng.choice(bg_pool, size=n_bg, replace=False)])

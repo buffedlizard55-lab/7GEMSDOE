@@ -35,6 +35,8 @@ EPS = 1e-10
 
 def _kernel_offsets(r_pixels: float = R_PIXELS):
     """All integer pixel offsets inside the kernel radius, with kernel weight."""
+    if not np.isfinite(r_pixels) or r_pixels <= 0:
+        raise ValueError("r_pixels must be finite and positive")
     r = int(np.floor(r_pixels))
     offs = []
     for dy in range(-r, r + 1):
