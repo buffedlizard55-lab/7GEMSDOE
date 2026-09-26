@@ -75,6 +75,10 @@ the ranking of files does not change.
   If these accounts are one entity, the budget is 3/week in total. Team
   registration is the participant's responsibility; we do not multiply budgets.
 - GEMSDOE2 file ↔ smashi34 score pairing is unverified (group-reported).
+- **Deadline time differs between official sources:** the competition page says
+  "Dec. 3, 2026, 11:59 p.m. UTC"; rules A.1 say "by 5:00 p.m. ET on the prize
+  submission deadline date" (= 22:00 UTC). §1.2 defers dates to the website, but
+  the safe plan is the earlier time: final selection by **Dec 3, 2026 22:00 UTC**.
 - Problem page wording says the sample submission "predicts total fault
   absence", but the supplied example file equals the training labels inside the
   footprint (measured: 60,988 positive pixels). The listed "magnetic source

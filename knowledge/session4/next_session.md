@@ -10,6 +10,8 @@ Read `README.md` → `AGENTS.md` → `STATUS.md` → this file → `review.md`.
 2. Record which file produced **SDCF9's 0.1563** (2 submissions) — currently unknown.
 3. Resolve team registration: rules §3.4 allow 3 submissions/week per *entity*;
    teammates cannot submit separate finals. We never multiply the budget.
+4. Deadline: plan to **Dec 3, 2026 22:00 UTC** (rules A.1 "5:00 p.m. ET"), not the
+   website's 23:59 UTC; choose the single final submission before then (§3.5, §3.6.2).
 
 ## 1. Decision tree after the H1 upload
 
