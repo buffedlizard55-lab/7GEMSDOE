@@ -1,0 +1,34 @@
+{
+  "name": "gems7-strike30x3-v2-2b06d45c5b57",
+  "file": "gems7-strike30x3-v2-2b06d45c5b57.tif",
+  "zip": "gems7-strike30x3-v2-2b06d45c5b57.zip",
+  "sha256": "2b06d45c5b5726be60ed7f953accda58919999a99b442bb87410377e0c4c034a",
+  "bytes": 2347236,
+  "generated_utc": "2026-09-26T17:56:16.149529+00:00",
+  "template_sha256": "2176d08e485aa2cd2860ce8df539db4faf4d76163b38a4dd8c30a40454d35cbc",
+  "suggested_submission_note": "H3 tangent continuation 3km x 300m h0.6; no GBT; experimental | 2b06d45c5b57",
+  "format_gate": "PASS",
+  "grid": {
+    "width": 3292,
+    "height": 3730,
+    "crs": "EPSG:32611",
+    "transform": [
+      100.0,
+      0.0,
+      243350.0,
+      0.0,
+      -100.0,
+      4508550.0
+    ],
+    "dtype": "float32"
+  },
+  "stats": {
+    "min": 0.0,
+    "max": 0.949999988079071,
+    "finite_px": 5167373,
+    "mass": 192198.21076777007
+  },
+  "competition_score": null,
+  "evidence": "knowledge/session2/structural_experiment.json",
+  "caveat": "Local format pass only; no server acceptance or leaderboard gain verified."
+}

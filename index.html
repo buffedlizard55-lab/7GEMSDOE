@@ -1,112 +1,35 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>7GEMSDOE — GEMS Prize Challenge: executive summary</title>
-<link rel="stylesheet" href="assets/style.css">
-</head>
-<body>
-<header class="site">
-  <div class="wrap" style="max-width:1060px;margin:0 auto;padding:0 18px;">
-    <h1><span class="gem">7GEMS</span>DOE — GEMS Prize Challenge</h1>
-    <nav class="site">
-      <a class="active" href="index.html">Executive summary</a>
-      <a href="how-to-submit.html">How to submit</a>
-      <a href="strategy.html">Strategy</a>
-      <a href="research.html">Research</a>
-      <a href="data.html">Data</a>
-      <a href="results.html">Results</a>
-      <a href="metric.html">Metric</a>
-    </nav>
-    <p class="tag">DOE GEMS Prize (DrivenData #306) — mapping faults that indicate geothermal resources in the GeoDAWN region. Goal: top of the leaderboard (&gt; 0.3049).</p>
-  </div>
-</header>
-<main>
-
-<section class="hero" id="download">
-  <h2>The file to submit — one click</h2>
-  <p>Single-band GeoTIFF, <strong>float32 in [0, 1]</strong>, EPSG:32611, 3,292 × 3,730 px @ 100 m,
-  NaN outside the official footprint. Built by <code>scripts/build_submission.py</code>,
-  format-gated by <code>scripts/validate_submission.py</code> (PASS) — the gate that prevents the
-  platform error <em>“Predicted values must be in range [0, 1]”</em>.</p>
-  <a class="btn" href="downloads/submission.tif" download>⬇ Download submission.tif (2.9 MB)</a>
-  <a class="btn secondary" href="how-to-submit.html">How to submit it →</a>
-  <dl class="kv">
-    <dt>sha256</dt><dd><code>90fb7dc0fc1f6e7d3dbb20927417c6af7d110ca41167329d792c75c145f75b6a</code></dd>
-    <dt>Policy</dt><dd><code>halo15-0.6 + blind-gbt(τ=0.5, s=0.6) v1</code> — catalogue-core halos (1.5 km triangular decay, h 0.6) ∨ blind-fault detector emission</dd>
-    <dt>Suggested Note field</dt><dd><code>halo r15/h0.6 + blind GBT v1 (7GEMSDOE)</code></dd>
-    <dt>Values</dt><dd>min 0.0 · max 0.95 · footprint 5,167,373 px · mass 606,252 · px &gt; 0.5: 362,045</dd>
-    <dt>Full record</dt><dd><a href="downloads/submission_meta.json">downloads/submission_meta.json</a> (machine-written at build time)</dd>
-  </dl>
-  <p class="small">Format gate PASS · values strictly in [0, 1] · finite exactly inside the official
-  template footprint, NaN outside. Verified 2026-09-26T17:30Z.</p>
-</section>
-
-<div class="ok-box">
-  <strong>New this session (2026-09-26):</strong> first fully autonomous pipeline in this repo —
-  official rasters hash-verified, official DTI reproduced bit-for-bit, a <em>blind-fault detector</em>
-  trained on the GeoDAWN stack without any distance-to-fault feature, spatially-honest
-  pseudo-new-fault proxies, and a format-gated submission artifact you can download above.
-</div>
-
-<h2>What this project is</h2>
-<div class="card">
-  <p>The GEMS Prize asks for a pixel-wise probability map of <strong>geological faults</strong> across the
-  GeoDAWN region of northwestern Nevada/eastern California — faults being the surface indicators of
-  geothermal resources. Both prize rounds ($50K initial, $250K final) are scored against
-  <strong>expert-labelled faults that are NOT in the public USGS database</strong> (rules PDF, verbatim quotes
-  in <a href="research.html">Research</a>). So this is a <em>scientific discovery</em> problem — find the
-  unmapped faults — not a supervised segmentation problem.</p>
-  <ul>
-    <li><strong>Current target:</strong> beat the public-leaderboard leader <strong>0.3049</strong> DW-Tversky
-        (our best so far: 0.1563, rank #23 of 50 — <a href="results.html">Results</a>).</li>
-    <li><strong>This repo's angle:</strong> metric-economics-first emission policies tuned on
-        spatially-honest proxies + a blind detector that generalises the fault signature off-catalogue
-        (<a href="strategy.html">Strategy</a>).</li>
-    <li><strong>Everything verifiable:</strong> sha256-pinned data, tests reproducing the official metric
-        exactly, machine-written artifacts (<a href="data.html">Data</a>, <a href="metric.html">Metric</a>).</li>
-  </ul>
-</div>
-
-<h2>Status at a glance</h2>
-<table>
-  <tr><th>Item</th><th>Status</th><th>Evidence</th></tr>
-  <tr><td>Official data placement (no manual steps needed here)</td>
-      <td><span class="pill ok">DONE</span></td>
-      <td><code>scripts/download_competition_data.sh</code> + <code>scripts/verify_data.py</code> → ALL CHECKS PASS</td></tr>
-  <tr><td>Metric implementation</td>
-      <td><span class="pill ok">VERIFIED</span></td>
-      <td>24/24 tests incl. bit-level reproduction of the inherited strategy table</td></tr>
-  <tr><td>Blind-fault detector v1</td>
-      <td><span class="pill ok">TRAINED</span></td>
-      <td>holdout AUC 0.917 (random pixels); spatial generalisation in Strategy</td></tr>
-  <tr><td>Policy tuning on pseudo-new faults</td>
-      <td><span class="pill ok">DONE</span></td>
-      <td>component-holdout sweep, best proxy DTI 0.0249 vs 0.0090 catalogue-only</td></tr>
-  <tr><td>Submittable artifact (this page's download)</td>
-      <td><span class="pill ok">PASS</span></td>
-      <td>format gate + sha256 above</td></tr>
-  <tr><td>Deep model (U-Net+) training</td>
-      <td><span class="pill warn">NEXT</span></td>
-      <td>needs GPU runner; sandbox is CPU-only (2 vCPU / 4 GB)</td></tr>
-  <tr><td>1 m DEM scarp detection</td>
-      <td><span class="pill warn">NEXT</span></td>
-      <td>DEM tile links OCR-recovered upstream; tiles not yet downloaded</td></tr>
-</table>
-
-<h2>Reproduce everything</h2>
-<pre>bash scripts/download_competition_data.sh   # hash-verified official rasters → ~/gems_data
-.venv/bin/python scripts/verify_data.py      # line-by-line data audit → ALL CHECKS PASS
-.venv/bin/python scripts/extract_features.py
-.venv/bin/python scripts/train_model.py
-.venv/bin/python scripts/tune_components.py && .venv/bin/python scripts/sweep_halos.py
-.venv/bin/python scripts/build_submission.py # writes downloads/submission.tif + gate
-.venv/bin/python -m pytest tests/ -q         # 24 metric tests + format tests</pre>
-
-<p class="small">North-star prompt and operating principles: <a href="https://github.com/buffedlizard55-lab/7GEMSDOE/blob/main/README.md">README.md</a>. Session log: STATUS.md.</p>
-
-</main>
-<footer class="site">7GEMSDOE · built for the DOE GEMS Prize Challenge · every number on this site is machine-measured</footer>
-</body>
-</html>
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Executive summary · 7GEMSDOE</title><link rel="stylesheet" href="assets/style.css"><script src="assets/site.js" defer></script></head>
+<body><a class="skip" href="#main">Skip to content</a><header class="site"><div class="wrap"><h1><span class="gem">7GEMS</span>DOE <span class="small">Fault discovery lab</span></h1>
+<nav class="site" aria-label="Main navigation"><a href="index.html" aria-current=page>Executive summary</a><a href="how-to-submit.html" >Submit</a><a href="results.html" >Results</a><a href="strategy.html" >Experiments</a><a href="research.html" >Research</a><a href="data.html" >Data</a><a href="metric.html" >Metric</a></nav><p class="tag">Evidence first. Reproducible experiments. One accountable competition entry.</p></div></header>
+<main id="main"><p class="eyebrow">DOWNLOAD → UPLOAD → PASTE THE NOTE</p><h2>A valid file first. Better discovery next.</h2>
+<p>Two independently named files are ready below. <strong>Neither has a measured competition score.</strong> The new candidate tests a specific structural hypothesis; retain the control for comparison. <a href="how-to-submit.html">Exact submission instructions →</a></p>
+<section class="hero"><p class="eyebrow">Experimental candidate v2 · LOCAL FORMAT PASS · NOT YET SCORED</p><h2>H3 · Along-strike continuation</h2>
+<p class="filename">gems7-strike30x3-v2-2b06d45c5b57.tif</p><a class="btn" data-verify-download data-sha="2b06d45c5b5726be60ed7f953accda58919999a99b442bb87410377e0c4c034a" href="downloads/gems7-strike30x3-v2-2b06d45c5b57.tif" download>Download .TIF · 2.35 MB</a>
+<a class="btn secondary" href="downloads/gems7-strike30x3-v2-2b06d45c5b57.zip" download>Single-file ZIP</a>
+<p class="download-status" role="status" aria-live="polite">Built and re-read by the strict local format gate. Browser checks SHA-256 when supported.</p>
+<p><strong>Short submission Note</strong></p><code class="note-text">H3 tangent continuation 3km x 300m h0.6; no GBT; experimental | 2b06d45c5b57</code> <button class="copy-note" type="button">Copy Note</button>
+<details><summary>File integrity & measured format</summary><p>SHA-256 <code>2b06d45c5b5726be60ed7f953accda58919999a99b442bb87410377e0c4c034a</code></p>
+<p>Single-band float32; 3,292 × 3,730; EPSG:32611; 100 m. Finite values [0.00, 0.95] on 5,167,373 pixels; NaN outside template footprint.</p>
+<a href="downloads/gems7-strike30x3-v2-2b06d45c5b57.json">Full reproducibility manifest</a></details></section>
+<p>Extends locally coherent fault traces preferentially along their strike (3 km support) rather than placing a broad halo everywhere (300 m cross-strike support). No deep model or geothermal thermal prior is included.</p>
+<section class="hero"><p class="eyebrow">Preserved control v1 · LOCAL FORMAT PASS · NOT YET SCORED</p><h2>Broad halo + blind GBT</h2>
+<p class="filename">gems7-halo15-gbt-v1-90fb7dc0fc1f.tif</p><a class="btn" data-verify-download data-sha="90fb7dc0fc1f6e7d3dbb20927417c6af7d110ca41167329d792c75c145f75b6a" href="downloads/gems7-halo15-gbt-v1-90fb7dc0fc1f.tif" download>Download .TIF · 3.04 MB</a>
+<a class="btn secondary" href="downloads/gems7-halo15-gbt-v1-90fb7dc0fc1f.zip" download>Single-file ZIP</a>
+<p class="download-status" role="status" aria-live="polite">Built and re-read by the strict local format gate. Browser checks SHA-256 when supported.</p>
+<p><strong>Short submission Note</strong></p><code class="note-text">Control halo r15 h0.6 + blind GBT v1 | 90fb7dc0fc1f</code> <button class="copy-note" type="button">Copy Note</button>
+<details><summary>File integrity & measured format</summary><p>SHA-256 <code>90fb7dc0fc1f6e7d3dbb20927417c6af7d110ca41167329d792c75c145f75b6a</code></p>
+<p>Single-band float32; 3,292 × 3,730; EPSG:32611; 100 m. Finite values [0.00, 0.95] on 5,167,373 pixels; NaN outside template footprint.</p>
+<a href="downloads/gems7-halo15-gbt-v1-90fb7dc0fc1f.json">Full reproducibility manifest</a></details></section>
+<aside class="note"><strong>Rules flag:</strong> §3.4 allows <strong>three feedback submissions per week per participating entity</strong>, not per teammate account. One final submission across both rounds; teammates cannot submit separate finals.
+The supplied account list needs team-registration review. We do not multiply the budget across accounts. <a href="https://docs.nlr.gov/docs/fy26osti/96647.pdf">Official rules §3.4–3.6.2</a>.</aside><section class="card" id="feed"><h2>Leaderboard & source watch</h2>
+<p id="feed-status" role="status">Snapshot: 2026-09-26T17:50:00Z. Last refresh: refresh_failed.</p>
+<div id="feed-rows"><div class="table-scroll"><table><thead><tr><th>Participant</th><th>Public best</th><th>Rank at snapshot</th></tr></thead><tbody><tr><td>DARD</td><td>0.3049</td><td>1</td></tr><tr><td>extradr19</td><td>0.1563</td><td>24</td></tr><tr><td>smashi34</td><td>0.1560</td><td>25</td></tr><tr><td>smrtdoog5</td><td>0.1193</td><td>40</td></tr><tr><td>SDCF9</td><td>0.1152</td><td>41</td></tr><tr><td>wbg1</td><td>0.0830</td><td>50</td></tr></tbody></table></div></div>
+<p class="small">Daily refresh scheduled for 08:17 UTC; scheduling is best effort. This page loads the newest public release feed, with a timestamped local fallback. A failed fetch is not current evidence.
+<a href="knowledge/feed.json">Bundled snapshot</a> · <a href="https://github.com/buffedlizard55-lab/7GEMSDOE/releases/tag/research-feed">Latest machine feed</a> · <a href="https://www.drivendata.org/competitions/306/competition-doe-gems/leaderboard/">Official leaderboard</a></p></section><h2>Executive decision</h2><p>The task is to map <strong>geological faults</strong> across GeoDAWN—not to classify hot springs or prove geothermal vents. New expert-labeled faults drive initial scoring; expanded expert review determines final scoring. Scientific hypotheses below are not confirmed discoveries.</p><div class="grid2"><section class="card"><h3>What improved locally</h3>
+<p>H3 held-component DTI: <strong>0.02825</strong> vs <strong>0.02516</strong> broad-halo control (12.3% relative).
+Selection used seeds 4242/4243; seed 9001 was reserved before execution. This is a narrow proxy, not an estimated leaderboard score.</p><a href="strategy.html">See all experiments and limitations</a></section>
+<section class="card"><h3>What is not solved</h3><p>We have not beaten 0.3049, obtained private labels, run a region-wide 1 m DEM detector, or verified an actual new fault in the field.
+No DrivenData login is available for uploading or final selection. GPU training is not implemented in this repo.</p></section></div></main><footer class="site">No predicted leaderboard gains. Local measurements, official-source facts and hypotheses are labeled separately.<br>
+<a href="https://github.com/buffedlizard55-lab/7GEMSDOE">Code &amp; session README</a> · <a href="knowledge/session2/review.md">Three-pass audit</a> · <a href="https://www.drivendata.org/competitions/306/competition-doe-gems/page/967/">Competition contract</a></footer></body></html>

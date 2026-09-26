@@ -87,7 +87,7 @@ def dtvi_components(pred: np.ndarray, truth: np.ndarray,
     # --- TP_w and FN_w: for every truth pixel g, max over x within R of p(x)k(d) ---
     contrib = np.zeros(p.shape, dtype=np.float64)
     if n_truth:
-        for dy, dx, _d, w in _OFFSETS:
+        for dy, dx, _d, w in _kernel_offsets(r_pixels):
             if w == 0.0:
                 continue
             shifted = _shift(p, dy, dx)          # shifted[g] == p[g - off]... see note

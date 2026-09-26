@@ -1,14 +1,16 @@
+> **Historical session-1 notes; superseded where inconsistent.** Fresh claim-level evidence and corrections: [session-2 audit](session2/review.md), [science ledger](session2/research.md), [source registry](sources.json), [dated feed](feed.json). Inherited source/provenance claims are not independently authenticated by being stored here.
+
 # Team submission history & leaderboard snapshot
 
 ## Our accounts (from group records; ranks verified on the public leaderboard 2026-09-26)
 
 | Account | Email | Site used | Best public DW-Tversky | Rank (of 50) | Notes from submission log |
 |---|---|---|---|---|---|
-| extradr19 | EXTRADRUMMY1913@gmail.com | GEMSDOE1 | 0.1563 | #23 | 2 submissions; adopted ensemble, skeleton floor 0.1 |
-| smashi34 | smashbolt234@gmail.com | GEMSDOE2 | 0.1560 | #24 | 1 submission |
-| smrtdoog5 | smaretdoog19@gmail.com | GEMSDOE3 | 0.1193 | #40 | "1 · SUBMIT FIRST" f347b70daa — Pindrop nodes |
-| SDCF9 | supahduteychef69@gmail.com | GEMSDOE3 | 0.1152 | #41 | "3 · CONTROL · UPLOAD LAST" 4e03fc9705 — Pindrop dense ridge control |
-| wbg1 | wingbangboozle1@gmail.com | GEMSDOE3 | 0.0830 | #50 | 2 submissions; "2 · SUBMIT SECOND" 37f9d5b855 — Pindrop catalogue-gap target SECOND SYSTEM |
+| extradr19 | (omitted) | GEMSDOE1 | 0.1563 | #23 | 2 submissions; adopted ensemble, skeleton floor 0.1 |
+| smashi34 | (omitted) | GEMSDOE2 | 0.1560 | #24 | 1 submission |
+| smrtdoog5 | (omitted) | GEMSDOE3 | 0.1193 | #40 | "1 · SUBMIT FIRST" f347b70daa — Pindrop nodes |
+| SDCF9 | (omitted) | GEMSDOE3 | 0.1152 | #41 | "3 · CONTROL · UPLOAD LAST" 4e03fc9705 — Pindrop dense ridge control |
+| wbg1 | (omitted) | GEMSDOE3 | 0.0830 | #50 | 2 submissions; "2 · SUBMIT SECOND" 37f9d5b855 — Pindrop catalogue-gap target SECOND SYSTEM |
 | (unrecorded) | — | 6GEMSDOE | 0.0286 | — | score from group records; account not recorded |
 | (unrecorded) | — | GEMSDOE4 | 0.0343 | — | score from group records; account not recorded |
 
@@ -36,9 +38,7 @@ Group record of sites:
 | 41 | **SDCF9 (us)** | 0.1152 | 1 |
 | 50 | **wbg1 (us)** | 0.0830 | 2 |
 
-50 ranked participants; median ≈ 0.152. `doegemsDrivendata` (#14, 0.1847) appears
-to be the sponsor/reference-solution account — a useful ceiling marker for a
-catalogue-trained U-Net baseline. Our gap to #1: **0.1486**.
+50 ranked participants; median ≈ 0.152. `doegemsDrivendata` (#14, 0.1847) has an unverified identity; do not treat this as an authenticated sponsor baseline. Our gap to #1: **0.1486**.
 
 ## Lessons carried forward
 

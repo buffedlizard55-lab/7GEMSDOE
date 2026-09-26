@@ -1,0 +1,57 @@
+[
+  {
+    "id": "competition",
+    "title": "DrivenData problem and submission contract",
+    "url": "https://www.drivendata.org/competitions/306/competition-doe-gems/page/967/",
+    "excerpt": "Your submission contains a single layer with datatype of 32-bit float",
+    "claim": "Target is geological faults. Single-band float32 confidence [0,1], 100 m UTM 11N. DW-Tversky alpha=.2, beta=.8, support 300 m.",
+    "use": "Submission contract and metric; not a score guarantee",
+    "license": "Competition terms apply; no training data hosted on this page",
+    "reviewed_utc": "2026-09-26",
+    "verification": "Official page retrieved and excerpt manually checked by agent tools; ongoing monitor checks text presence only"
+  },
+  {
+    "id": "geodawn",
+    "title": "USGS GeoDAWN data release (2024)",
+    "url": "https://www.usgs.gov/data/geodawn-airborne-magnetic-and-radiometric-surveys-northwestern-great-basin-nevada-and",
+    "excerpt": "Flight lines were spaced 200 m apart at an azimuth of 90 degrees",
+    "claim": "Area 1 uses 200 m line spacing; Area 2 uses 400 m. Different acquisition blocks and terrain clearances affect interpretation.",
+    "use": "Flight-line artifacts, block-specific normalization, independent magnetic/radiometric evidence",
+    "license": "CC0 1.0 explicitly listed on release page",
+    "reviewed_utc": "2026-09-26",
+    "verification": "Official page retrieved and excerpt manually checked by agent tools; ongoing monitor checks text presence only"
+  },
+  {
+    "id": "structure",
+    "title": "Faulds & Hinz 2015 \u2014 structural settings",
+    "url": "https://www.osti.gov/biblio/1724082",
+    "excerpt": "normal fault terminations (25%)",
+    "claim": "Among nearly 250 categorized geothermal fields, roughly 32% were stepovers, 25% terminations, 22% intersections. These are study-specific geothermal statistics, NOT fault-pixel probabilities.",
+    "use": "Motivates H3 and structural junction hypotheses; does not validate them",
+    "license": "Public abstract/full-text link; confirm reuse license on any data before ingestion",
+    "reviewed_utc": "2026-09-26",
+    "verification": "Official page retrieved and excerpt manually checked by agent tools; ongoing monitor checks text presence only"
+  },
+  {
+    "id": "playfairway",
+    "title": "USGS Nevada play fairway final report (2019)",
+    "url": "https://www.usgs.gov/publications/discovering-blind-geothermal-systems-great-basin-region-integrated-geologic-and",
+    "excerpt": "This system is blind, with no surface hot springs, fumaroles, or paleo-geothermal deposits.",
+    "claim": "Gabbs Valley case combined structural, gravity, magnetic, thermal, resistivity and geochemical evidence; drilling reported up to 124 C at 152 m.",
+    "use": "Multi-sensor confirmation rather than hot-spring-only targeting",
+    "license": "Official report freely readable; associated datasets need their own license checks",
+    "reviewed_utc": "2026-09-26",
+    "verification": "Official page retrieved and excerpt manually checked by agent tools; ongoing monitor checks text presence only"
+  },
+  {
+    "id": "about",
+    "title": "DrivenData sponsor explanation and literature",
+    "url": "https://www.drivendata.org/competitions/306/competition-doe-gems/page/968/",
+    "excerpt": "Most faults in the GeoDAWN region of Nevada are more subtle",
+    "claim": "Sponsor describes field scarps, gravity/magnetic contrasts, remote sensing and topography; cites Matteo 2021 and Hermant 2025.",
+    "use": "Scarp pipeline and evidence framework, not verified field discovery",
+    "license": "Read/cite; external-paper/data licenses separate",
+    "reviewed_utc": "2026-09-26",
+    "verification": "Official page retrieved and excerpt manually checked by agent tools; ongoing monitor checks text presence only"
+  }
+]

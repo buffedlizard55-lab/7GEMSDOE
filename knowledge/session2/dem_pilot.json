@@ -1,0 +1,7 @@
+{
+  "attempted_utc": "2026-09-26T17:55:16.643601+00:00",
+  "url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1m/Projects/NV_WestCentral_EarthMRI_2020_D20/TIFF/USGS_1M_11_x40y416_NV_WestCentral_EarthMRI_2020_D20.tif",
+  "caveat": "Small engineering pilot only; slope breaks also occur at roads, drainage, lithologic contacts and landslides. No fault labels or discovery validation.",
+  "status": "blocked",
+  "error": "CURL error: TLS connect error: error:0A000126:SSL routines::unexpected eof while reading"
+}

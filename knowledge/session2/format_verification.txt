@@ -1,0 +1,1 @@
+PASS: exact grid, float32 [0,1] inside; NaN outside; NaN nodata

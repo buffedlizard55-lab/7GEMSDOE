@@ -1,3 +1,7 @@
+# Current status — session 2 (2026-09-26)
+
+See README.md and knowledge/session2/review.md first. Session-1 claims below are historical, not all freshly verified. New strict format gate, immutable H3 candidate/control, CPU data preparation/training, native-DEM pilot, sourced research, refreshed site and daily feed are implemented. Final verification details follow below after execution.
+
 # STATUS log
 
 ## 2026-09-26 — session 1 of 7GEMSDOE (this repo)

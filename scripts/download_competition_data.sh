@@ -5,7 +5,7 @@
 # official downloads on 2026-09-17, scripts/make_data_bridge.py).
 #
 # Sources, in order of preference:
-#   1. Official Dropbox mirrors (linked from the competition page / GDR):
+#   1. User-supplied Dropbox mirrors (not independently authenticated):
 #        example_submission.tif  https://www.dropbox.com/scl/fi/6rgvnuady818ol8yqgis4/example_submission.tif?rlkey=kbykilvau066xuogoosbf4cq8&st=8junzdyw&dl=1
 #        existing_faults.tif     https://www.dropbox.com/scl/fi/t7fyt03qdh9egyme0itwo/existing_faults.tif?rlkey=yiao96uluqdkipf0h5vju71jf&st=rnino7ya&dl=1
 #        gems-geodawn-numerical-features.tif
@@ -18,7 +18,7 @@
 #
 # The full DrivenData data tab itself requires login (training_features.tif,
 # labels.tif, sample_submission.tif, 1m_DEM_links.csv) - NOT auto-downloadable
-# without credentials. The mirrors above are byte-identical (sha256-pinned)
+# without credentials. The mirrors above match inherited team sha256 pins (not independent official authentication)
 # for the three rasters; labels.tif == existing_faults.tif and
 # sample_submission.tif == example_submission.tif per the manifest's
 # canonical-name mapping. 1m_DEM_links.csv is not mirrored yet (see
@@ -59,22 +59,26 @@ for f in example_submission.tif existing_faults.tif training_features.tif; do
     continue
   fi
   echo "== downloading $f (dropbox mirror)"
-  if curl -fL --retry 3 -A "Mozilla/5.0" -o "$f" "${URL[$f]}"; then
+  if curl -fL --connect-timeout 15 --max-time 90 --retry 1 -A "Mozilla/5.0" -o "$f" "${URL[$f]}"; then
     verify "$f" "${SHA[$f]}" || { echo "dropbox bytes failed hash; removing"; rm -f "$f"; }
   fi
   if [[ ! -f "$f" ]] || ! verify "$f" "${SHA[$f]}" >/dev/null 2>&1; then
     echo "== fallback: sibling-repo data bridge for $f"
-    BRIDGE="$(mktemp -d)/GEMSDOE"
+    rm -f "$f" # a failed curl may leave partial bytes; never preserve them
+    BRIDGE_TMP="$(mktemp -d)"
+    trap 'rm -rf "$BRIDGE_TMP"' EXIT
+    BRIDGE="$BRIDGE_TMP/GEMSDOE"
     git clone --depth 1 --filter=blob:none --sparse \
       https://github.com/buffedlizard55-lab/GEMSDOE "$BRIDGE"
     ( cd "$BRIDGE" && git sparse-checkout set --skip-checks data/bridge data/evidence scripts )
     # writes canonical names into $BRIDGE/data (hash-verified by the script)
     ( cd "$BRIDGE" && python3 scripts/assemble_data_bridge.py \
         --bridge data/bridge --out data )
-    cp -n "$BRIDGE/data/training_features.tif" "$DEST/training_features.tif" 2>/dev/null || true
-    cp -n "$BRIDGE/data/labels.tif" "$DEST/existing_faults.tif" 2>/dev/null || true
-    cp -n "$BRIDGE/data/sample_submission.tif" "$DEST/example_submission.tif" 2>/dev/null || true
+    cp "$BRIDGE/data/training_features.tif" "$DEST/training_features.tif" 2>/dev/null || true
+    cp "$BRIDGE/data/labels.tif" "$DEST/existing_faults.tif" 2>/dev/null || true
+    cp "$BRIDGE/data/sample_submission.tif" "$DEST/example_submission.tif" 2>/dev/null || true
     verify "$f" "${SHA[$f]}"
+    rm -rf "$BRIDGE_TMP"
   fi
 done
 

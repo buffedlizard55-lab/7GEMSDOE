@@ -1,18 +1,84 @@
-# 7GEMSDOE
+# 7GEMSDOE — fault discovery lab
 
-**Goal: win the DOE GEMS Prize Challenge** ([DrivenData #306](https://www.drivendata.org/competitions/306/competition-doe-gems/)) —
-map the *unmapped* geological faults that indicate geothermal resources in the GeoDAWN region, and beat
-the public-leaderboard leader (**0.3049** DW-Tversky; our best so far **0.1563**, rank #23 of 50).
+**Read this README at the start of every session**, then `AGENTS.md`, `STATUS.md`
+and [`knowledge/session2/review.md`](knowledge/session2/review.md).
 
-**Live site (GitHub Pages): <https://buffedlizard55-lab.github.io/7GEMSDOE/>** — the home page carries the
-one-click **submission.tif** download (format-gated, values strictly in [0, 1]) and the executive summary.
+**Goal:** compete for the top prize in [DOE GEMS / DrivenData #306](https://www.drivendata.org/competitions/306/competition-doe-gems/)
+through scientifically grounded discovery of unmapped **geological faults**.
+Geothermal vents are the user's broader motivation, not the competition's raster target.
+**We have not demonstrated a score above 0.3049.** Best group-reported public score:
+0.1563, confirmed as an account best on 2026-09-26. Ranks are dynamic.
 
-Read this README at the start of every session. Status log: [`STATUS.md`](STATUS.md). Verified knowledge:
-[`knowledge/`](knowledge/) (start with `knowledge/00_competition_facts.md`).
+## Download first
 
----
+**[GitHub Pages / executive summary](https://buffedlizard55-lab.github.io/7GEMSDOE/)** ·
+[Exact submission instructions](https://buffedlizard55-lab.github.io/7GEMSDOE/how-to-submit.html)
 
-## North-star prompt (verbatim, per team agreement — 2026-09-26)
+- **New experimental H3:** `downloads/gems7-strike30x3-v2-2b06d45c5b57.tif` (and ZIP).
+  Note: `H3 tangent continuation 3km x 300m h0.6; no GBT; experimental | 2b06d45c5b57`.
+- **Preserved control:** `downloads/gems7-halo15-gbt-v1-90fb7dc0fc1f.tif` (and ZIP).
+- Local strict format PASS is not platform acceptance or evidence of a better score.
+  A short Note and full SHA-256 accompany every file; browser downloads verify the hash.
+- Sign-in and the upload/final-selection action require an authorized DrivenData session.
+  No credentials are requested or stored here. Nothing has been submitted automatically.
+
+## Current evidence and autonomous workflow
+
+The data-placement task was completed: all three rasters are present in `~/gems_data`
+and match inherited team hashes. This proves consistent bytes, **not independent
+sponsor provenance**. Dropbox TLS failed; the public team git bridge succeeded.
+`prepare_data.py` now exists and verifies/extracts features. CPU model training can run
+here; there is no integrated U-Net/GPU pipeline in this repo.
+
+H3 tests along-strike continuation against isotropic halos: locked **component** test
+DTI 0.02825 vs 0.02516, with considerably less prediction mass. This narrow proxy does
+not establish geographic transfer or imply a leaderboard score. H4 is a bounded native
+1 m DEM engineering pilot, not a region-wide trained detector. See `knowledge/session2/`.
+
+Daily Actions checks the leaderboard and source excerpts, preserves stale last-good
+results on failure, and publishes a public `research-feed` release. The Pages UI loads
+that release with a bundled fallback. It never calls a sandbox localhost. GitHub Pages
+settings are not writable by this integration (403); legacy root/main publishing remains.
+Automatic source checks are not automatic scientific verification.
+
+```bash
+python3 -m venv .venv
+.venv/bin/pip install -r requirements.txt
+bash scripts/download_competition_data.sh
+.venv/bin/python scripts/prepare_data.py
+OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 .venv/bin/python scripts/train_model.py
+.venv/bin/python scripts/experiment_structural.py
+.venv/bin/python scripts/build_structural_submission.py
+.venv/bin/python scripts/build_site.py
+.venv/bin/python -m pytest -q
+# Optional rebuild of legacy control (does not auto-repackage immutable downloads):
+.venv/bin/python scripts/build_submission.py
+```
+
+## Limits and next-session priorities
+
+1. **Rules:** three feedback submissions/week per participating entity, one final
+   submission across both rounds. Team members cannot submit separate finals
+   ([official PDF §3.4](https://docs.nlr.gov/docs/fy26osti/96647.pdf)). Review the group
+   registrations; do not multiply the limit across accounts.
+2. Implement buffered geographic + fault-system holdouts, matched-mass controls and
+   randomized-tangent nulls. Component-only H3 is not enough for model promotion.
+3. Extend H4 to multiple verified native 1 m tiles, road/drainage controls, full-grid
+   coverage and calibration. Do not equate slope breaks with faults.
+4. Implement survey-block holdouts and positive-unlabeled training; normalize within
+   training folds. Compare independent terrain and geophysical experts, not more
+   untested unions of historical outputs.
+5. Record the actual uploaded file hash and its individual score. Public account-best
+   scraping cannot recover authenticated submission history or private scores.
+6. A GPU and more storage would make deep ensembles practical; code integration,
+   validation and training are still necessary. We have ~4 GB RAM and no GPU here.
+7. Direct official HTTP downloads may be blocked here. Actions is the alternative;
+   failures are recorded, never silently treated as successful verification.
+8. Scientific source links and excerpts are checked, but exhaustive accuracy cannot
+   honestly be guaranteed. Unknown data licenses, attribution gaps and source conflicts
+   are flagged rather than invented away.
+
+## Standing user brief (condensed excerpt; not a verbatim transcript)
 
 > We need to quickly look at the results and our results.
 >
@@ -49,56 +115,59 @@ Read this README at the start of every session. Status log: [`STATUS.md`](STATUS
 > that maximizes the probability of winning. **Own the Outcome**: own results end-to-end, act without
 > waiting for permission, treat failure and success as signals and improve.
 
-(Full group message with account list, scores and links: `knowledge/04_team_history.md`.)
+(De-duplicated submission records: `knowledge/team_results.json`; private email addresses are not needed in the public UI.)
 
 ---
 
-## How this repo answers the prompt
 
-| Requirement | Where |
-|---|---|
-| One-click, format-valid **submission.tif** at the very top of the site | `index.html` → `downloads/submission.tif` (values in [0, 1], NaN outside footprint, gate PASS) |
-| Executive summary subpage for submitting | `how-to-submit.html` |
-| Unique name + Note for submissions | `downloads/submission_meta.json` → `suggested_submission_note` |
-| Distinct strategy targeting > 0.3049 | `strategy.html` + `scripts/tune_*.py` (pseudo-new-fault proxies) |
-| Deep research from official verified sources, reusable knowledge base | `knowledge/01_science_faults_geothermal.md`, `research.html` |
-| Organized, auditable data table with official links + hashes | `data.html`, `knowledge/02_data_sources.md`, `scripts/verify_data.py` |
-| No manual input for data placement | `scripts/download_competition_data.sh` (Dropbox mirrors → git-bridge fallback, sha256-verified) |
-| Metric exactness | `scripts/metric.py` + `tests/test_metric.py` (reproduces the verified table bit-for-bit) |
-| Flag irregularities | `knowledge/00_competition_facts.md` §irregularities |
+## Additional requirements from the user's prompt (de-duplicated, normalized)
 
-## Quickstart
+This is the standing brief, not a claim that all requested future research is complete:
 
-```bash
-python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
-bash scripts/download_competition_data.sh        # official rasters → ~/gems_data (hash-verified)
-.venv/bin/python scripts/verify_data.py          # ALL CHECKS PASS
-.venv/bin/python scripts/extract_features.py     # 27-channel per-pixel matrix
-.venv/bin/python scripts/train_model.py          # blind-fault detector (no distance feature)
-.venv/bin/python scripts/tune_components.py      # pseudo-new-fault holdout
-.venv/bin/python scripts/sweep_halos.py          # policy sweep on the holdout
-.venv/bin/python scripts/build_submission.py     # → downloads/submission.tif (format-gated)
-.venv/bin/python -m pytest tests/ -q             # full test suite
-```
+- Review this repo and the five previous group sites, using the scores listed in
+  `knowledge/team_results.json`. Quickly compare with the official leaderboard.
+- Research distinct, contrarian but scientifically justified discovery strategies.
+  Store official-source knowledge as an auditable, reusable base for other projects.
+  Use free public external data, verify rights, provide source links for manual review.
+- Make an everyday-use system with current source and results feeds rather than having
+  the team manually check every page. Work autonomously; flag irregularities and avoid
+  unsupported assertions. “No hallucinations” means evidence-linked claims and explicit
+  uncertainty, not a guarantee of omniscience.
+- Create a clean, organized, accessible GitHub Pages site. Put a downloadable single-band
+  float32 GeoTIFF at the beginning, conforming to the competition CRS, dimensions and
+  geotransform, with finite probabilities [0,1] in the template footprint. Prevent the
+  reported “Predicted values must be in range [0, 1]” failure. Provide a unique filename,
+  short submission comment and a dedicated executive-summary submission guide.
+- Understand the overview, problem, About, data tab, reference solution and official
+  rules PDF. Train a model, generate predictions and validate them. Complete data
+  placement and preparation without requiring the user to download files manually.
+  Earlier assertions that GPU training was already ready must be re-verified, not assumed.
+- Start with previous-session next steps (H3 structural continuation, H4 native DEM,
+  H5 independent priors and later deep models). Explain limitations and needed access.
+- Work in three passes: (1) implement and verify; (2) find/fix bugs, omissions and edge
+  cases; (3) recheck against the entire request and improve reliability and completeness.
+- Open a pull request and merge it if checks and permissions allow. Preserve an explicit
+  next-session list, limitations, experiments and observed failures.
 
-## Current limitations (own the outcome — what is blocking the top prize)
+**Core Values — Maximize P(Win):** “Maximize the Probability of Winning”: weigh tradeoffs,
+assess risk and choose the path that maximizes the probability of success. Set aside
+emotions and make the decisions needed for the project's stated goal.
 
-1. **No GPU in this sandbox** (2 vCPU / 4 GB): deep models (U-Net reference architecture and
-   stronger) must train on a GPU runner. Pipeline is ready for it; proxies are ready to judge it.
-2. **No DrivenData credentials**: `1m_DEM_links.csv` (and the data tab itself) stay login-walled.
-   The three rasters are mirrored and hash-verified without login.
-3. **1 m DEM scarp detection not yet run**: 716 tile URLs recovered upstream; downloading +
-   scarp extraction is the single biggest untried lever (H4).
-4. **Dropbox is egress-blocked in this sandbox**; the download script falls back to the sibling
-   repo's git bridge automatically (same bytes, same hashes).
-5. Local proxies rank strategies but cannot predict the private-set score; only live submissions do
-   (budget: 3/week/account × 5 accounts).
+**Own the Outcome:** own results end to end, not just an individual slice. When problems
+arise and we have the means to act, act without waiting for permission or assignment.
+Treat failure and success as signals, use them to improve and remain accountable to
+measured outcomes. These values never override competition rules or evidence integrity.
 
-## Next session checklist
+## Starting links from the brief
 
-- [ ] H3 along-strike extrapolation layer (structure tensor on the fault mask)
-- [ ] H4 3DEP 1 m DEM download + scarp/lineament extraction
-- [ ] H5 external priors (QFFDB age classes, slip/dilation tendency, heat flow, conductance)
-- [ ] H7 GPU-runner U-Net training + pseudo-label loop
-- [ ] Submit v1 artifact on one account (Note: `halo r15/h0.6 + blind GBT v1 (7GEMSDOE)`), keep a control
-- [ ] Mirror `1m_DEM_links.csv` once credentials are available
+- [Competition](https://www.drivendata.org/competitions/306/competition-doe-gems/),
+  [problem](https://www.drivendata.org/competitions/306/competition-doe-gems/page/967/),
+  [About](https://www.drivendata.org/competitions/306/competition-doe-gems/page/968/),
+  [data (sign-in)](https://www.drivendata.org/competitions/306/competition-doe-gems/data/),
+  [leaderboard](https://www.drivendata.org/competitions/306/competition-doe-gems/leaderboard/).
+- [Organizer reference solution](https://github.com/drivendataorg/gems-prize-reference-solution).
+- [Official rules PDF](https://docs.nlr.gov/docs/fy26osti/96647.pdf).
+- [GDR 1391](https://gdr.openei.org/submissions/1391) — broken on direct retrieval.
+- The three provided Dropbox raster mirrors and their exact inherited hashes are kept
+  in `scripts/download_competition_data.sh`; the demo PDF/OCR inventory and original
+  team-site URLs are documented in the knowledge files. Mirrors are not assumed official.

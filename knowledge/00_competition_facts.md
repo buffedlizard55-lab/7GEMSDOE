@@ -1,3 +1,5 @@
+> **Historical session-1 notes; superseded where inconsistent.** Fresh claim-level evidence and corrections: [session-2 audit](session2/review.md), [science ledger](session2/research.md), [source registry](sources.json), [dated feed](feed.json). Inherited source/provenance claims are not independently authenticated by being stored here.
+
 # Competition facts (verified line-by-line)
 
 Competition: **The Geologic Enhanced Mapping System (GEMS) Prize Challenge**
