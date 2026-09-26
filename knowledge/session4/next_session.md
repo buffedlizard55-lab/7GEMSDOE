@@ -4,7 +4,7 @@ Read `README.md` → `AGENTS.md` → `STATUS.md` → this file → `review.md`.
 
 ## 0. First action: record leaderboard feedback (needs the user)
 
-1. Upload `downloads/gems7-lidarscarp-ridge-top2pct-dfa04fa218b8.tif` with its
+1. Upload `downloads/gems7-lidarscarp-ridge-top2pct-36c3a3f341c8.tif` with its
    Note. Record the account, UTC time, filename, SHA-256 and score in
    `knowledge/team_results.json`. This is the decisive H1 test.
 2. Record which file produced **SDCF9's 0.1563** (2 submissions) — currently unknown.

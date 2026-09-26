@@ -119,7 +119,11 @@ def main(argv=None):
     del feats, lfe, raw
     valid = dom  # emission restricted to lidar-covered valid pixels
     scored_dom = valid & ~known
-    ridge = EM.ridge_nms(np.where(scored_dom, score, 0), scored_dom)
+    # NMS on the full model field (known pixels keep their scores), exactly as in the
+    # pre-registered experiment; known pixels are dropped only afterwards. Zeroing
+    # them first would turn pixels flanking every catalogue trace into artificial
+    # ridge maxima (a halo), the failure mode of the worst group upload.
+    ridge = EM.ridge_nms(np.where(valid, score, 0), valid) & scored_dom
     dist = distance_transform_edt(~known)
     ring1 = foot & (dist > 0) & (dist <= 1.01)
     out = Path(args.out); out.mkdir(parents=True, exist_ok=True)

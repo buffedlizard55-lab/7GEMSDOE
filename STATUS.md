@@ -11,7 +11,7 @@
 - Pre-registered 5-fold geographic test: lidar-only ridge skill x2.33/x1.81/x1.47
   (f=0.5/1/2%) vs 19 bands x1.14/x0.99/x0.87 on held-out catalogue faults. Promotion
   rule met; lidar arm chosen over the pre-written "both" arm (deviation recorded).
-- New candidate `downloads/gems7-lidarscarp-ridge-top2pct-dfa04fa218b8.tif` (strict gate
+- New candidate `downloads/gems7-lidarscarp-ridge-top2pct-36c3a3f341c8.tif` (strict gate
   PASS). Local calibration predicts ~0.09 under a 50% transfer discount — it is a
   decisive H1 leaderboard test, not a promised gain. Nothing uploaded by the agent.
 - Irregularities flagged: SDCF9 0.1563 from an unrecorded file; five accounts vs the

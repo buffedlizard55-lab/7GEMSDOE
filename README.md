@@ -16,8 +16,8 @@ Geothermal vents are the user's broader motivation, not the competition's raster
 [Exact submission instructions](https://buffedlizard55-lab.github.io/7GEMSDOE/how-to-submit.html)
 
 - **Recommended next upload (decisive H1 test, not a proven winner):**
-  `downloads/gems7-lidarscarp-ridge-top2pct-dfa04fa218b8.tif` (and `.zip`).
-  Note: `Lidar scarp LightGBM (706 USGS 1 m tiles), ridge-thinned top 2% | dfa04fa218b8`.
+  `downloads/gems7-lidarscarp-ridge-top2pct-36c3a3f341c8.tif` (and `.zip`).
+  Note: `Lidar scarp model, ridge-thinned top 2% | 36c3a3f341c8`.
   Binary 1.0 on 76,859 thin-line pixels, 0.0 elsewhere inside the footprint, NaN outside;
   float32, exact grid; strict local gate PASS. Record the score with the SHA-256.
 - Preserved earlier files: H3 `gems7-strike30x3-v2-2b06d45c5b57` and control
