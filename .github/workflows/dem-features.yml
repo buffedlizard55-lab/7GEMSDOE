@@ -4,8 +4,9 @@ name: Lidar scarp features
 # scarp descriptors and aggregate them onto the official 100 m grid. Only the
 # compact uint8 product + provenance logs are committed back (session branches only).
 # Cost control: the ~40-minute extraction runs only on manual dispatch or when the
-# pushing commit message contains "[run-dem]"; path-matching edits alone (e.g. a
-# read-side helper in dem_merge.py) no longer re-download ~167 GB of tiles.
+# pushing commit message STARTS WITH the marker "[run-dem]" (a message that merely
+# mentions the marker does not count); path-matching edits alone (e.g. a read-side
+# helper in dem_merge.py) no longer re-download ~167 GB of tiles.
 on:
   workflow_dispatch:
     inputs:
@@ -26,7 +27,7 @@ concurrency:
   cancel-in-progress: true
 jobs:
   extract:
-    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[run-dem]')
+    if: github.event_name == 'workflow_dispatch' || startsWith(github.event.head_commit.message, '[run-dem]')
     runs-on: ubuntu-latest
     timeout-minutes: 150
     strategy:

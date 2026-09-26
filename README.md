@@ -42,7 +42,7 @@ Geothermal vents are the user's broader motivation, not the competition's raster
    (`external/dem/`). Three defects were found and fixed with regression tests:
    tile-seam artefact, curvature elevation bias, fan-induced strike bias.
    Re-run on demand only: Actions → *Lidar scarp features* → Run workflow, or push a
-   commit whose message contains `[run-dem]` (path edits alone no longer re-run it).
+   commit whose message **starts with** `[run-dem]` (path edits alone no longer re-run it).
 3. **Pre-registered geographic test** (`knowledge/session4/lidar_experiment.json`):
    lidar-only ridge skill x2.33 / x1.81 / x1.47 at 0.5 / 1 / 2% vs 19 bands x1.14 / x0.99 / x0.87.
    The 19 bands fall below random across geography. Local truth is the *catalogue*,
