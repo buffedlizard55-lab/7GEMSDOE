@@ -1,5 +1,7 @@
 """Hermetic tests for scripts/geodawn_rad.py (no network)."""
+import stat
 import sys
+import zipfile
 from pathlib import Path
 
 import numpy as np
@@ -26,6 +28,12 @@ def test_select_rad_files_happy_path():
                for f in chosen.values())
 
 
+def test_select_rad_files_matches_area_archive_member_names():
+    files = listing("Area2/22103_Area2_K.tif", "Area2/22103_Area2_Th.tif",
+                    "Area2/22103_Area2_U.tif", "Area2/22103_Area2_TC.tif")
+    assert set(GR.select_rad_files(files)) == {"K", "Th", "U", "TC"}
+
+
 def test_select_rad_files_fails_closed_with_observed_list():
     files = listing("readme.txt", "mag_TMI.grd")
     with pytest.raises(ValueError, match="observed"):
@@ -38,6 +46,46 @@ def test_select_rad_files_rejects_ambiguous_preferred_channel():
                     "GeoDAWN_total_count.tif")
     with pytest.raises(ValueError, match="ambiguous K candidates"):
         GR.select_rad_files(files)
+
+
+def test_select_tiff_archives_requires_one_exact_area_package():
+    files = listing("22103_area1_tiffs.zip", "22103_area2_tiffs.zip", "readme.pdf")
+    assert set(GR.select_tiff_archives(files)) == {1, 2}
+    with pytest.raises(ValueError, match="expected one 22103_area2_tiffs.zip"):
+        GR.select_tiff_archives(listing("22103_area1_tiffs.zip",
+                                       "22103_area1_tiffs-copy.zip"))
+
+
+def test_inspect_tiff_zip_lists_only_safe_rasters(tmp_path):
+    path = tmp_path / "safe.zip"
+    with zipfile.ZipFile(path, "w") as archive:
+        archive.writestr("Area1/K.tif", b"tif")
+        archive.writestr("readme.txt", b"metadata")
+    with zipfile.ZipFile(path) as archive:
+        files = GR.inspect_tiff_zip(archive)
+    assert [(f["name"], f["size"]) for f in files] == [("Area1/K.tif", 3)]
+
+
+def test_inspect_tiff_zip_rejects_unsafe_duplicate_and_symlink_members(tmp_path):
+    path = tmp_path / "unsafe.zip"
+    with zipfile.ZipFile(path, "w") as archive:
+        archive.writestr("../escape.tif", b"unsafe")
+    with zipfile.ZipFile(path) as archive:
+        with pytest.raises(ValueError, match="unsafe GeoDAWN archive path"):
+            GR.inspect_tiff_zip(archive)
+
+    path = tmp_path / "symlink.zip"
+    link = zipfile.ZipInfo("link.tif")
+    link.external_attr = (stat.S_IFLNK | 0o777) << 16
+    with zipfile.ZipFile(path, "w") as archive:
+        archive.writestr(link, "../escape.tif")
+    with zipfile.ZipFile(path) as archive:
+        with pytest.raises(ValueError, match="symbolic link"):
+            GR.inspect_tiff_zip(archive)
+
+
+def test_safe_basename_strips_windows_and_posix_paths():
+    assert GR._safe_basename(r"..\\nested/path.tif") == "path.tif"
 
 
 def test_quantise_robust_and_nodata_zero():
