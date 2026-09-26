@@ -10,7 +10,7 @@ from scipy.ndimage import distance_transform_edt
 from scipy.spatial import cKDTree
 
 
-def structural_geometry(visible, radius=5):
+def structural_geometry(visible, radius=5, random_seed=None):
     visible = np.asarray(visible, dtype=bool)
     if visible.ndim != 2 or not visible.any():
         raise ValueError("visible must be a nonempty 2D fault mask")
@@ -28,6 +28,10 @@ def structural_geometry(visible, radius=5):
         if eigenvalues[1] > 0 and (eigenvalues[1] - eigenvalues[0]) / eigenvalues.sum() >= .6:
             angle[y, x] = np.arctan2(axes[0, 1], axes[1, 1])
             coherent[y, x] = True
+    # Null ablation: replace source tangents, preserving source/coherence/support.
+    # One angle per source (not per target pixel) keeps each emitted ellipse coherent.
+    if random_seed is not None:
+        angle[visible] = np.random.default_rng(random_seed).uniform(0, np.pi, len(points))
     dist, nearest = distance_transform_edt(~visible, return_indices=True)
     theta = angle[tuple(nearest)]
     yy, xx = np.ogrid[:visible.shape[0], :visible.shape[1]]

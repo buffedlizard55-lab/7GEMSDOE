@@ -1,0 +1,243 @@
+{
+  "protocol": "raw-experts-geographic-v1",
+  "generated_utc": "2026-09-26T18:40:06.639128+00:00",
+  "elapsed_seconds": 81.96468895999999,
+  "buffer_pixels": 10,
+  "context_pixels": 45,
+  "seeds": [
+    7300,
+    7301,
+    7302,
+    7303
+  ],
+  "rows": [
+    {
+      "fold": 0,
+      "policy": "terrain_100m",
+      "TP_w": 7798.147479675732,
+      "FP_w": 506865.5496335862,
+      "FN_w": 21355.852520324268,
+      "n_truth": 29154,
+      "predicted_mass": 533530.4229440854,
+      "dti": 0.06176459907815323
+    },
+    {
+      "fold": 0,
+      "policy": "geophysical",
+      "TP_w": 6985.570835327011,
+      "FP_w": 524219.58228570834,
+      "FN_w": 22168.42916467299,
+      "n_truth": 29154,
+      "predicted_mass": 548615.9641084205,
+      "dti": 0.05391589022427196
+    },
+    {
+      "fold": 1,
+      "policy": "terrain_100m",
+      "TP_w": 3611.996233376305,
+      "FP_w": 283052.7521690726,
+      "FN_w": 8839.003766623695,
+      "n_truth": 12451,
+      "predicted_mass": 295508.95599344675,
+      "dti": 0.05367506269937447
+    },
+    {
+      "fold": 1,
+      "policy": "geophysical",
+      "TP_w": 2368.028716428091,
+      "FP_w": 191911.77093504305,
+      "FN_w": 10082.97128357191,
+      "n_truth": 12451,
+      "predicted_mass": 200257.4059627205,
+      "dti": 0.04850851879168978
+    },
+    {
+      "fold": 2,
+      "policy": "terrain_100m",
+      "TP_w": 2957.1364480339153,
+      "FP_w": 133096.52999301697,
+      "FN_w": 6249.863551966085,
+      "n_truth": 9207,
+      "predicted_mass": 142649.9557349428,
+      "dti": 0.08552487111298843
+    },
+    {
+      "fold": 2,
+      "policy": "geophysical",
+      "TP_w": 2197.96059023231,
+      "FP_w": 106432.35000202055,
+      "FN_w": 7009.03940976769,
+      "n_truth": 9207,
+      "predicted_mass": 113701.3049682267,
+      "dti": 0.07555293957708617
+    },
+    {
+      "fold": 3,
+      "policy": "terrain_100m",
+      "TP_w": 3053.3949291111294,
+      "FP_w": 182615.79227169312,
+      "FN_w": 6479.605070888871,
+      "n_truth": 9533,
+      "predicted_mass": 192327.92173401103,
+      "dti": 0.06821668301454277
+    },
+    {
+      "fold": 3,
+      "policy": "geophysical",
+      "TP_w": 2490.0512138220683,
+      "FP_w": 171325.95651082264,
+      "FN_w": 7042.948786177932,
+      "n_truth": 9533,
+      "predicted_mass": 179522.60755067132,
+      "dti": 0.05874202924938667
+    }
+  ],
+  "aggregates": {
+    "terrain_100m": {
+      "pooled_dti": 0.06383859378245367,
+      "mean_fold_dti": 0.06729530397626472,
+      "predicted_mass": 1164017.256406486
+    },
+    "geophysical": {
+      "pooled_dti": 0.05619740924759742,
+      "mean_fold_dti": 0.05917984446060865,
+      "predicted_mass": 1042097.2825900391
+    }
+  },
+  "samples": [
+    {
+      "fold": 0,
+      "n_positive": 20000,
+      "n_unlabeled": 60000
+    },
+    {
+      "fold": 1,
+      "n_positive": 20000,
+      "n_unlabeled": 60000
+    },
+    {
+      "fold": 2,
+      "n_positive": 20000,
+      "n_unlabeled": 60000
+    },
+    {
+      "fold": 3,
+      "n_positive": 20000,
+      "n_unlabeled": 60000
+    }
+  ],
+  "experts": {
+    "terrain_100m": [
+      {
+        "band": 12,
+        "description": "det_elev - Detrended elevation - topography with regional trends removed"
+      },
+      {
+        "band": 19,
+        "description": "det_elev_slope - Detrended elevation slope - gradient of elevation after detrending"
+      }
+    ],
+    "geophysical": [
+      {
+        "band": 1,
+        "description": "mag_anom - Magnetic anomaly - deviation from expected Earth's magnetic field"
+      },
+      {
+        "band": 2,
+        "description": "rtp - Reduced to pole magnetic data - magnetic anomaly corrected for latitude effects"
+      },
+      {
+        "band": 3,
+        "description": "tmi_hg - Total magnetic intensity horizontal gradient - rate of change in horizontal direction"
+      },
+      {
+        "band": 4,
+        "description": "geod_2ndinv - Geodetic second invariant - measure of strain rate tensor magnitude"
+      },
+      {
+        "band": 5,
+        "description": "iso_grav_anom_slope - Isostatic gravity anomaly slope - gradient of gravity after isostatic correction"
+      },
+      {
+        "band": 6,
+        "description": "tc - Tilt angle or total curvature - magnetic field derivative for edge detection"
+      },
+      {
+        "band": 7,
+        "description": "geod_shearrate - Geodetic shear rate - rate of angular deformation from GPS/InSAR"
+      },
+      {
+        "band": 8,
+        "description": "geod_dilaterate - Geodetic dilatation rate - rate of volumetric strain (expansion/contraction)"
+      },
+      {
+        "band": 9,
+        "description": "tmi_vg - Total magnetic intensity vertical gradient - rate of change in vertical direction"
+      },
+      {
+        "band": 10,
+        "description": "deq_n100a15 - Distance to earthquake (n=100km radius, a=15\u00b0 azimuth parameters)"
+      },
+      {
+        "band": 11,
+        "description": "iso_grav_anom_vg - Isostatic gravity anomaly vertical gradient - vertical rate of change"
+      },
+      {
+        "band": 13,
+        "description": "iso_grav_anom - Isostatic gravity anomaly - gravity after compensating for topographic mass"
+      },
+      {
+        "band": 14,
+        "description": "tmi - Total magnetic intensity - total strength of magnetic field"
+      },
+      {
+        "band": 15,
+        "description": "depth_to_base_surf - Depth to basement surface - thickness of sedimentary cover"
+      },
+      {
+        "band": 16,
+        "description": "ieq_n100a15 - Earthquake intensity or density (n=100km radius, a=15\u00b0 parameters)"
+      },
+      {
+        "band": 17,
+        "description": "cond_surf - Conductivity surface - electrical conductivity of subsurface"
+      },
+      {
+        "band": 18,
+        "description": "iso_grav_anom_hg - Isostatic gravity anomaly horizontal gradient - horizontal rate of change"
+      }
+    ]
+  },
+  "hyperparameters": {
+    "categorical_features": "from_dtype",
+    "class_weight": null,
+    "early_stopping": false,
+    "interaction_cst": null,
+    "l2_regularization": 1.0,
+    "learning_rate": 0.08,
+    "loss": "log_loss",
+    "max_bins": 255,
+    "max_depth": null,
+    "max_features": 1.0,
+    "max_iter": 80,
+    "max_leaf_nodes": 15,
+    "min_samples_leaf": 60,
+    "monotonic_cst": null,
+    "n_iter_no_change": 10,
+    "random_state": 7303,
+    "scoring": "loss",
+    "tol": 1e-07,
+    "validation_fraction": 0.1,
+    "verbose": 0,
+    "warm_start": false
+  },
+  "features_sha256": "4371c82e3b8339b807bdffcf4ef59a225520fe2988d521be208ae33743123bc5",
+  "caveats": [
+    "Diagnostic cross-validation, not a locked final test or leaderboard estimate.",
+    "Unlabeled pixels treated as negatives; positive-unlabeled correction remains outstanding.",
+    "No scaling/imputation fitted on test geography; histogram bins and missing-value routing fit on training only.",
+    "Supplied 100 m terrain is NOT the native 1 m DEM pilot.",
+    "Source band descriptions are inherited metadata, not independently verified band semantics.",
+    "No expert ensemble or probability threshold selected using these folds. No submission promoted."
+  ]
+}

@@ -41,6 +41,17 @@ def main():
     control=load('downloads/control_meta.json'); structural=load('downloads/structural_meta.json')
     feed=load('knowledge/feed.json'); sources=load('knowledge/sources.json'); team=load('knowledge/team_results.json')
     exp=load('knowledge/session2/structural_experiment.json'); dem=load('knowledge/session2/dem_pilot.json')
+    spatial=load('knowledge/session3/spatial_experiment.json')
+    experts=load('knowledge/session3/expert_experiment.json')
+    geography=f'''<section class="card"><h2>New evidence: independent geography changes the decision</h2>
+<p>Four geographic quadrants, 1 km exclusion buffer and whole crossing-trace removal. H3 pooled diagnostic DTI: <strong>{spatial['aggregates']['strike30x3']['pooled_dti']:.6f}</strong>.
+It barely predicts away from visible catalogue traces. <strong>Do not treat H3 as a proven discovery upgrade.</strong></p>
+{table(['Fixed policy','Pooled geographic DTI','Interpretation'],[
+['H3 tangent continuation',f"{spatial['aggregates']['strike30x3']['pooled_dti']:.6f}",'Near-catalogue prior; no isolated-discovery evidence'],
+['Raw 100 m terrain expert',f"{experts['aggregates']['terrain_100m']['pooled_dti']:.6f}",'Two supplied bands; not native 1 m DEM'],
+['Raw geophysical expert',f"{experts['aggregates']['geophysical']['pooled_dti']:.6f}",'17 supplied bands; training-fold-only histogram fitting']])}
+<p>Terrain wins in all four folds, but these are diagnostic catalogue holdouts, <strong>not leaderboard estimates</strong> or a locked final test. No new submission is promoted. Next: independent native DEM evidence, survey-block tests and positive-unlabeled sensitivity.</p>
+<p>{link('knowledge/session3/spatial_experiment.json','Structural/null/matched-mass report')} · {link('knowledge/session3/expert_experiment.json','Trained expert report')} · {link('knowledge/session3/research.md','Science, source audit and next hypotheses')}</p></section>'''
     held={r['policy']:r for r in exp['rows'] if r['split']=='locked_test'}
     improvement=held['strike30x3']['dti']/held['isotropic15']['dti']-1
     feedbox=f'''<section class="card" id="feed"><h2>Leaderboard & source watch</h2>
@@ -52,11 +63,11 @@ def main():
     compliance=f'''<aside class="note"><strong>Rules flag:</strong> §3.4 allows <strong>three feedback submissions per week per participating entity</strong>, not per teammate account. One final submission across both rounds; teammates cannot submit separate finals.
 The supplied account list needs team-registration review. We do not multiply the budget across accounts. {link(RULES,'Official rules §3.4–3.6.2')}.</aside>'''
     page('index.html','Executive summary',f'''<p class="eyebrow">DOWNLOAD → UPLOAD → PASTE THE NOTE</p><h2>A valid file first. Better discovery next.</h2>
-<p>Two independently named files are ready below. <strong>Neither has a measured competition score.</strong> The new candidate tests a specific structural hypothesis; retain the control for comparison. {link('how-to-submit.html','Exact submission instructions →')}</p>
-{card(structural,'H3 · Along-strike continuation','Experimental candidate v2')}
+<p>Two independently named files are ready below. <strong>Neither has a measured competition score.</strong> The H3 file is preserved for reproducibility, not recommended as a validated upgrade; retain the control for comparison. {link('how-to-submit.html','Exact submission instructions →')}</p>
+{card(structural,'H3 · Along-strike continuation','Experimental v2 · geographic stress test failed to establish discovery')}
 <p>Extends locally coherent fault traces preferentially along their strike (3 km support) rather than placing a broad halo everywhere (300 m cross-strike support). No deep model or geothermal thermal prior is included.</p>
 {card(control,'Broad halo + blind GBT','Preserved control v1')}
-{compliance}{feedbox}<h2>Executive decision</h2>{scope}<div class="grid2"><section class="card"><h3>What improved locally</h3>
+{geography}{compliance}{feedbox}<h2>Executive decision</h2>{scope}<div class="grid2"><section class="card"><h3>What improved locally</h3>
 <p>H3 held-component DTI: <strong>{held['strike30x3']['dti']:.5f}</strong> vs <strong>{held['isotropic15']['dti']:.5f}</strong> broad-halo control ({improvement:.1%} relative).
 Selection used seeds 4242/4243; seed 9001 was reserved before execution. This is a narrow proxy, not an estimated leaderboard score.</p>{link('strategy.html','See all experiments and limitations')}</section>
 <section class="card"><h3>What is not solved</h3><p>We have not beaten 0.3049, obtained private labels, run a region-wide 1 m DEM detector, or verified an actual new fault in the field.
@@ -92,7 +103,7 @@ No DrivenData login is available for uploading or final selection. GPU training 
 <li>0.0343 and 0.0286 are unattributed group results, not independently authenticated experiment outcomes. Do not treat them as proof that all lineament features or tree models fail.</li></ul>
 {feedbox}<p>{link('knowledge/team_results.json','Machine-readable group log')} · {link('knowledge/session2/review.md','Irregularities and corrected claims')}</p>''')
     exprows=[[e(n),f"{exp['selection_means'][n]:.5f}",f"{held[n]['dti']:.5f}",f"{held[n]['predicted_mass']:,.0f}"] for n in exp['selection_means']]
-    page('strategy.html','Hypotheses and experiments',f'''<h2>Distinct strategies, falsifiable tests</h2>
+    page('strategy.html','Hypotheses and experiments',f'''<h2>Distinct strategies, falsifiable tests</h2>{geography}
 <p>Optimize probability of winning by reducing uncertainty—not by asserting an untested score. Never spend submissions on format failures or multiply an entity’s budget across accounts.</p>
 <h3>H3 · Directional continuation — implemented and measured</h3>
 <p>Local PCA uses visible catalogue points only, within 500 m. Coherence ≥0.6 enables tangent-aligned ellipses; ambiguous junctions fall back to a short halo. The full-region candidate is built from all supplied traces only after the policy comparison.</p>
@@ -121,10 +132,10 @@ OMP_NUM_THREADS=2 .venv/bin/python scripts/train_model.py
 {table(['ID','Source','Verified source claim','Proposed use (hypothesis)','Rights / ingestion gate','Reviewed'],source_rows)}
 <h3>Contrarian but testable</h3><p>Do not equate hot-spring density with fault probability. Faulds & Hinz report blind systems and complex structural settings; the USGS Gabbs Valley case required multiple independent types of evidence. This supports testing structure and cross-sensor agreement, not painting every nearby pixel as a fault.</p>
 <p>Do not equate smooth airborne grids with uniform information content. GeoDAWN’s two acquisition specifications and four blocks suggest that sensor geometry may confound a model. An acquisition-aware holdout is a more demanding scientific test than random pixels.</p>
-<h3>Source disagreements retained</h3><ul><li>GDR 1391 returns “No submission found.” Search results suggested 1591 as GeoDAWN, but direct retrieval of 1591 also returned “No submission found.” Neither is treated as a verified usable download.</li>
+<h3>Source disagreements retained</h3><ul><li>GDR 1391 previously returned “No submission found” and remains unresolved. GDR 1591 was successfully retrieved via the page tool on 2026-09-26 and is the GeoDAWN landing record; this supersedes the earlier failed retrieval. Linked raw files are not yet downloaded or independently verified.</li>
 <li>The user-provided sample raster contains positive fault pixels, despite the problem page describing an all-zero example. Geometry is usable; its values must not be interpreted as predictions.</li>
 <li>Third-party mirror hashes authenticate consistency with the inherited manifest, not the sponsor’s original bytes. Official account-authenticated comparison is outstanding.</li></ul>
-<p>{link('knowledge/sources.json','Auditable source registry')} · {link('knowledge/session2/research.md','Detailed hypothesis and provenance notes')}</p>''')
+<p>{link('knowledge/sources.json','Auditable source registry')} · {link('knowledge/session2/research.md','Prior research')} · {link('knowledge/session3/research.md','New source audit and falsifiable research plan')}</p>''')
     page('data.html','Data provenance',f'''<h2>Data inventory and access</h2>
 {table(['Dataset','Location / verification','Limit'],[
 ['Competition feature stack','~/gems_data/training_features.tif · 19 float32 bands · 418,912,844 bytes','Mirrored from team git bridge after Dropbox TLS failure; sha256 matches inherited pin.'],

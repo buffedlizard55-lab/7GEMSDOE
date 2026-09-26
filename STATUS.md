@@ -1,3 +1,24 @@
+# Current status — session 3 (2026-09-26)
+
+- Restored all three external rasters via pinned team bridge; prepare_data completed.
+- Implemented/executed buffered geographic + whole connected-trace exclusion,
+  three random-tangent seeds/fold, equal-mass controls, context-correct masked metric.
+- H3 pooled diagnostic DTI 0.000125: no independent-discovery promotion.
+- Trained/evaluated raw terrain (0.063839 pooled) and other geophysical (0.056197)
+  experts on the same four diagnostic folds. No global normalization, no distance
+  to catalogue, no held-out-label negative mining. No leaderboard prediction claim.
+- Existing H3 rebuilt byte-identically; both TIFFs passed strict template validation.
+  Found/fixed repeat packaging changing ZIP timestamps/manifests; immutable bundles
+  now remain unchanged, mismatches fail closed.
+- Re-read official problem, leaderboard, science abstracts/report and starts of five
+  group sites. GDR 1591 retrieval now succeeds; source registry and site corrected.
+- Tests and three-pass evidence: knowledge/session3/review.md. Browser install was
+  blocked locally by TLS; runner results are the authority, not assumed success.
+- No actual competition submission, no score above 0.3049, no discovered vent/fault.
+- Next: knowledge/session3/next_session.md. Historical session notes below are retained.
+
+---
+
 # Current status — session 2 (2026-09-26)
 
 Read README.md, AGENTS.md and knowledge/session2/review.md at every new session.

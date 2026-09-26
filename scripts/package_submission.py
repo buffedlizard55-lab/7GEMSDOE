@@ -6,7 +6,6 @@ import argparse
 import hashlib
 import json
 import re
-import shutil
 import zipfile
 from datetime import datetime, timezone
 from pathlib import Path
@@ -32,10 +31,7 @@ def package(candidate, template, slug, note, out_dir=DOCS_DOWNLOADS, evidence=No
     tif = out / f'{name}.tif'
     if tif.exists() and hashlib.sha256(tif.read_bytes()).hexdigest() != sha:
         raise ValueError('immutable name collision')
-    tif.write_bytes(data)
-    with zipfile.ZipFile(out / f'{name}.zip', 'w', zipfile.ZIP_DEFLATED) as z:
-        z.writestr(tif.name, data)
-    with rasterio.open(tif) as src:
+    with rasterio.open(candidate) as src:
         arr = src.read(1)
         vals = arr[np.isfinite(arr)]
         grid = dict(width=src.width, height=src.height, crs=str(src.crs),
@@ -48,7 +44,32 @@ def package(candidate, template, slug, note, out_dir=DOCS_DOWNLOADS, evidence=No
                                        finite_px=int(vals.size), mass=float(vals.sum(dtype=np.float64))),
                   competition_score=None, evidence=evidence,
                   caveat='Local format pass only; no server acceptance or leaderboard gain verified.')
-    (out / f'{name}.json').write_text(json.dumps(report, indent=2)+'\n')
+    manifest = out / f'{name}.json'
+    zipped = out / f'{name}.zip'
+    if manifest.exists():
+        previous = json.loads(manifest.read_text())
+        comparable = {k: v for k, v in previous.items() if k != 'generated_utc'}
+        expected = {k: v for k, v in report.items() if k != 'generated_utc'}
+        if comparable != expected or not tif.exists() or not zipped.exists():
+            raise ValueError('immutable publication metadata mismatch or incomplete bundle')
+        report = previous
+    if zipped.exists():
+        try:
+            with zipfile.ZipFile(zipped) as z:
+                if z.namelist() != [tif.name] or z.read(tif.name) != data:
+                    raise ValueError('immutable ZIP content mismatch')
+        except zipfile.BadZipFile as exc:
+            raise ValueError('invalid immutable ZIP') from exc
+    # Validate the existing bundle before writing anything; never restamp a release.
+    if not tif.exists():
+        tif.write_bytes(data)
+    if not zipped.exists():
+        info = zipfile.ZipInfo(tif.name, date_time=(1980, 1, 1, 0, 0, 0))
+        info.compress_type = zipfile.ZIP_DEFLATED
+        with zipfile.ZipFile(zipped, 'w') as z:
+            z.writestr(info, data)
+    if not manifest.exists():
+        manifest.write_text(json.dumps(report, indent=2)+'\n')
     return report
 
 

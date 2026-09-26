@@ -1,0 +1,29 @@
+[PASS] sha256 example_submission.tif: 2176d08e485aa2cd2860ce8df539db4faf4d76163b38a4dd8c30a40454d35cbc
+  grid 3292x3730 EPSG:32611 res=(100.0, 100.0) bands=1 dtype=float32
+[PASS] sha256 existing_faults.tif: 7ba308ccdc4418b31a178f4f1ef21aaa6e152e4028f2f6f64b01f7eb25ae4093
+  grid 3292x3730 EPSG:32611 res=(100.0, 100.0) bands=1 dtype=int8
+[PASS] sha256 training_features.tif: 4371c82e3b8339b807bdffcf4ef59a225520fe2988d521be208ae33743123bc5
+  grid 3292x3730 EPSG:32611 res=(100.0, 100.0) bands=19 dtype=float32
+  labels census: valid=5167373 positive=60988
+  template census: nan=7111787 positive=60988
+
+ALL CHECKS PASS
+read 19 bands
+footprint valid px: 5167373
+imputed 58171 band-pixels
+derived tilt_edge
+derived tmi_edge
+derived grav_hg_edge
+derived detrend_elev_edge
+derived rtp_edge
+derived tmi_hg_edge
+derived tilt_lstd5
+derived grav_hg_lstd5
+channel 1/27 normalised
+channel 6/27 normalised
+channel 11/27 normalised
+channel 16/27 normalised
+channel 21/27 normalised
+channel 26/27 normalised
+wrote /home/user/gems_data/norm_stats.json
+wrote /home/user/gems_data/features_cache.npz (443.2 MB)

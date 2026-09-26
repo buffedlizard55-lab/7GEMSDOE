@@ -53,5 +53,16 @@
     "license": "Read/cite; external-paper/data licenses separate",
     "reviewed_utc": "2026-09-26",
     "verification": "Official page retrieved and excerpt manually checked by agent tools; ongoing monitor checks text presence only"
+  },
+  {
+    "id": "geodawn-gdr1591",
+    "title": "GDR 1591 \u2014 official GeoDAWN landing record",
+    "url": "https://gdr.openei.org/submissions/1591",
+    "excerpt": "Included in the dataset are all flight details, geophysical data, and metadata gathered during the surveys.",
+    "claim": "USGS GeoDAWN record links flight details, geophysical data and metadata through DOI 10.5066/P93LGLVQ. GDR displays CC BY 4.0.",
+    "use": "Candidate acquisition-aware features and survey-block controls; files not yet ingested",
+    "license": "GDR landing page: CC BY 4.0. USGS source separately lists CC0; verify individual asset terms and retain attribution.",
+    "reviewed_utc": "2026-09-26",
+    "verification": "Page-tool retrieval succeeded this session, superseding previous failed retrieval; automated checks monitor excerpt only"
   }
 ]
