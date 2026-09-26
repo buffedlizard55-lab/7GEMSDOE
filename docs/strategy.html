@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Strategy — 7GEMSDOE</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<header class="site">
+  <div class="wrap" style="max-width:1060px;margin:0 auto;padding:0 18px;">
+    <h1><span class="gem">7GEMS</span>DOE — Strategy &amp; hypotheses</h1>
+    <nav class="site">
+      <a href="index.html">Executive summary</a>
+      <a href="how-to-submit.html">How to submit</a>
+      <a class="active" href="strategy.html">Strategy</a>
+      <a href="research.html">Research</a>
+      <a href="data.html">Data</a>
+      <a href="results.html">Results</a>
+      <a href="metric.html">Metric</a>
+    </nav>
+    <p class="tag">Contrarian where it pays, measured everywhere. The scored population is <em>unmapped</em> faults — the strategy is built from that fact.</p>
+  </div>
+</header>
+<main>
+
+<h2>The asymmetry that defines everything</h2>
+<div class="card">
+  <ul>
+    <li><strong>Scoring population ≠ training labels.</strong> Both prize rounds use expert-labelled
+        faults absent from the USGS catalogue (rules, verbatim in <a href="research.html">Research</a>).
+        Catalogue DTI is a plumbing monitor only.</li>
+    <li><strong>β/α = 4.</strong> Misses cost 4× false positives; the 300 m kernel gives partial credit
+        for near misses. Mass placed <em>near real structure</em> is cheap; mass in dead ground is waste.</li>
+    <li><strong>Final round rewards discovery.</strong> Experts mine <em>every</em> submission for plausible
+        new faults; verified discoveries expand the label set and re-score us. Credible off-catalogue
+        candidates are an investment in the $250K round, not just the $50K round.</li>
+    <li><strong>Budget: 3 submissions/week/account.</strong> The five team accounts give 15 experiments/week;
+        allocate them across distinct hypotheses, keep one control.</li>
+  </ul>
+</div>
+
+<h2>Proxies: how we test locally without the private labels</h2>
+<div class="card">
+  <table>
+    <tr><th>Proxy</th><th>Construction</th><th>What it estimates</th></tr>
+    <tr><td><strong>Block holdout</strong><br><code>tune_policy.py</code></td>
+        <td>hide all catalogue faults in ~20 % of 12×12 spatial blocks (12,304 px hidden)</td>
+        <td>distant blind faults (pessimistic; blocks ≈ 30 km)</td></tr>
+    <tr><td><strong>Component holdout</strong><br><code>tune_components.py</code></td>
+        <td>hide random connected components of the catalogue (~20 %, 12,198 px, 658 comps, median 12 px)</td>
+        <td>nearby hidden strands/splays — the realistic dominant mode</td></tr>
+  </table>
+  <p class="small">Both score candidate rasters with the official DTI against the hidden pixels, FPs counted
+  over the whole footprint. Proxies <em>rank</em> policies; they do not predict leaderboard values.</p>
+</div>
+
+<h2>Measured policy sweep (component proxy)</h2>
+<table>
+  <tr><th>strategy</th><th>proxy DTI</th><th>mass</th></tr>
+  <tr><td>all zeros</td><td>0.0000</td><td>0</td></tr>
+  <tr><td>remaining catalogue only (p=1)</td><td>0.0090</td><td>48,790</td></tr>
+  <tr><td>all ones (blanket)</td><td>0.0118</td><td>5,167,373</td></tr>
+  <tr><td>blind detector τ=0.5, s=0.6</td><td>0.0107</td><td>18,919</td></tr>
+  <tr><td>proximity halo r=5, h=0.4</td><td>0.0134</td><td>143,949</td></tr>
+  <tr><td>proximity halo r=9, h=0.6</td><td>0.0223</td><td>329,717</td></tr>
+  <tr><td><strong>proximity halo r=15, h=0.6 (adopted)</strong></td><td><strong>0.0249</strong></td><td>529,478</td></tr>
+  <tr><td>proximity halo r=20, h=0.5</td><td>0.0239</td><td>581,065</td></tr>
+  <tr><td>hidden components oracle</td><td>1.0000</td><td>12,198</td></tr>
+</table>
+<p class="small">Contrarian finding: against <em>hidden</em> faults the DTI rises with halo width up to
+~15 px — the exact opposite of what catalogue DTI says (where width destroys precision: dilated-r3
+catalogue DTI 0.5887 vs exact 0.9999). The metric's β-weight and 300 m kernel monetise soft, wide,
+structurally-anchored mass when the truth is nearby but unlabelled.</p>
+
+<h2>Adopted submission v1 (the file on the home page)</h2>
+<div class="card">
+  <pre>p(x) = max( halo(x), blind_emission(x) )
+halo(x)          = 0.95 on catalogue px; 0.6·max(1 − d(x)/15, 0) otherwise
+blind_emission(x)= 0.6 · clip((p_model(x) − 0.5)/0.5, 0, 1)</pre>
+  <ul>
+    <li><strong>halo</strong>: recall around every mapped fault — covers splays, mis-registration, and
+        experts' re-mapping of known systems (proxy-optimal width).</li>
+    <li><strong>blind_emission</strong>: 27-feature gradient-boosted detector (19 GeoDAWN bands + 8 derived
+        edge/texture channels, <em>no distance-to-fault feature</em>) — finds geophysically fault-like
+        ground off-catalogue; bounded mass (~17k), unbounded upside if it hits private faults.</li>
+  </ul>
+</div>
+
+<h2>Hypothesis queue for beating 0.3049</h2>
+<table>
+  <tr><th>#</th><th>Hypothesis</th><th>Test</th><th>Status</th></tr>
+  <tr><td>H1</td><td>Wide recall halos around the catalogue beat thin skeletons against new-fault labels</td>
+      <td>component proxy sweep (done)</td><td><span class="pill ok">shipped v1</span></td></tr>
+  <tr><td>H2</td><td>A catalogue-trained detector generalises to unmapped faults from geophysics alone</td>
+      <td>block + component holdouts; emission mass capped</td><td><span class="pill ok">shipped v1</span></td></tr>
+  <tr><td>H3</td><td><strong>Along-strike extrapolation:</strong> extend mapped strands past their tips following local orientation (structure tensor), where edge bands support linearity</td>
+      <td>component proxy: does strike-extension mass land on hidden comps?</td><td><span class="pill warn">next</span></td></tr>
+  <tr><td>H4</td><td><strong>1 m DEM scarp detection</strong> (USGS 3DEP tiles, 716 links recovered): scarps off-catalogue = expert-style discoveries (cf. Hermant et al. 2025)</td>
+      <td>download tiles → slope/curvature lineaments → proxy + expert-review value</td><td><span class="pill warn">next</span></td></tr>
+  <tr><td>H5</td><td>External priors: full QFFDB age-class layers, slip/dilation tendency (DOI 10.5066/P9YL58W6), Great Basin heat flow &amp; conductance as features/priors</td>
+      <td>feature ablation on proxies</td><td><span class="pill warn">next</span></td></tr>
+  <tr><td>H6</td><td><strong>Geodetic/seismic novelty:</strong> strain-rate + seismicity concentrations with no catalogue within ~2 km are prime blind-fault candidates (final-round discovery leverage)</td>
+      <td>candidate list audit vs proxies; ship as low-mass emission layer</td><td><span class="pill warn">next</span></td></tr>
+  <tr><td>H7</td><td>Deep model: reference U-Net + Tversky loss, pseudo-labelled blind candidates, TTA — needs GPU runner</td>
+      <td>GPU CI runner; compare proxy DTI vs GBT</td><td><span class="pill bad">blocked on GPU</span></td></tr>
+  <tr><td>H8</td><td>Team portfolio: 5 accounts × 3 subs/week = 15 experiments; assign distinct hypotheses, keep 1 control, adopt winners into the selected submission</td>
+      <td>ops discipline</td><td><span class="pill ok">policy set</span></td></tr>
+</table>
+
+<h2>Decision rule for the selected submission</h2>
+<div class="card">
+  <p>One submission counts for both rounds, chosen blind. Rule: pick the artifact with the best
+  <em>(proxy DTI, discovery-credibility)</em> pair — never catalogue DTI alone. Re-evaluate after each
+  hypothesis lands. Keep the Note field unique per artifact so the history stays auditable.</p>
+</div>
+
+</main>
+<footer class="site">7GEMSDOE · built for the DOE GEMS Prize Challenge</footer>
+</body>
+</html>

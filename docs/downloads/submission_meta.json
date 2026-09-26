@@ -1,0 +1,45 @@
+{
+ "generated_utc": "2026-09-26T17:30:24Z",
+ "policy": {
+  "name": "halo15-0.6 + blind-gbt(tau=0.5,s=0.6) v1",
+  "core_p": 0.95,
+  "halo_radius_px": 15,
+  "halo_height": 0.6,
+  "model_tau": 0.5,
+  "model_scale": 0.6
+ },
+ "suggested_submission_note": "halo r15/h0.6 + blind GBT v1 (7GEMSDOE)",
+ "grid": {
+  "width": 3292,
+  "height": 3730,
+  "crs": "EPSG:32611",
+  "transform": [
+   100.0,
+   0.0,
+   243350.0,
+   0.0,
+   -100.0,
+   4508550.0
+  ],
+  "dtype": "float32",
+  "nodata": "nan"
+ },
+ "footprint_px": 5167373,
+ "stats": {
+  "min": 0.0,
+  "max": 0.949999988079071,
+  "mass": 606252.3125,
+  "px_gt_0p5": 362045,
+  "halo_mass": 606224.1500334019,
+  "emission_mass": 17269.595703125
+ },
+ "monitors_NOT_leaderboard_predictions": {
+  "dti_vs_existing_catalogue": 0.37687273856800774,
+  "dti_blanket_vs_existing_catalogue": 0.05795496774955217,
+  "why": "both prize rounds score NEW faults absent from this catalogue; these are plumbing monitors only"
+ },
+ "sha256": "90fb7dc0fc1f6e7d3dbb20927417c6af7d110ca41167329d792c75c145f75b6a",
+ "bytes": 3036264,
+ "format_gate": "PASS",
+ "proxy_evidence": "artifacts/component_policy_report.json (sweep)"
+}

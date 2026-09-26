@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>7GEMSDOE — GEMS Prize Challenge: executive summary</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<header class="site">
+  <div class="wrap" style="max-width:1060px;margin:0 auto;padding:0 18px;">
+    <h1><span class="gem">7GEMS</span>DOE — GEMS Prize Challenge</h1>
+    <nav class="site">
+      <a class="active" href="index.html">Executive summary</a>
+      <a href="how-to-submit.html">How to submit</a>
+      <a href="strategy.html">Strategy</a>
+      <a href="research.html">Research</a>
+      <a href="data.html">Data</a>
+      <a href="results.html">Results</a>
+      <a href="metric.html">Metric</a>
+    </nav>
+    <p class="tag">DOE GEMS Prize (DrivenData #306) — mapping faults that indicate geothermal resources in the GeoDAWN region. Goal: top of the leaderboard (&gt; 0.3049).</p>
+  </div>
+</header>
+<main>
+
+<section class="hero" id="download">
+  <h2>The file to submit — one click</h2>
+  <p>Single-band GeoTIFF, <strong>float32 in [0, 1]</strong>, EPSG:32611, 3,292 × 3,730 px @ 100 m,
+  NaN outside the official footprint. Built by <code>scripts/build_submission.py</code>,
+  format-gated by <code>scripts/validate_submission.py</code> (PASS) — the gate that prevents the
+  platform error <em>“Predicted values must be in range [0, 1]”</em>.</p>
+  <a class="btn" href="downloads/submission.tif" download>⬇ Download submission.tif (2.9 MB)</a>
+  <a class="btn secondary" href="how-to-submit.html">How to submit it →</a>
+  <dl class="kv">
+    <dt>sha256</dt><dd><code>90fb7dc0fc1f6e7d3dbb20927417c6af7d110ca41167329d792c75c145f75b6a</code></dd>
+    <dt>Policy</dt><dd><code>halo15-0.6 + blind-gbt(τ=0.5, s=0.6) v1</code> — catalogue-core halos (1.5 km triangular decay, h 0.6) ∨ blind-fault detector emission</dd>
+    <dt>Suggested Note field</dt><dd><code>halo r15/h0.6 + blind GBT v1 (7GEMSDOE)</code></dd>
+    <dt>Values</dt><dd>min 0.0 · max 0.95 · footprint 5,167,373 px · mass 606,252 · px &gt; 0.5: 362,045</dd>
+    <dt>Full record</dt><dd><a href="downloads/submission_meta.json">downloads/submission_meta.json</a> (machine-written at build time)</dd>
+  </dl>
+  <p class="small">Format gate PASS · values strictly in [0, 1] · finite exactly inside the official
+  template footprint, NaN outside. Verified 2026-09-26T17:30Z.</p>
+</section>
+
+<div class="ok-box">
+  <strong>New this session (2026-09-26):</strong> first fully autonomous pipeline in this repo —
+  official rasters hash-verified, official DTI reproduced bit-for-bit, a <em>blind-fault detector</em>
+  trained on the GeoDAWN stack without any distance-to-fault feature, spatially-honest
+  pseudo-new-fault proxies, and a format-gated submission artifact you can download above.
+</div>
+
+<h2>What this project is</h2>
+<div class="card">
+  <p>The GEMS Prize asks for a pixel-wise probability map of <strong>geological faults</strong> across the
+  GeoDAWN region of northwestern Nevada/eastern California — faults being the surface indicators of
+  geothermal resources. Both prize rounds ($50K initial, $250K final) are scored against
+  <strong>expert-labelled faults that are NOT in the public USGS database</strong> (rules PDF, verbatim quotes
+  in <a href="research.html">Research</a>). So this is a <em>scientific discovery</em> problem — find the
+  unmapped faults — not a supervised segmentation problem.</p>
+  <ul>
+    <li><strong>Current target:</strong> beat the public-leaderboard leader <strong>0.3049</strong> DW-Tversky
+        (our best so far: 0.1563, rank #23 of 50 — <a href="results.html">Results</a>).</li>
+    <li><strong>This repo's angle:</strong> metric-economics-first emission policies tuned on
+        spatially-honest proxies + a blind detector that generalises the fault signature off-catalogue
+        (<a href="strategy.html">Strategy</a>).</li>
+    <li><strong>Everything verifiable:</strong> sha256-pinned data, tests reproducing the official metric
+        exactly, machine-written artifacts (<a href="data.html">Data</a>, <a href="metric.html">Metric</a>).</li>
+  </ul>
+</div>
+
+<h2>Status at a glance</h2>
+<table>
+  <tr><th>Item</th><th>Status</th><th>Evidence</th></tr>
+  <tr><td>Official data placement (no manual steps needed here)</td>
+      <td><span class="pill ok">DONE</span></td>
+      <td><code>scripts/download_competition_data.sh</code> + <code>scripts/verify_data.py</code> → ALL CHECKS PASS</td></tr>
+  <tr><td>Metric implementation</td>
+      <td><span class="pill ok">VERIFIED</span></td>
+      <td>24/24 tests incl. bit-level reproduction of the inherited strategy table</td></tr>
+  <tr><td>Blind-fault detector v1</td>
+      <td><span class="pill ok">TRAINED</span></td>
+      <td>holdout AUC 0.917 (random pixels); spatial generalisation in Strategy</td></tr>
+  <tr><td>Policy tuning on pseudo-new faults</td>
+      <td><span class="pill ok">DONE</span></td>
+      <td>component-holdout sweep, best proxy DTI 0.0249 vs 0.0090 catalogue-only</td></tr>
+  <tr><td>Submittable artifact (this page's download)</td>
+      <td><span class="pill ok">PASS</span></td>
+      <td>format gate + sha256 above</td></tr>
+  <tr><td>Deep model (U-Net+) training</td>
+      <td><span class="pill warn">NEXT</span></td>
+      <td>needs GPU runner; sandbox is CPU-only (2 vCPU / 4 GB)</td></tr>
+  <tr><td>1 m DEM scarp detection</td>
+      <td><span class="pill warn">NEXT</span></td>
+      <td>DEM tile links OCR-recovered upstream; tiles not yet downloaded</td></tr>
+</table>
+
+<h2>Reproduce everything</h2>
+<pre>bash scripts/download_competition_data.sh   # hash-verified official rasters → ~/gems_data
+.venv/bin/python scripts/verify_data.py      # line-by-line data audit → ALL CHECKS PASS
+.venv/bin/python scripts/extract_features.py
+.venv/bin/python scripts/train_model.py
+.venv/bin/python scripts/tune_components.py && .venv/bin/python scripts/sweep_halos.py
+.venv/bin/python scripts/build_submission.py # writes docs/downloads/submission.tif + gate
+.venv/bin/python -m pytest tests/ -q         # 24 metric tests + format tests</pre>
+
+<p class="small">North-star prompt and operating principles: <a href="https://github.com/buffedlizard55-lab/7GEMSDOE/blob/main/README.md">README.md</a>. Session log: STATUS.md.</p>
+
+</main>
+<footer class="site">7GEMSDOE · built for the DOE GEMS Prize Challenge · every number on this site is machine-measured</footer>
+</body>
+</html>
