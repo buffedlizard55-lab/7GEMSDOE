@@ -39,6 +39,7 @@ import tempfile
 import urllib.request
 import zipfile
 import stat
+from collections import Counter
 from datetime import datetime, timezone
 from pathlib import Path, PurePosixPath, PureWindowsPath
 
@@ -58,11 +59,18 @@ OUT_DIR = ROOT / "external" / "qfaults"
 # Candidate field names for mapped scale / certainty. The zip schema is
 # verified on the runner (observed fields go in the manifest); nothing here
 # asserts these names exist until observed.
-SCALE_FIELDS = ("MAPPEDSCALE", "MAPPED_SCALE", "mappedscale", "mapped_scale",
-                "SCALE", "Scale")
-CERTAINTY_FIELDS = ("MAPPEDCERTAINTY", "MAPPED_CERTAINTY", "mappedcertainty",
-                    "mapped_certainty", "CERTAINTY", "Certainty",
-                    "LOCATIONCERTAINTY", "locationcertainty")
+SCALE_FIELDS = ("mapped_scale", "MAPPEDSCALE", "SCALE", "scale")
+CERTAINTY_FIELDS = ("mapped_certainty", "MAPPEDCERTAINTY", "CERTAINTY",
+                    "certainty", "locationcertainty")
+
+
+def find_field(fields, candidates):
+    """Resolve a known schema field case-insensitively, preserving its spelling."""
+    lookup = {str(field).casefold(): str(field) for field in fields}
+    for candidate in candidates:
+        if candidate.casefold() in lookup:
+            return lookup[candidate.casefold()]
+    return None
 # Scale denominators at or above this are "coarse" (>= 1:250k).
 COARSE_DENOM = 250_000
 
@@ -203,8 +211,8 @@ def build_from_zip(zip_path: Path) -> dict:
             except Exception as exc:
                 raise SystemExit(f"missing or unparseable Qfaults CRS {src_crs!r}: {exc}") from exc
             target_crs = CRS.from_epsg(32611)
-            scale_field = next((f for f in SCALE_FIELDS if f in col.schema["properties"]), None)
-            cert_field = next((f for f in CERTAINTY_FIELDS if f in col.schema["properties"]), None)
+            scale_field = find_field(col.schema["properties"], SCALE_FIELDS)
+            cert_field = find_field(col.schema["properties"], CERTAINTY_FIELDS)
             schema_report = {
                 "status": "schema_observed",
                 "archive_name": Path(zip_path).name,
@@ -221,14 +229,24 @@ def build_from_zip(zip_path: Path) -> dict:
                     "Qfaults schema lacks every known scale/certainty field; "
                     f"observed: {observed_fields}. Failing closed (see manifest).")
             feats = []
+            attribute_counts = Counter()
             for f in col:
+                props = dict(f["properties"])
+                for field in (scale_field, cert_field):
+                    if field is not None:
+                        value = props.get(field)
+                        if value is not None and str(value).strip():
+                            attribute_counts[f"{field}={str(value).strip()}"] += 1
                 geom = f["geometry"]
                 if not geom:
                     continue
                 if source_crs != target_crs:
                     geom = transform_geom(crs_input, target_crs.to_string(), geom)
-                feats.append((geom, classify_trace(
-                    dict(f["properties"]), scale_field, cert_field)))
+                feats.append((geom, classify_trace(props, scale_field, cert_field)))
+            schema_report["attribute_value_counts"] = dict(
+                sorted(attribute_counts.items()))
+            (OUT_DIR / "observed_schema.json").write_text(
+                json.dumps(schema_report, indent=1))
     arr = rasterize_prior(feats, shape, transform, crs)
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     out_tif = OUT_DIR / "qfaults_prior_u8.tif"

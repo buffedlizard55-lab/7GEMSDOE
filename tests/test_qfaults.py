@@ -21,6 +21,13 @@ def test_parse_scale_denominator():
     assert QP.parse_scale_denominator("unknown") is None
 
 
+def test_find_field_matches_observed_legacy_names_case_insensitively():
+    assert QP.find_field(["scale", "certainty"], QP.SCALE_FIELDS) == "scale"
+    assert QP.find_field(["scale", "certainty"], QP.CERTAINTY_FIELDS) == "certainty"
+    assert QP.find_field(["Mapped_Scale"], QP.SCALE_FIELDS) == "Mapped_Scale"
+    assert QP.find_field(["unrelated"], QP.CERTAINTY_FIELDS) is None
+
+
 def test_classify_trace_coarse_and_inferred():
     c = QP.classify_trace({"MAPPEDSCALE": "1:500,000", "CERTAINTY": "inferred"},
                           "MAPPEDSCALE", "CERTAINTY")
