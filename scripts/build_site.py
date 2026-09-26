@@ -43,6 +43,11 @@ def main():
     lcand=load('knowledge/session4/lidar_candidate.json'); scored=load('knowledge/session4/scored_files_analysis.json')
     lprod=load('external/dem/lidar_scarp_features.json')
     gaps=load('knowledge/session5/lidar_gaps.json'); fp=load('knowledge/session5/lidar_fp_audit.json')
+    feed=load('knowledge/feed.json'); sources=load('knowledge/sources.json'); team=load('knowledge/team_results.json')
+    session6_evidence=load('knowledge/session6/local_verification.json')
+    exp=load('knowledge/session2/structural_experiment.json'); dem=load('knowledge/session2/dem_pilot.json')
+    spatial=load('knowledge/session3/spatial_experiment.json')
+    experts=load('knowledge/session3/expert_experiment.json')
     lc=lcand['candidates'][0]
     def mult(arm,f,key='pooled_nms'): return f"x{lexp[key][arm][f]['multiple']:.2f}"
     s4rows=[[a,mult(a,'0.005','pooled'),mult(a,'0.01','pooled'),mult(a,'0.02','pooled'),mult(a,'0.005'),mult(a,'0.01'),mult(a,'0.02')] for a in ('bands19','lidar','both')]
@@ -58,13 +63,17 @@ def main():
 <p>Lidar covers <strong>{gaps['covered_px']:,}</strong> of {gaps['footprint_px']:,} footprint pixels; the gap is <strong>{gaps['gap_fraction']*100:.1f}%</strong> and still holds {gaps['catalogue_px_in_gap']:,} catalogue pixels (20.5% of known faults). The NE quadrant is {gaps['quadrants']['NE']['gap_fraction']*100:.1f}% gap — fill priority #1. The H1 candidate emits 0 px in gaps (verified).</p>
 {table(['Quadrant','Footprint px','Gap px','Gap %','Catalogue px'],gaprows)}
 <p>False-positive audit of the H1 candidate ({fp['emitted_px']:,} emitted px): closed loops are minor ({fp['loop_hole_px']} hole px), but <strong>{fp['emitted_cross_dominant_fraction']*100:.1f}%</strong> of emission is cross-slope dominant (channel-bank-like) and low relief is under-emitted (6.5% of emitted on 32.8% of footprint). A frozen v2 cleanup policy would drop only {v2['would_drop_total_px']:,} px — threshold tweaks are not the lever; channel/shoreline controls are. V2 stays code+policy until v1 scores.</p>
-<p>Runner-ready (dispatch on Actions): {link('https://github.com/buffedlizard55-lab/7GEMSDOE/actions','QFFDB scale-certainty prior (<code>[run-qfaults]</code>)')} for H2 and {link('https://github.com/buffedlizard55-lab/7GEMSDOE/actions','GeoDAWN radiometric grids K/Th/U/TC (<code>[run-rad]</code>)')} for H9 — the survey's own gamma-ray data, absent from the 19-band stack.</p>
+<p>Runner workflows: {link('https://github.com/buffedlizard55-lab/7GEMSDOE/actions','QFFDB scale-certainty prior [run-qfaults]')} for H2 and {link('https://github.com/buffedlizard55-lab/7GEMSDOE/actions','GeoDAWN radiometric grids K/Th/U/TC [run-rad]')} for H9 — the survey's own gamma-ray data, absent from the 19-band stack.</p>
 <p>{link('knowledge/session5/lidar_gaps.json','Gap report')} · {link('knowledge/session5/lidar_fp_audit.json','FP audit + frozen v2 policy')} · {link('knowledge/session5/research.md','Session 5 research: 15 sources, overlooked-data audit, H9–H12')} · {link('knowledge/session5/review.md','Three-pass audit')}</p></section>'''
+    replay=session6_evidence['control_reproduction']
+    train=session6_evidence['retraining']
+    feed_snapshot=session6_evidence['official_feed']
+    session6=f'''<section class="card"><h2>Session 6: reproducible pipeline, current score and blockers</h2>
+<p>The latest verified public feed ({e(feed_snapshot['automated_snapshot_utc'])}) has {feed_snapshot['ranked_entries']} ranks; leader {e(feed_snapshot['leader']['participant'])} is <strong>{feed_snapshot['leader']['score']:.4f}</strong>. The team's best known public result remains 0.1563. See {link('knowledge/feed.json','machine-readable current snapshot')}.</p>
+<p>Data placement and preparation were rerun. CPU model diagnostics: {train['training_rows'] + train['random_pixel_holdout_rows']:,} rows, {train['features']} features, random-pixel holdout AUC {train['random_pixel_holdout_auc']:.4f}. <strong>This is not spatial validation or a leaderboard estimate.</strong> The preserved control was rebuilt byte-identically (SHA-256 <code>{replay['reproduced_sha256'][:12]}</code>), format gate PASS; no file was published.</p>
+<p>H1 candidate remains unscored. QFFDB and radiometric workflow dispatches returned HTTP 403, so no new external products exist. The feed flags the GDR 1391 excerpt for review; source and file-to-score mismatches remain unresolved.</p>
+<p>{link('knowledge/session6/review.md','Three-pass review')} · {link('knowledge/session6/local_verification.json','Local hashes and run evidence')} · {link('knowledge/session6/next_session.md','Next steps and limitations')}</p></section>'''
     forensic_rows=[[e(f['file']),e(f['account']),'—' if f['public_score'] is None else f"{f['public_score']:.4f}",f"{f['density']*100:.2f}%",f"{f['dispersion_index']:.2f}",('x%.2f'%f['skill_multiple']) if 'skill_multiple' in f else '—'] for f in scored['files']]
-    feed=load('knowledge/feed.json'); sources=load('knowledge/sources.json'); team=load('knowledge/team_results.json')
-    exp=load('knowledge/session2/structural_experiment.json'); dem=load('knowledge/session2/dem_pilot.json')
-    spatial=load('knowledge/session3/spatial_experiment.json')
-    experts=load('knowledge/session3/expert_experiment.json')
     geography=f'''<section class="card"><h2>New evidence: independent geography changes the decision</h2>
 <p>Four geographic quadrants, 1 km exclusion buffer and whole crossing-trace removal. H3 pooled diagnostic DTI: <strong>{spatial['aggregates']['strike30x3']['pooled_dti']:.6f}</strong>.
 It barely predicts away from visible catalogue traces. <strong>Do not treat H3 as a proven discovery upgrade.</strong></p>
@@ -84,12 +93,13 @@ It barely predicts away from visible catalogue traces. <strong>Do not treat H3 a
     scope='''<p>The task is to map <strong>geological faults</strong> across GeoDAWN—not to classify hot springs or prove geothermal vents. New expert-labeled faults drive initial scoring; expanded expert review determines final scoring. Scientific hypotheses below are not confirmed discoveries.</p>'''
     compliance=f'''<aside class="note"><strong>Rules flag:</strong> §3.4 allows <strong>three feedback submissions per week per participating entity</strong>, not per teammate account. One final submission across both rounds; teammates cannot submit separate finals.
 The supplied account list needs team-registration review. We do not multiply the budget across accounts. {link(RULES,'Official rules §3.4–3.6.2')}.</aside>'''
-    page('index.html','Executive summary',f'''<p class="eyebrow">DOWNLOAD → UPLOAD → PASTE THE NOTE</p><h2>Session 4: test region-wide lidar scarp evidence.</h2>
+    page('index.html','Executive summary',f'''<p class="eyebrow">DOWNLOAD → UPLOAD → PASTE THE NOTE</p><h2>Current H1 test: region-wide lidar scarp evidence.</h2>
 <p><strong>Recommended next upload</strong> (a decisive leaderboard test, not a proven winner): a thin-line map from a model trained only on 1 m lidar scarp descriptors. Group best is 0.1563; leader 0.3049. {link('how-to-submit.html','Exact submission instructions →')}</p>
 {card(lidar,'Lidar scarp model · ridge-thinned top 2%','Session 4 primary · H1 leaderboard test')}
 <p>{lc['emitted']:,} emitted pixels (binary 1.0; 0.0 elsewhere inside the footprint; NaN outside), all inside lidar coverage; dispersion index {lc['dispersion_index']:.2f} (line-like). Catalogue-based calibration with a 50% transfer discount predicts only ~{lcand['chosen']['expected_dti']:.2f}, below 0.1563; we still recommend it because that calibration is biased against lidar-mapped faults. Visible false-positive classes: closed loops (hills, shorelines) and arcuate range-front edges. Record the score with the SHA-256.</p>
 {session4}
 {session5}
+{session6}
 <h2>Preserved earlier candidates</h2>
 {card(structural,'H3 · Along-strike continuation','Experimental v2 · geographic stress test failed to establish discovery')}
 <p>Extends locally coherent fault traces preferentially along their strike (3 km support) rather than placing a broad halo everywhere (300 m cross-strike support). No deep model or geothermal thermal prior is included.</p>

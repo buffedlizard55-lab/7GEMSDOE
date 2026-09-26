@@ -1,0 +1,100 @@
+{
+  "verified_utc": "2026-09-26T21:50:25Z",
+  "competition_data": {
+    "source_route": "Public sibling-repository bridge used by scripts/download_competition_data.sh after Dropbox TLS failed",
+    "provenance_caveat": "SHA-256 values match inherited team pins; they are not sponsor-published checksums or independent authentication of the mirrors.",
+    "files": {
+      "training_features.tif": "4371c82e3b8339b807bdffcf4ef59a225520fe2988d521be208ae33743123bc5",
+      "existing_faults.tif": "7ba308ccdc4418b31a178f4f1ef21aaa6e152e4028f2f6f64b01f7eb25ae4093",
+      "example_submission.tif": "2176d08e485aa2cd2860ce8df539db4faf4d76163b38a4dd8c30a40454d35cbc"
+    },
+    "grid": {
+      "width": 3292,
+      "height": 3730,
+      "crs": "EPSG:32611",
+      "resolution_m": 100,
+      "feature_bands": 19,
+      "valid_pixels": 5167373,
+      "known_fault_pixels": 60988,
+      "imputed_feature_band_pixels": 58171
+    },
+    "preparation": "scripts/verify_data.py PASS; scripts/prepare_data.py completed and wrote /home/user/gems_data/features_cache.npz (443.2 MB)."
+  },
+  "retraining": {
+    "script": "scripts/train_model.py",
+    "seed": 20260926,
+    "training_rows": 243952,
+    "random_pixel_holdout_rows": 60988,
+    "features": 27,
+    "random_pixel_holdout_auc": 0.9172875412929675,
+    "random_pixel_holdout_brier": 0.09766303640715768,
+    "runtime_seconds_rounded": 71,
+    "interpretation": "Random-pixel diagnostic only; it is not spatial validation or an estimate of leaderboard score."
+  },
+  "control_reproduction": {
+    "script": "scripts/build_submission.py --no-publish",
+    "format_gate": "PASS",
+    "reproduced_sha256": "90fb7dc0fc1f6e7d3dbb20927417c6af7d110ca41167329d792c75c145f75b6a",
+    "published_control_sha256": "90fb7dc0fc1f6e7d3dbb20927417c6af7d110ca41167329d792c75c145f75b6a",
+    "byte_identical": true,
+    "publication_side_effect": "None. Rebuilt artifact stayed in the external GEMS_DATA_DIR; downloads/ was not changed."
+  },
+  "official_feed": {
+    "source": "https://www.drivendata.org/competitions/306/competition-doe-gems/leaderboard/",
+    "automated_snapshot_utc": "2026-09-26T21:12:55.065525+00:00",
+    "ranked_entries": 107,
+    "leader": {
+      "rank": 1,
+      "participant": "DARD",
+      "score": 0.3049
+    },
+    "team_entries": [
+      {
+        "rank": 24,
+        "participant": "extradr19",
+        "score": 0.1563
+      },
+      {
+        "rank": 25,
+        "participant": "SDCF9",
+        "score": 0.1563
+      },
+      {
+        "rank": 26,
+        "participant": "smashi34",
+        "score": 0.156
+      },
+      {
+        "rank": 41,
+        "participant": "smrtdoog5",
+        "score": 0.1193
+      },
+      {
+        "rank": 50,
+        "participant": "wbg1",
+        "score": 0.083
+      }
+    ],
+    "source_checks_needing_review": [
+      "ingenious-gdr1391: REVIEW_excerpt_missing"
+    ],
+    "download_note": "The research-feed release API body was retrieved with gh; direct release-asset download failed with EOF. The API body was parsed as JSON and its status, timestamp, row count, ranks, and score values were checked before refreshing the bundled snapshot."
+  },
+  "blocked_actions": [
+    {
+      "task": "Manual workflow_dispatch for QFFDB and GeoDAWN radiometrics",
+      "result": "Both returned GitHub API HTTP 403: Resource not accessible by integration.",
+      "effect": "The source data products were not created."
+    },
+    {
+      "task": "Download official DrivenData competition data tab",
+      "result": "The page resolved to the DrivenData login page.",
+      "effect": "The mirrored datasets remain team-pinned copies, not authenticated downloads."
+    }
+  ],
+  "tests": {
+    "command": ".venv/bin/python -m pytest tests/ -q",
+    "result": "124 passed, 50 existing Rasterio PendingDeprecationWarnings",
+    "additional_gates": "H1 GeoTIFF strict format validator PASS; feed contract PASS (107 ranked rows, source warning retained)."
+  }
+}

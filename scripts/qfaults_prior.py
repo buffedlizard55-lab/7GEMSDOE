@@ -38,8 +38,9 @@ import sys
 import tempfile
 import urllib.request
 import zipfile
+import stat
 from datetime import datetime, timezone
-from pathlib import Path
+from pathlib import Path, PurePosixPath, PureWindowsPath
 
 import numpy as np
 import rasterio
@@ -136,21 +137,60 @@ def download_zip(url: str, dest: Path) -> str:
     return h.hexdigest()
 
 
+def parse_layer_crs(value):
+    """Parse a Fiona CRS value without stringifying mapping-style CRS objects."""
+    from rasterio.crs import CRS
+
+    if value is None or value == "" or value == {}:
+        raise ValueError("missing CRS")
+    return CRS.from_user_input(value)
+
+
+def safe_extract_zip(archive: zipfile.ZipFile, destination: Path) -> None:
+    """Extract only regular files whose paths remain below destination.
+
+    Source archives are remote inputs: reject traversal, absolute paths, and
+    symbolic links rather than relying on archive-library normalization.
+    """
+    root = destination.resolve()
+    members = archive.infolist()
+    for member in members:
+        posix = PurePosixPath(member.filename)
+        windows = PureWindowsPath(member.filename)
+        if (posix.is_absolute() or windows.is_absolute() or windows.drive
+                or ".." in posix.parts or ".." in windows.parts):
+            raise ValueError(f"unsafe archive path: {member.filename!r}")
+        target = (root / Path(*posix.parts)).resolve()
+        if target != root and root not in target.parents:
+            raise ValueError(f"archive path escapes destination: {member.filename!r}")
+        mode = member.external_attr >> 16
+        if stat.S_ISLNK(mode):
+            raise ValueError(f"symbolic link not allowed in archive: {member.filename!r}")
+    archive.extractall(root, members=members)
+
+
 def build_from_zip(zip_path: Path) -> dict:
     """Runner path: read shapefile with fiona, rasterize, write product."""
     import fiona  # runner-only dependency (see workflow)
     from fiona.transform import transform_geom
+    from rasterio.crs import CRS
 
     shape, transform, crs = official_grid()
     with tempfile.TemporaryDirectory() as td:
         with zipfile.ZipFile(zip_path) as z:
-            z.extractall(td)
+            safe_extract_zip(z, Path(td))
         shp = next(iter(Path(td).rglob("*.shp")), None)
         if shp is None:
             raise SystemExit("no .shp found inside Qfaults zip")
         with fiona.open(shp) as col:
             observed_fields = list(col.schema["properties"].keys())
-            src_crs = str(col.crs or "")
+            crs_input = col.crs_wkt or col.crs
+            src_crs = str(crs_input or "")
+            try:
+                source_crs = parse_layer_crs(crs_input)
+            except Exception as exc:
+                raise SystemExit(f"missing or unparseable Qfaults CRS {src_crs!r}: {exc}") from exc
+            target_crs = CRS.from_epsg(32611)
             scale_field = next((f for f in SCALE_FIELDS if f in col.schema["properties"]), None)
             cert_field = next((f for f in CERTAINTY_FIELDS if f in col.schema["properties"]), None)
             if scale_field is None and cert_field is None:
@@ -162,8 +202,8 @@ def build_from_zip(zip_path: Path) -> dict:
                 geom = f["geometry"]
                 if not geom:
                     continue
-                if src_crs and "32611" not in src_crs:
-                    geom = transform_geom(col.crs, "EPSG:32611", geom)
+                if source_crs != target_crs:
+                    geom = transform_geom(crs_input, target_crs.to_string(), geom)
                 feats.append((geom, classify_trace(
                     dict(f["properties"]), scale_field, cert_field)))
     arr = rasterize_prior(feats, shape, transform, crs)

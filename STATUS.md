@@ -1,3 +1,26 @@
+# Current status — session 6 (2026-09-26)
+
+- Refreshed the bundled feed from the latest validated GitHub release body:
+  107 ranked entries, timestamp 2026-09-26 21:12:55 UTC; DARD 0.3049; team best
+  0.1563 (extradr19 rank 24, SDCF9 rank 25; SDCF9 file still unknown).
+- Re-ran autonomous data placement via public sibling-repo bridge after Dropbox
+  TLS failed; inherited SHA pins and `verify_data.py` passed. `prepare_data.py`
+  completed (58,171 imputed band-pixels).
+- CPU training replay: 304,940 samples/27 features; random-pixel holdout AUC
+  0.9173 (not spatial validation). `build_submission.py --no-publish` reproduced
+  the preserved control exactly, SHA-256 `90fb7dc0fc1f...`; no file published.
+- Hardened QFFDB ZIP extraction/CRS checks and GeoDAWN radiometric file selection,
+  finite-pixel quantisation and temporary path handling; added regression tests.
+- Both manual external-data workflow dispatches returned GitHub API HTTP 403.
+  GDR 1391 excerpt remains flagged. H1 lidar candidate still unscored; no new
+  candidate packaged, no competition upload, no score improvement claimed.
+- Full suite: **124 passed**, 50 existing Rasterio `PendingDeprecationWarning`s;
+  H1 submission-format gate PASS; feed contract PASS (107 ranks, GDR 1391 warning retained).
+- Full review, evidence and next-session plan: `knowledge/session6/review.md`,
+  `knowledge/session6/local_verification.json`, `knowledge/session6/next_session.md`.
+
+---
+
 # Current status — session 5 (2026-09-26)
 
 - Leaderboard re-checked (page tool): top still DARD 0.3049; group best 0.1563;

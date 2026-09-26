@@ -1,11 +1,13 @@
 # 7GEMSDOE — fault discovery lab
 
 **Read this README at the start of every session**, then `AGENTS.md`, `STATUS.md`,
-[`knowledge/session5/next_session.md`](knowledge/session5/next_session.md) and
-[`knowledge/session5/review.md`](knowledge/session5/review.md).
+[`knowledge/session6/next_session.md`](knowledge/session6/next_session.md) and
+[`knowledge/session6/review.md`](knowledge/session6/review.md).
 (Session 4's [H1 decision tree](knowledge/session4/next_session.md) still governs
 the unscored lidar upload; the standing user brief below is re-read every session
-and nothing in it is treated as completed until evidence says so.)
+and nothing in it is treated as completed until evidence says so. The user's
+full goals and acceptance requirements are maintained below in de-duplicated
+form; private email addresses are intentionally omitted from public files.)
 
 **Goal:** compete for the top prize in [DOE GEMS / DrivenData #306](https://www.drivendata.org/competitions/306/competition-doe-gems/)
 through scientifically grounded discovery of unmapped **geological faults**.
@@ -13,7 +15,26 @@ Geothermal vents are the user's broader motivation, not the competition's raster
 **We have not demonstrated a score above 0.3049.** Best group public score: 0.1563
 (extradr19; SDCF9 also shows 0.1563 from an unrecorded file). Ranks are dynamic.
 
-## Download first — session 5 (2026-09-26; candidate unchanged from session 4)
+## Session 6 — verified current state (2026-09-26)
+
+The newest saved public feed is timestamped **21:12:55 UTC**, has 107 ranked
+entries, and still shows DARD at **0.3049**; the known group best is **0.1563**
+(extradr19, rank 24; SDCF9 rank 25 with unknown file attribution). See
+[`knowledge/feed.json`](knowledge/feed.json),
+[session 6 review](knowledge/session6/review.md) and
+[measured replay evidence](knowledge/session6/local_verification.json).
+
+This session autonomously placed the three mirrored rasters, reran preparation
+and CPU training, then rebuilt the historic control **byte-identically**
+(SHA-256 `90fb7dc0fc1f…`) without publishing or replacing any recommended file.
+Its random-pixel AUC is only a pipeline diagnostic, not spatial skill. H1 remains
+unscored; no new upload or leaderboard gain is claimed. All **124 tests pass**
+(the 50 Rasterio deprecation warnings remain non-failing). QFFDB/radiometric
+`workflow_dispatch` requests returned GitHub HTTP 403, and the feed flags the
+GDR 1391 excerpt for review. Full limitations and next-session priorities are
+in [`knowledge/session6/next_session.md`](knowledge/session6/next_session.md).
+
+## Download first — session 6 (2026-09-26; H1 candidate unchanged)
 
 **[GitHub Pages / executive summary](https://buffedlizard55-lab.github.io/7GEMSDOE/)** ·
 [Exact submission instructions](https://buffedlizard55-lab.github.io/7GEMSDOE/how-to-submit.html)

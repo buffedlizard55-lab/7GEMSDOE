@@ -77,25 +77,25 @@ GRID_EXTS = (".tif", ".tiff", ".grd", ".gxf")
 
 
 def select_rad_files(files: list[dict]) -> dict:
-    """Pick one grid URL per radiometric channel from a ScienceBase listing.
+    """Select one unambiguous grid per radiometric channel from ScienceBase.
 
-    files: [{'name': str, 'url': str, 'size': int}]. Returns
-    {channel: file_dict}. Raises ValueError with the observed names when a
-    channel has no match (fail closed; caller logs the full listing).
+    Filename patterns are preference-ordered. Multiple candidates at the
+    winning preference level are an irregularity, not an invitation to depend
+    on API listing order, so the caller fails closed and records the listing.
     """
     chosen: dict[str, dict] = {}
     missing: list[str] = []
     for channel, patterns in CHANNEL_PATTERNS.items():
         hit = None
         for pat in patterns:
-            for f in files:
-                name = f.get("name", "")
-                if not name.lower().endswith(GRID_EXTS):
-                    continue
-                if re.search(pat, name, re.IGNORECASE):
-                    hit = f
-                    break
-            if hit is not None:
+            matches = [f for f in files
+                       if str(f.get("name", "")).lower().endswith(GRID_EXTS)
+                       and re.search(pat, str(f.get("name", "")), re.IGNORECASE)]
+            if len(matches) > 1:
+                names = sorted(str(f.get("name", "?")) for f in matches)
+                raise ValueError(f"ambiguous {channel} candidates for {pat!r}: {names}")
+            if matches:
+                hit = matches[0]
                 break
         if hit is None:
             missing.append(channel)
@@ -105,20 +105,29 @@ def select_rad_files(files: list[dict]) -> dict:
         observed = sorted(f.get("name", "?") for f in files)
         raise ValueError(f"no radiometric grid matched channels {missing}; "
                          f"observed {len(observed)} files: {observed[:40]}")
+    identities = [(str(item.get("url", "")), str(item.get("name", "")))
+                  for item in chosen.values()]
+    if len(set(identities)) != len(identities):
+        raise ValueError("one source grid matched multiple radiometric channels")
     return chosen
 
 
 def quantise(x: np.ndarray, mask: np.ndarray) -> np.ndarray:
-    """Robust uint8: 1..255 over the 1st..99th percentile; 0 = nodata."""
+    """Robust uint8: 1..255 over finite valid pixels' 1st..99th percentiles."""
+    x = np.asarray(x)
+    mask = np.asarray(mask, dtype=bool)
+    if x.ndim != 2 or mask.shape != x.shape:
+        raise ValueError("aligned 2D data and boolean mask required")
+    finite = mask & np.isfinite(x)
     q = np.zeros(x.shape, np.uint8)
-    v = x[mask]
+    v = x[finite]
     if v.size == 0:
         return q
     lo, hi = np.percentile(v, (1.0, 99.0))
     if not np.isfinite(lo) or not np.isfinite(hi) or hi <= lo:
         return q
-    t = np.clip((x - lo) / (hi - lo), 0, 1)
-    q[mask] = (1 + np.round(254 * t[mask])).astype(np.uint8)
+    t = np.clip((x[finite] - lo) / (hi - lo), 0, 1)
+    q[finite] = (1 + np.round(254 * t)).astype(np.uint8)
     return q
 
 
@@ -160,7 +169,10 @@ def main() -> None:
         print(f"downloading {channel}: {f['name']} ({f['size']} B)", flush=True)
         raw = fetch_bytes(f["url"])
         sha = hashlib.sha256(raw).hexdigest()
-        safe_name = f["name"].replace("/", "_")
+        basename = str(f["name"]).replace("\\", "/").rsplit("/", 1)[-1]
+        safe_name = re.sub(r"[^A-Za-z0-9._-]+", "_", basename)
+        if safe_name in {"", ".", ".."}:
+            raise ValueError(f"unsafe source filename for {channel}: {f['name']!r}")
         tmp = args.out / f"_dl_{channel}_{safe_name}"
         tmp.write_bytes(raw)
         with rasterio.open(tmp) as src:

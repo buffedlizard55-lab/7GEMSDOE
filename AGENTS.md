@@ -1,8 +1,9 @@
 # Start every session here
 
-1. Read README.md (mission brief), STATUS.md, knowledge/session5/review.md and current
-   machine evidence before changing models or prose. Session-4 H1 decision tree
-   (knowledge/session4/next_session.md) still governs the unscored upload.
+1. Read README.md (mission brief), STATUS.md, knowledge/session6/next_session.md,
+   knowledge/session6/review.md and current machine evidence before changing models
+   or prose. Session-4 H1 decision tree (knowledge/session4/next_session.md) still
+   governs the unscored upload.
 2. Maximize P(Win): prioritize independent discovery signal and valid reproducible
    submissions over cosmetic changes or public-score chasing. Own the outcome:
    verify end-to-end downloads, tests and source provenance; record failures.
@@ -30,3 +31,9 @@
     closed and log observed listings. No new submission file until the H1 upload
     scores (v2 is frozen policy only). Catalogue-derived layers (slip/dilation
     tendency, INGENIOUS fault shapefiles) are leakage, never discovery features.
+
+12. Session 6: replaying the control is not a new leaderboard result. Treat random
+    pixel AUC as a plumbing monitor only. The H1 candidate remains unscored; do not
+    package a second submission before the H1 score is logged. Review the latest
+    official-feed timestamp and every source-check warning. Never assume a GitHub
+    dispatch or external-data job ran unless its run and output manifest are present.

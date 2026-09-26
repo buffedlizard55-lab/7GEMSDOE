@@ -32,6 +32,14 @@ def test_select_rad_files_fails_closed_with_observed_list():
         GR.select_rad_files(files)
 
 
+def test_select_rad_files_rejects_ambiguous_preferred_channel():
+    files = listing("GeoDAWN_K_pct_100m.tif", "GeoDAWN_K_pct_400m.tif",
+                    "GeoDAWN_eTh.tif", "GeoDAWN_eU.tif",
+                    "GeoDAWN_total_count.tif")
+    with pytest.raises(ValueError, match="ambiguous K candidates"):
+        GR.select_rad_files(files)
+
+
 def test_quantise_robust_and_nodata_zero():
     x = np.arange(100, dtype=np.float32).reshape(10, 10)
     mask = np.ones((10, 10), bool)
@@ -40,8 +48,16 @@ def test_quantise_robust_and_nodata_zero():
     assert q.dtype == np.uint8
     assert q[0, 0] == 0
     assert q[mask].min() >= 1 and q[mask].max() <= 255
-    # constant input -> all zeros (no fake contrast)
+    # Constant input -> all zeros (no fake contrast).
     assert GR.quantise(np.full((4, 4), 7.0, np.float32),
                        np.ones((4, 4), bool)).sum() == 0
+    # Masked NaN/Inf cells are never encoded as data or allowed to contaminate
+    # percentile bounds.
+    special = np.arange(100, dtype=np.float32).reshape(10, 10)
+    special[0, 0] = np.nan
+    special[0, 1] = np.inf
+    qs = GR.quantise(special, np.ones((10, 10), bool))
+    assert qs[0, 0] == 0 and qs[0, 1] == 0
+    assert qs[np.isfinite(special)].min() >= 1
     # empty mask -> all zeros
     assert GR.quantise(x, np.zeros((10, 10), bool)).sum() == 0
