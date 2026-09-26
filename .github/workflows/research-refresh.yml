@@ -31,12 +31,18 @@ jobs:
       - run: python scripts/dem_pilot.py
       - run: python scripts/build_site.py
       - run: python -m pytest tests/ -q
+      - name: Browser integration checks
+        run: |
+          pip install playwright
+          playwright install --with-deps chromium
+          python scripts/browser_smoke.py
       - uses: actions/upload-artifact@v4
         with:
           name: research-evidence
           path: |
             knowledge/feed.json
             knowledge/session2/dem_pilot.json
+            scratch/browser/
       - name: Publish machine-readable feed without committing to any branch
         if: github.ref == 'refs/heads/main'
         env:
