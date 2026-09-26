@@ -35,7 +35,7 @@ jobs:
       - name: Browser integration checks
         run: |
           pip install playwright
-          playwright install --with-deps chromium
+          playwright install --with-deps chromium 2>&1 | tee /tmp/browser-install.txt
           python scripts/browser_smoke.py
       - uses: actions/upload-artifact@v4
         with:
@@ -52,10 +52,10 @@ jobs:
           python - <<'PYCODE'
           from pathlib import Path
           parts = ["## Automated research verification\nRun: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"]
-          for name in ['knowledge/feed.json', 'knowledge/session2/dem_pilot.json', 'scratch/browser/report.json']:
+          for name in ['knowledge/feed.json', 'knowledge/session2/dem_pilot.json', 'scratch/browser/report.json', '/tmp/browser-install.txt']:
               p = Path(name)
               if p.exists():
-                  parts.append('<details><summary>' + name + '</summary>\n\n```json\n' + p.read_text() + '\n```\n</details>')
+                  parts.append('<details><summary>' + name + '</summary>\n\n```json\n' + p.read_text()[-16000:] + '\n```\n</details>')
           Path('/tmp/research-comment.md').write_text('\n\n'.join(parts))
           PYCODE
           number=$(gh pr list --head "$GITHUB_REF_NAME" --json number --jq '.[0].number')

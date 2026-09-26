@@ -100,3 +100,14 @@ monitor. It is not an unbiased estimate of unmapped-fault discovery.
   Team-manifest hash agreement is reproducibility, not proof of official provenance.
 - No claim is made that every scientific source or historical statement in inherited
   documents has been freshly authenticated. Current corrections supersede them.
+
+## Direct literature reading: Hermant et al. (2025)
+
+The sponsor-cited [Stanford workshop paper](https://pangea.stanford.edu/ERE/db/GeoConf/papers/SGW/2025/Hermant.pdf)
+was directly retrieved (abstract/introduction, first part only in this session).
+It discusses mapping heterogeneity, reported local offsets up to 400 m between USGS
+and the authors' labels (Figure 2), and the importance of DEM resolution. It also states
+that faults can be barriers to flow, not only conduits. This further cautions against
+turning geothermal-favorability priors into all-fault labels. We have **not** reproduced
+its model or obtained its proprietary labels; no performance number from it is adopted.
+This is an original conference-paper source hosted by Stanford, not a government dataset.

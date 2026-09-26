@@ -63,4 +63,11 @@ def main():
     finally:
         server.terminate(); server.wait(timeout=10)
 
-if __name__=='__main__': main()
+if __name__=='__main__':
+    try:
+        main()
+    except Exception:
+        import traceback
+        OUT.mkdir(parents=True, exist_ok=True)
+        (OUT/'report.json').write_text(json.dumps(dict(status='FAIL',traceback=traceback.format_exc()),indent=2))
+        raise
