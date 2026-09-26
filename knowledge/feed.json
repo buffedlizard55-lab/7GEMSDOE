@@ -1,6 +1,6 @@
 {
   "status": "ok",
-  "verified_utc": "2026-09-26T22:53:29.706933+00:00",
+  "verified_utc": "2026-09-26T22:59:17.423882+00:00",
   "source": "https://www.drivendata.org/competitions/306/competition-doe-gems/leaderboard/",
   "method": "automated official HTML/HTMX table parse",
   "rows": [
@@ -550,76 +550,76 @@
       "score": 0.0
     }
   ],
-  "attempted_utc": "2026-09-26T22:53:29.706933+00:00",
+  "attempted_utc": "2026-09-26T22:59:17.423882+00:00",
   "error": null,
   "source_checks": [
     {
       "id": "competition",
       "url": "https://www.drivendata.org/competitions/306/competition-doe-gems/page/967/",
-      "checked_utc": "2026-09-26T22:53:29.706933+00:00",
+      "checked_utc": "2026-09-26T22:59:17.423882+00:00",
       "status": "excerpt_found",
-      "sha256": "3874a836d9b53d0eecbffe23fa80548fd05f5f2af8312356df8e1e9ab3ca19f9"
+      "sha256": "f724d3946b0e3819b8c8ab21c4657353f459c0461134a48c4c3ad1a40d59834b"
     },
     {
       "id": "geodawn",
       "url": "https://www.usgs.gov/data/geodawn-airborne-magnetic-and-radiometric-surveys-northwestern-great-basin-nevada-and",
-      "checked_utc": "2026-09-26T22:53:29.706933+00:00",
+      "checked_utc": "2026-09-26T22:59:17.423882+00:00",
       "status": "excerpt_found",
-      "sha256": "6b2b07ed4d71abff8321fbdb3ad4481ec54d4382ca8daa6bb46e5c4d08aef0f3"
+      "sha256": "dcf5ac3c93800c008e6f4de54e51a37cfe0ec1b99979a62df808f1988de65bea"
     },
     {
       "id": "structure",
       "url": "https://www.osti.gov/biblio/1724082",
-      "checked_utc": "2026-09-26T22:53:29.706933+00:00",
+      "checked_utc": "2026-09-26T22:59:17.423882+00:00",
       "status": "excerpt_found",
       "sha256": "664d6d484643cb7618dc0ff20b4f60719711e2e5bb802f32c1a6da60a36bb4c6"
     },
     {
       "id": "playfairway",
       "url": "https://www.usgs.gov/publications/discovering-blind-geothermal-systems-great-basin-region-integrated-geologic-and",
-      "checked_utc": "2026-09-26T22:53:29.706933+00:00",
+      "checked_utc": "2026-09-26T22:59:17.423882+00:00",
       "status": "excerpt_found",
-      "sha256": "398053d0804fd83862c8278e97ce7188152bfc5d036193f22694e0c17e91db8e"
+      "sha256": "54e0b3a59dd3998b2415d0c33437b2207f87b2ec0903b117444d4373daa6aa93"
     },
     {
       "id": "about",
       "url": "https://www.drivendata.org/competitions/306/competition-doe-gems/page/968/",
-      "checked_utc": "2026-09-26T22:53:29.706933+00:00",
+      "checked_utc": "2026-09-26T22:59:17.423882+00:00",
       "status": "excerpt_found",
-      "sha256": "2c5e50353bcd41ae035aeda0d84caa56e9bb22831aa9c21ae60dbc86fa84286f"
+      "sha256": "ab0fb3da6edf835401c2756197ea974a96c81b592312c2e5e897640695fef67a"
     },
     {
       "id": "geodawn-gdr1591",
       "url": "https://gdr.openei.org/submissions/1591",
-      "checked_utc": "2026-09-26T22:53:29.706933+00:00",
+      "checked_utc": "2026-09-26T22:59:17.423882+00:00",
       "status": "excerpt_found",
       "sha256": "843241f74f9c8940d81875dd9a5e9a94da9c583c84b269623d6f35885188bba0"
     },
     {
       "id": "geodawn-release",
       "url": "https://www.sciencebase.gov/catalog/item/657e1d85d34e23d3533209f7",
-      "checked_utc": "2026-09-26T22:53:29.706933+00:00",
+      "checked_utc": "2026-09-26T22:59:17.423882+00:00",
       "status": "excerpt_found",
-      "sha256": "fa80863cd29bba3613a7843d0ef87390f403a7c259cdfb4dd6d06b34756160fd"
+      "sha256": "47b8b9210d13db466c34432f9909446822da1c1ca72895afa915abd77568b920"
     },
     {
       "id": "reference-unet",
       "url": "https://github.com/drivendataorg/gems-prize-reference-solution",
-      "checked_utc": "2026-09-26T22:53:29.706933+00:00",
+      "checked_utc": "2026-09-26T22:59:17.423882+00:00",
       "status": "excerpt_found",
-      "sha256": "4f1a7a5cf3d07686f419d3bf4dccd5427f5f2bacd28602d45fcca5cd9314d780"
+      "sha256": "eff0138a82644ee96ea0d1cd14d89e3b38701dc065d802f8a880aca1d5624bb7"
     },
     {
       "id": "ingenious-gdr1391",
       "url": "https://gdr.openei.org/submissions/1391",
-      "checked_utc": "2026-09-26T22:53:29.706933+00:00",
+      "checked_utc": "2026-09-26T22:59:17.423882+00:00",
       "status": "REVIEW_excerpt_missing",
       "sha256": "58b5337cd00c1447c846d61187b77868929674dadd82def286e1b4f94fd3c00d"
     },
     {
       "id": "nbmg-opendata",
       "url": "https://nbmg.unr.edu/Maps&Data/index.html",
-      "checked_utc": "2026-09-26T22:53:29.706933+00:00",
+      "checked_utc": "2026-09-26T22:59:17.423882+00:00",
       "status": "excerpt_found",
       "sha256": "02aa9856bb1923d5d490d1d80ca13f0ebf498403141a6dc2a71cc458326d72e8"
     }
@@ -628,16 +628,16 @@
   "pages": [
     {
       "url": "https://www.drivendata.org/competitions/306/competition-doe-gems/leaderboard_partial/?page=1",
-      "sha256": "bab930fe2397d080223c38fdf6064750f81a14eb90cca9881002ebc59e0b5bf7"
+      "sha256": "0730f185359532bc600e47f2d0b96464f0830c5d2422dbc5c3e01ac4b8dc55e6"
     },
     {
       "url": "https://www.drivendata.org/competitions/306/competition-doe-gems/leaderboard_partial/?page=2",
-      "sha256": "41dbe055e2d921b090e6a84ff641de3149aa552476704f4fb729e8a11450b18d"
+      "sha256": "7b5e305e03856a2d3c016416e19b88e9054d6480a5fc8633dc3e23d1bd3019d0"
     },
     {
       "url": "https://www.drivendata.org/competitions/306/competition-doe-gems/leaderboard_partial/?page=3",
-      "sha256": "87bd7769faa7b8fbfb3459a0889fbed178167d496bd2daaf1ad34e3ebb8495a2"
+      "sha256": "9dfc4d184c5e320ab01b4a26956e0ac4bb1fce192d556bca00a209c8e1e64bd5"
     }
   ],
-  "response_sha256": "87bd7769faa7b8fbfb3459a0889fbed178167d496bd2daaf1ad34e3ebb8495a2"
+  "response_sha256": "9dfc4d184c5e320ab01b4a26956e0ac4bb1fce192d556bca00a209c8e1e64bd5"
 }

@@ -1,0 +1,16 @@
+{
+ "status": "measured_overlap_diagnostic",
+ "comparison": "supplied band 14 versus official TMI_up150 compact ranks",
+ "supplied_band": 14,
+ "supplied_description": "tmi - Total magnetic intensity - total strength of magnetic field",
+ "common_px": 5164312,
+ "exact_byte_fraction": 0.7064830707362375,
+ "mean_absolute_byte_difference": 1.3207137756200633,
+ "pearson_rank_correlation": 0.9933293181346986,
+ "input_sha256": {
+  "training_features": "4371c82e3b8339b807bdffcf4ef59a225520fe2988d521be208ae33743123bc5",
+  "extension_product": "a35a9c6d2a14786f4dab85481ee59769213072f5dab5b2535ea82ae4d9bb7d9b"
+ },
+ "interpretation": "TMI_up150 is nearly redundant with supplied TMI after each is robustly quantised; it is a transformed same-sensor diagnostic, not an independent channel.",
+ "caveat": "Correlation/equality are between compact rank encodings, not source physical values."
+}

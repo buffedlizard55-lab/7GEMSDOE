@@ -1,7 +1,7 @@
 # Start every session here
 
-1. Read README.md (mission brief), STATUS.md, knowledge/session6/next_session.md,
-   knowledge/session6/review.md and current machine evidence before changing models
+1. Read README.md (mission brief), STATUS.md, knowledge/session7/next_session.md,
+   knowledge/session7/review.md and current machine evidence before changing models
    or prose. Session-4 H1 decision tree (knowledge/session4/next_session.md) still
    governs the unscored upload.
 2. Maximize P(Win): prioritize independent discovery signal and valid reproducible
@@ -37,3 +37,9 @@
     package a second submission before the H1 score is logged. Review the latest
     official-feed timestamp and every source-check warning. Never assume a GitHub
     dispatch or external-data job ran unless its run and output manifest are present.
+
+13. Session 7: H9b lineament derivatives and H9c official contractor ratios both
+    failed their frozen geographic promotion rules. Do not tune more radiometric
+    scales/mixtures or package an H9 file. Upward-continued TMI is nearly redundant
+    with supplied TMI. First obtain H1's attributable score; meanwhile pre-register
+    H10 interaction-zone connectors and prioritize independent lidar gap filling.

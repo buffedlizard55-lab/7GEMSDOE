@@ -11,7 +11,16 @@ Verified, source-linked knowledge for the GEMS Prize Challenge. Read
 | 03_metric.md | DTI implementation evidence and economics |
 | 04_team_history.md | our accounts, scores, leaderboard snapshot, lessons |
 | inherited_evidence/ | machine-measured evidence inherited from the sibling GEMSDOE repo (see provenance below) |
-| session6/ | live-feed refresh, reproducible train-to-control replay, ingestion safeguards, three-pass review and next steps |
+| session6/ | live-feed refresh, reproducible train-to-control replay and ingestion safeguards |
+| session7/ | H9b/H9c frozen protocols/results, official extension-grid audit, research decision, three-pass review and next steps |
+
+## session7/ (2026-09-26)
+
+- `protocol.md` / `h9c_protocol.md` — pre-measurement rules for lineaments and official ratio grids.
+- `radiometric_lineament_experiment.json` / `geodawn_extension_experiment.json` — full common-fold machine results; both promotion rules failed.
+- `extension_overlap.json` — measured up150 versus supplied-TMI redundancy.
+- `research.md` — official-source ledger, negative-result interpretation and strategy pivot.
+- `review.md` / `next_session.md` — three-pass audit, limitations, H1 gate and H10/lidar priorities.
 
 ## session6/ (2026-09-26)
 

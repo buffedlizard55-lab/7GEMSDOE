@@ -1,3 +1,28 @@
+# Current status — session 7 (2026-09-26)
+
+- Refreshed the bundled validated release feed: 109 ranks at 22:59:17 UTC;
+  DARD 0.3049; group best 0.1563. H1 lidar remains unscored.
+- Re-restored all three rasters autonomously through the inherited hash-pinned
+  bridge after Dropbox TLS failed; `verify_data.py` passed exact hashes/grid.
+- H9b: built/tested 30 mask-safe 100/300 m radiometric derivative features;
+  on 5,164,300 common pixels and five buffered geographic folds, lineaments
+  scored x0.565/x0.539 random coverage at 1%/2% vs bands19 x0.734/x0.642 and
+  raw radiometrics x0.655/x0.611. Won 0/5 folds; frozen rule FAIL.
+- Found exact official archive members for contractor Th/K, U/K, U/Th and
+  TMI-upward-continued-150 m grids. Runner 36279766757 matched ScienceBase
+  archive size/MD5 and built exact-grid product SHA-256 `a35a9c6d2a14…`.
+- H9c: official ratio arm x0.663/x0.588 at 1%/2%, beating the stronger
+  comparator in only 1/5 folds at each density; frozen rule FAIL. Up150 is
+  0.993329-correlated with supplied TMI after compact encoding.
+- Decision: stop post-hoc radiometric tuning; no H9 submission or second
+  candidate. Preserve these layers only as possible corroboration. Next is H1
+  score attribution, then its frozen branch; score-independent priority is H10
+  interaction-zone protocol and independent lidar gap filling.
+- No upload, score gain, new fault or geothermal vent is claimed. Research,
+  evidence, three-pass audit and limitations: `knowledge/session7/`.
+
+---
+
 # Current status — session 6 (2026-09-26)
 
 - Refreshed the bundled feed from the post-merge main workflow's validated
