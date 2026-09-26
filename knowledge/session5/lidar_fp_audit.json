@@ -1,0 +1,111 @@
+{
+ "generated_utc": "2026-09-26T21:06:15.031854+00:00",
+ "inputs": {
+  "lidar_product": "external/dem/lidar_scarp_features_u8.tif",
+  "candidate": "downloads/gems7-lidarscarp-ridge-top2pct-36c3a3f341c8.tif",
+  "quantisation": "q units (1..255); 0 = no lidar; see lidar_scarp_features.json"
+ },
+ "emitted_px": 76859,
+ "background_px": 3817601,
+ "cross_max_emitted_pct": {
+  "10": 50.0,
+  "25": 71.0,
+  "50": 98.0,
+  "75": 125.0,
+  "90": 148.0,
+  "97.5": 171.0
+ },
+ "cross_max_background_pct": {
+  "10": 0.0,
+  "25": 29.0,
+  "50": 63.0,
+  "75": 114.0,
+  "90": 148.0,
+  "97.5": 177.0
+ },
+ "coh100_emitted_pct": {
+  "10": 63.0,
+  "25": 104.0,
+  "50": 156.0,
+  "75": 198.0,
+  "90": 223.0,
+  "97.5": 238.0
+ },
+ "coh100_background_pct": {
+  "10": 70.0,
+  "25": 117.0,
+  "50": 170.0,
+  "75": 208.0,
+  "90": 228.0,
+  "97.5": 242.0
+ },
+ "relief_emitted_pct": {
+  "10": 44.0,
+  "25": 54.0,
+  "50": 65.0,
+  "75": 78.0,
+  "90": 91.0,
+  "97.5": 106.0
+ },
+ "relief_background_pct": {
+  "10": 14.0,
+  "25": 26.0,
+  "50": 43.0,
+  "75": 77.0,
+  "90": 102.0,
+  "97.5": 124.0
+ },
+ "upface_emitted_pct": {
+  "10": 35.0,
+  "25": 51.0,
+  "50": 68.0,
+  "75": 90.0,
+  "90": 114.0,
+  "97.5": 142.0
+ },
+ "downface_emitted_pct": {
+  "10": 32.0,
+  "25": 58.0,
+  "50": 82.0,
+  "75": 103.0,
+  "90": 121.0,
+  "97.5": 142.0
+ },
+ "loop_hole_px": 483,
+ "loop_hole_fraction_of_emitted": 0.0063,
+ "emitted_cross_dominant_px": 55386,
+ "emitted_cross_dominant_fraction": 0.7206,
+ "relief_classes_q33_q67": [
+  32.0,
+  64.0
+ ],
+ "relief_stratification": {
+  "low": {
+   "footprint_share": 0.328,
+   "emitted_px": 5026,
+   "emitted_share": 0.0654
+  },
+  "mid": {
+   "footprint_share": 0.3354,
+   "emitted_px": 30459,
+   "emitted_share": 0.3963
+  },
+  "high": {
+   "footprint_share": 0.3366,
+   "emitted_px": 41374,
+   "emitted_share": 0.5383
+  }
+ },
+ "v2_policy": {
+  "rule": "drop emitted px if (cross_max>CROSS_Q and coh100<COH_Q) or (relief>RELIEF_Q and coh100<COH_Q)",
+  "cutoff_source": "background (non-emitted, lidar-covered) quantiles only; no catalogue-label or leaderboard tuning",
+  "CROSS_Q": 148.0,
+  "COH_Q": 117.0,
+  "RELIEF_Q": 124.0,
+  "would_drop_channel_px": 1553,
+  "would_drop_relief_px": 70,
+  "would_drop_total_px": 1580,
+  "would_keep_px": 75279,
+  "status": "PRE-REGISTERED ONLY: v2 file is not packaged until the v1 upload scores, so the H1 test stays decisive."
+ }
+}
