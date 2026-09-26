@@ -47,6 +47,7 @@ def parse_leaderboard(html):
 def refresh(previous, getter=requests.get):
     now = datetime.now(timezone.utc).isoformat()
     result = dict(previous, attempted_utc=now)
+    response = None
     try:
         response = getter(URL, timeout=(10, 40))
         response.raise_for_status()
@@ -56,6 +57,9 @@ def refresh(previous, getter=requests.get):
                       method='automated HTML table parse', error=None)
     except (requests.RequestException, ValueError) as exc:
         result.update(status='refresh_failed', error=str(exc)[:500])
+        if response is not None:
+            soup = BeautifulSoup(response.text, 'html.parser')
+            result['parse_diagnostics'] = [dict(cells=[td.get_text(' ', strip=True) for td in tr.find_all(['td','th'])], html=str(tr)[:3000]) for tr in soup.select('table tr')[:3]]
     return result
 
 

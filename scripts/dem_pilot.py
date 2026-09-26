@@ -11,7 +11,7 @@ from pathlib import Path
 import numpy as np
 import rasterio
 from rasterio.windows import Window
-from scipy.ndimage import binary_erosion, gaussian_filter
+from scipy.ndimage import binary_erosion, gaussian_filter, distance_transform_edt
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -47,7 +47,19 @@ def main():
                 if not src.crs or not src.crs.is_projected or not np.allclose(src.res, (1,1)):
                     raise ValueError('expected projected 1m DEM')
                 size = min(2048, src.width, src.height)
-                window = Window((src.width-size)//2, (src.height-size)//2, size, size)
+                # Partial-coverage tiles can have an all-nodata center. Locate an
+                # interior valid patch in a cheap overview, then read NATIVE pixels.
+                overview = src.read(1, out_shape=(512,512), masked=True)
+                ov_valid = ~np.ma.getmaskarray(overview) & np.isfinite(overview.data)
+                if not ov_valid.any():
+                    raise ValueError('tile overview has no valid elevations')
+                padded = np.pad(ov_valid, 1)
+                interior = distance_transform_edt(padded)[1:-1,1:-1]
+                oy, ox = np.unravel_index(np.argmax(interior), interior.shape)
+                cy, cx = (oy+.5)*src.height/512, (ox+.5)*src.width/512
+                window = Window(int(np.clip(cx-size/2,0,src.width-size)),
+                                int(np.clip(cy-size/2,0,src.height-size)),size,size)
+                report['window_selection'] = 'max distance from overview nodata/edge; native pixels read afterwards' 
                 data = src.read(1, window=window, masked=True)
                 valid = ~np.ma.getmaskarray(data) & np.isfinite(data.data)
                 edge, safe = scarp_features(data.data, valid)

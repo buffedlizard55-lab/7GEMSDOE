@@ -35,6 +35,12 @@
   Pages stays in place. Daily feed uses a public GitHub release + browser fetch; it
   requires no automatic Git commits or forbidden branch changes.
 
+- Legacy proxy training leaked held truth into negative sampling and included held-block
+  negatives. Sampling now excludes held geography plus a 300 m buffer and computes
+  distance only to visible training faults. A regression test proves changing hidden
+  labels cannot alter training samples. Old proxy scores are historical and require
+  re-running before reuse. Full-footprint normalization remains transductive.
+
 ## Pass 3 — final verification
 
 Final test counts, runner results, browser checks, PR and deployment status will be

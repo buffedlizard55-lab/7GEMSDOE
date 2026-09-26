@@ -8,7 +8,7 @@ private expert-labelled "new faults" absent from the USGS database).
 
 Negative sampling mixes
   * hard negatives: valid non-fault pixels within 1.5 km of a known fault
-    (places where experts mapped around but did NOT map a fault), and
+    (unlabeled locations, not verified fault absence), and
   * background negatives: uniform valid non-fault pixels.
 
 Outputs (DATA_DIR/artifacts):

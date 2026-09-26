@@ -10,7 +10,7 @@ import sys
 import time
 from pathlib import Path
 from urllib.request import urlopen
-from playwright.sync_api import sync_playwright
+from playwright.sync_api import sync_playwright, expect
 
 ROOT=Path(__file__).resolve().parents[1]
 OUT=ROOT/'scratch/browser'
@@ -40,7 +40,7 @@ def main():
                 assert page.evaluate('document.documentElement.scrollWidth <= innerWidth + 1')
                 page.screenshot(path=str(OUT/f'home-{width}.png'),full_page=True)
                 page.locator('.copy-note').first.click()
-                assert page.locator('.copy-note').first.inner_text()=='Copied'
+                expect(page.locator('.copy-note').first).to_have_text('Copied')
                 with page.expect_download() as event:
                     page.locator('[data-verify-download]').first.click()
                 download=event.value

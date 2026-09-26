@@ -29,6 +29,7 @@ set -euo pipefail
 
 DEST="${GEMS_DATA_DIR:-$HOME/gems_data}"
 mkdir -p "$DEST"
+DEST="$(cd "$DEST" && pwd)" # relative overrides must remain valid after cd
 cd "$DEST"
 
 declare -A SHA=(
@@ -83,5 +84,5 @@ for f in example_submission.tif existing_faults.tif training_features.tif; do
 done
 
 echo
-echo "All official rasters present and hash-verified in $DEST:"
+echo "All mirrored rasters present and matched to inherited hash pins in $DEST:"
 ls -la "$DEST"/*.tif
