@@ -6,3 +6,5 @@ scikit-learn==1.9.1
 requests==2.34.2
 beautifulsoup4==4.15.0
 pytest==9.1.1
+# H4/H9 geographic LightGBM experiments.
+lightgbm==4.6.0

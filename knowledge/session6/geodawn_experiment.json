@@ -1,0 +1,712 @@
+{
+ "status": "measured_catalogue_diagnostic",
+ "hypothesis": "H9: independent GeoDAWN K/Th/U/TC grids improve spatial fault localisation beyond supplied bands19",
+ "protocol": "H4 five geographic folds (5x5 blocks assigned to five folds), 10 px buffer, same LightGBM learner and matched support/samples; top-f skill at 0.5%, 1%, 2%, 3%",
+ "primary_promotion_rule": "rad must exceed bands19 pooled at 1% and 2% and in at least 4/5 folds at each density",
+ "source": {
+  "doi": "10.5066/P93LGLVQ",
+  "sciencebase_item": "657e1d85d34e23d3533209f7",
+  "product": "external/geodawn_rad/geodawn_rad_u8.tif",
+  "sha256": "c22420f75999030d7cc65c9e31e50d232ea6158423bca051613a18a8b20ba682",
+  "channels": [
+   "K",
+   "Th",
+   "U",
+   "TC"
+  ],
+  "quantisation_note": "input product stores per-channel robust 1st-99th percentile ranks as uint8 1..255; zero is missing/outside"
+ },
+ "fold_seed": 20260926,
+ "learner": {
+  "n_estimators": 300,
+  "learning_rate": 0.05,
+  "num_leaves": 63,
+  "min_child_samples": 100,
+  "subsample": 0.8,
+  "colsample_bytree": 0.8,
+  "reg_lambda": 5.0,
+  "random_state": 20260926,
+  "library": "LightGBM",
+  "version": "4.6.0"
+ },
+ "universe_px": 3891322,
+ "positives_in_universe": 48376,
+ "lidar_support_px": 3891322,
+ "rad_support_px": 5164300,
+ "densities": [
+  0.005,
+  0.01,
+  0.02,
+  0.03
+ ],
+ "random_coverage": {
+  "0.005": 0.045125315782898315,
+  "0.01": 0.08690121327844423,
+  "0.02": 0.16151715374757852,
+  "0.03": 0.22583647765869735
+ },
+ "folds": {
+  "0": {
+   "test_px": 49916,
+   "test_pos": 1002,
+   "train_pos": 40000,
+   "train_neg": 120000,
+   "arms": {
+    "bands19": {
+     "auc": 0.6503,
+     "skill": {
+      "0.005": {
+       "coverage": 0.034,
+       "multiple": 0.752,
+       "dti_known": 0.0401
+      },
+      "0.01": {
+       "coverage": 0.0599,
+       "multiple": 0.689,
+       "dti_known": 0.0671
+      },
+      "0.02": {
+       "coverage": 0.1247,
+       "multiple": 0.772,
+       "dti_known": 0.1276
+      },
+      "0.03": {
+       "coverage": 0.1657,
+       "multiple": 0.734,
+       "dti_known": 0.1564
+      }
+     }
+    },
+    "rad": {
+     "auc": 0.5222,
+     "skill": {
+      "0.005": {
+       "coverage": 0.0379,
+       "multiple": 0.84,
+       "dti_known": 0.0444
+      },
+      "0.01": {
+       "coverage": 0.0676,
+       "multiple": 0.778,
+       "dti_known": 0.0746
+      },
+      "0.02": {
+       "coverage": 0.1198,
+       "multiple": 0.742,
+       "dti_known": 0.1186
+      },
+      "0.03": {
+       "coverage": 0.1576,
+       "multiple": 0.698,
+       "dti_known": 0.1422
+      }
+     }
+    },
+    "lidar": {
+     "auc": 0.5801,
+     "skill": {
+      "0.005": {
+       "coverage": 0.0307,
+       "multiple": 0.68,
+       "dti_known": 0.036
+      },
+      "0.01": {
+       "coverage": 0.062,
+       "multiple": 0.714,
+       "dti_known": 0.0686
+      },
+      "0.02": {
+       "coverage": 0.1188,
+       "multiple": 0.735,
+       "dti_known": 0.1181
+      },
+      "0.03": {
+       "coverage": 0.1652,
+       "multiple": 0.731,
+       "dti_known": 0.1494
+      }
+     }
+    },
+    "all": {
+     "auc": 0.6386,
+     "skill": {
+      "0.005": {
+       "coverage": 0.0666,
+       "multiple": 1.475,
+       "dti_known": 0.0781
+      },
+      "0.01": {
+       "coverage": 0.0953,
+       "multiple": 1.096,
+       "dti_known": 0.1062
+      },
+      "0.02": {
+       "coverage": 0.1299,
+       "multiple": 0.805,
+       "dti_known": 0.1319
+      },
+      "0.03": {
+       "coverage": 0.1598,
+       "multiple": 0.708,
+       "dti_known": 0.1488
+      }
+     }
+    }
+   }
+  },
+  "1": {
+   "test_px": 1112843,
+   "test_pos": 13722,
+   "train_pos": 34309,
+   "train_neg": 120000,
+   "arms": {
+    "bands19": {
+     "auc": 0.61,
+     "skill": {
+      "0.005": {
+       "coverage": 0.0141,
+       "multiple": 0.313,
+       "dti_known": 0.0161
+      },
+      "0.01": {
+       "coverage": 0.0345,
+       "multiple": 0.397,
+       "dti_known": 0.036
+      },
+      "0.02": {
+       "coverage": 0.0705,
+       "multiple": 0.437,
+       "dti_known": 0.0633
+      },
+      "0.03": {
+       "coverage": 0.1006,
+       "multiple": 0.446,
+       "dti_known": 0.0793
+      }
+     }
+    },
+    "rad": {
+     "auc": 0.5535,
+     "skill": {
+      "0.005": {
+       "coverage": 0.0441,
+       "multiple": 0.977,
+       "dti_known": 0.0501
+      },
+      "0.01": {
+       "coverage": 0.0656,
+       "multiple": 0.755,
+       "dti_known": 0.0685
+      },
+      "0.02": {
+       "coverage": 0.1038,
+       "multiple": 0.642,
+       "dti_known": 0.0931
+      },
+      "0.03": {
+       "coverage": 0.1361,
+       "multiple": 0.603,
+       "dti_known": 0.107
+      }
+     }
+    },
+    "lidar": {
+     "auc": 0.6182,
+     "skill": {
+      "0.005": {
+       "coverage": 0.0926,
+       "multiple": 2.053,
+       "dti_known": 0.1051
+      },
+      "0.01": {
+       "coverage": 0.1332,
+       "multiple": 1.533,
+       "dti_known": 0.1389
+      },
+      "0.02": {
+       "coverage": 0.19,
+       "multiple": 1.176,
+       "dti_known": 0.1705
+      },
+      "0.03": {
+       "coverage": 0.2289,
+       "multiple": 1.013,
+       "dti_known": 0.1802
+      }
+     }
+    },
+    "all": {
+     "auc": 0.6271,
+     "skill": {
+      "0.005": {
+       "coverage": 0.0515,
+       "multiple": 1.141,
+       "dti_known": 0.0587
+      },
+      "0.01": {
+       "coverage": 0.0773,
+       "multiple": 0.89,
+       "dti_known": 0.0809
+      },
+      "0.02": {
+       "coverage": 0.1207,
+       "multiple": 0.747,
+       "dti_known": 0.1088
+      },
+      "0.03": {
+       "coverage": 0.1539,
+       "multiple": 0.682,
+       "dti_known": 0.122
+      }
+     }
+    }
+   }
+  },
+  "2": {
+   "test_px": 487539,
+   "test_pos": 7459,
+   "train_pos": 40000,
+   "train_neg": 120000,
+   "arms": {
+    "bands19": {
+     "auc": 0.6483,
+     "skill": {
+      "0.005": {
+       "coverage": 0.0368,
+       "multiple": 0.815,
+       "dti_known": 0.0426
+      },
+      "0.01": {
+       "coverage": 0.0518,
+       "multiple": 0.596,
+       "dti_known": 0.056
+      },
+      "0.02": {
+       "coverage": 0.0809,
+       "multiple": 0.501,
+       "dti_known": 0.0771
+      },
+      "0.03": {
+       "coverage": 0.1079,
+       "multiple": 0.478,
+       "dti_known": 0.0919
+      }
+     }
+    },
+    "rad": {
+     "auc": 0.5592,
+     "skill": {
+      "0.005": {
+       "coverage": 0.0401,
+       "multiple": 0.89,
+       "dti_known": 0.0465
+      },
+      "0.01": {
+       "coverage": 0.0569,
+       "multiple": 0.655,
+       "dti_known": 0.0615
+      },
+      "0.02": {
+       "coverage": 0.0913,
+       "multiple": 0.565,
+       "dti_known": 0.087
+      },
+      "0.03": {
+       "coverage": 0.1278,
+       "multiple": 0.566,
+       "dti_known": 0.1089
+      }
+     }
+    },
+    "lidar": {
+     "auc": 0.6875,
+     "skill": {
+      "0.005": {
+       "coverage": 0.0874,
+       "multiple": 1.937,
+       "dti_known": 0.101
+      },
+      "0.01": {
+       "coverage": 0.139,
+       "multiple": 1.6,
+       "dti_known": 0.1499
+      },
+      "0.02": {
+       "coverage": 0.2127,
+       "multiple": 1.317,
+       "dti_known": 0.2025
+      },
+      "0.03": {
+       "coverage": 0.2689,
+       "multiple": 1.191,
+       "dti_known": 0.2293
+      }
+     }
+    },
+    "all": {
+     "auc": 0.698,
+     "skill": {
+      "0.005": {
+       "coverage": 0.0673,
+       "multiple": 1.492,
+       "dti_known": 0.0782
+      },
+      "0.01": {
+       "coverage": 0.1034,
+       "multiple": 1.189,
+       "dti_known": 0.1123
+      },
+      "0.02": {
+       "coverage": 0.1552,
+       "multiple": 0.961,
+       "dti_known": 0.1491
+      },
+      "0.03": {
+       "coverage": 0.1976,
+       "multiple": 0.875,
+       "dti_known": 0.1701
+      }
+     }
+    }
+   }
+  },
+  "3": {
+   "test_px": 1434741,
+   "test_pos": 17832,
+   "train_pos": 29884,
+   "train_neg": 120000,
+   "arms": {
+    "bands19": {
+     "auc": 0.6417,
+     "skill": {
+      "0.005": {
+       "coverage": 0.029,
+       "multiple": 0.644,
+       "dti_known": 0.0333
+      },
+      "0.01": {
+       "coverage": 0.0545,
+       "multiple": 0.627,
+       "dti_known": 0.0574
+      },
+      "0.02": {
+       "coverage": 0.0946,
+       "multiple": 0.586,
+       "dti_known": 0.0859
+      },
+      "0.03": {
+       "coverage": 0.1263,
+       "multiple": 0.559,
+       "dti_known": 0.1007
+      }
+     }
+    },
+    "rad": {
+     "auc": 0.5523,
+     "skill": {
+      "0.005": {
+       "coverage": 0.031,
+       "multiple": 0.687,
+       "dti_known": 0.0352
+      },
+      "0.01": {
+       "coverage": 0.0557,
+       "multiple": 0.641,
+       "dti_known": 0.0581
+      },
+      "0.02": {
+       "coverage": 0.0967,
+       "multiple": 0.599,
+       "dti_known": 0.0867
+      },
+      "0.03": {
+       "coverage": 0.1314,
+       "multiple": 0.582,
+       "dti_known": 0.1034
+      }
+     }
+    },
+    "lidar": {
+     "auc": 0.6899,
+     "skill": {
+      "0.005": {
+       "coverage": 0.0925,
+       "multiple": 2.051,
+       "dti_known": 0.1053
+      },
+      "0.01": {
+       "coverage": 0.1452,
+       "multiple": 1.671,
+       "dti_known": 0.1517
+      },
+      "0.02": {
+       "coverage": 0.2254,
+       "multiple": 1.395,
+       "dti_known": 0.2027
+      },
+      "0.03": {
+       "coverage": 0.2876,
+       "multiple": 1.273,
+       "dti_known": 0.2272
+      }
+     }
+    },
+    "all": {
+     "auc": 0.6975,
+     "skill": {
+      "0.005": {
+       "coverage": 0.0497,
+       "multiple": 1.101,
+       "dti_known": 0.0571
+      },
+      "0.01": {
+       "coverage": 0.0843,
+       "multiple": 0.971,
+       "dti_known": 0.0894
+      },
+      "0.02": {
+       "coverage": 0.1314,
+       "multiple": 0.814,
+       "dti_known": 0.1204
+      },
+      "0.03": {
+       "coverage": 0.169,
+       "multiple": 0.748,
+       "dti_known": 0.136
+      }
+     }
+    }
+   }
+  },
+  "4": {
+   "test_px": 806283,
+   "test_pos": 8361,
+   "train_pos": 39498,
+   "train_neg": 120000,
+   "arms": {
+    "bands19": {
+     "auc": 0.7062,
+     "skill": {
+      "0.005": {
+       "coverage": 0.0521,
+       "multiple": 1.155,
+       "dti_known": 0.059
+      },
+      "0.01": {
+       "coverage": 0.0932,
+       "multiple": 1.072,
+       "dti_known": 0.0964
+      },
+      "0.02": {
+       "coverage": 0.1485,
+       "multiple": 0.92,
+       "dti_known": 0.1298
+      },
+      "0.03": {
+       "coverage": 0.1887,
+       "multiple": 0.836,
+       "dti_known": 0.1422
+      }
+     }
+    },
+    "rad": {
+     "auc": 0.5653,
+     "skill": {
+      "0.005": {
+       "coverage": 0.0202,
+       "multiple": 0.448,
+       "dti_known": 0.0226
+      },
+      "0.01": {
+       "coverage": 0.0449,
+       "multiple": 0.516,
+       "dti_known": 0.0454
+      },
+      "0.02": {
+       "coverage": 0.0858,
+       "multiple": 0.531,
+       "dti_known": 0.073
+      },
+      "0.03": {
+       "coverage": 0.128,
+       "multiple": 0.567,
+       "dti_known": 0.0938
+      }
+     }
+    },
+    "lidar": {
+     "auc": 0.7289,
+     "skill": {
+      "0.005": {
+       "coverage": 0.116,
+       "multiple": 2.571,
+       "dti_known": 0.1294
+      },
+      "0.01": {
+       "coverage": 0.1711,
+       "multiple": 1.969,
+       "dti_known": 0.1732
+      },
+      "0.02": {
+       "coverage": 0.2428,
+       "multiple": 1.503,
+       "dti_known": 0.2071
+      },
+      "0.03": {
+       "coverage": 0.3072,
+       "multiple": 1.36,
+       "dti_known": 0.2264
+      }
+     }
+    },
+    "all": {
+     "auc": 0.7428,
+     "skill": {
+      "0.005": {
+       "coverage": 0.0816,
+       "multiple": 1.807,
+       "dti_known": 0.0923
+      },
+      "0.01": {
+       "coverage": 0.1325,
+       "multiple": 1.525,
+       "dti_known": 0.1373
+      },
+      "0.02": {
+       "coverage": 0.2025,
+       "multiple": 1.254,
+       "dti_known": 0.1779
+      },
+      "0.03": {
+       "coverage": 0.2497,
+       "multiple": 1.106,
+       "dti_known": 0.1897
+      }
+     }
+    }
+   }
+  }
+ },
+ "caveats": [
+  "Known catalogue traces are the only truth; this is not a private-test or leaderboard estimate.",
+  "The model's spatial features remain subject to source/catalogue overlap and the metric's catalogue-offset error.",
+  "The 100 m GeoDAWN grid is globally quantised before folds; no spatially held-out calibration bounds were fit.",
+  "Acquisition-block holdout is still required; the current 5x5 folds are geographic but do not isolate all flight blocks.",
+  "No submission file was generated and H1 remains the only pending decisive upload."
+ ],
+ "pooled": {
+  "bands19": {
+   "0.005": {
+    "coverage": 0.0301,
+    "multiple": 0.667
+   },
+   "0.01": {
+    "coverage": 0.0552,
+    "multiple": 0.635
+   },
+   "0.02": {
+    "coverage": 0.0956,
+    "multiple": 0.592
+   },
+   "0.03": {
+    "coverage": 0.1278,
+    "multiple": 0.566
+   }
+  },
+  "rad": {
+   "0.005": {
+    "coverage": 0.0344,
+    "multiple": 0.763
+   },
+   "0.01": {
+    "coverage": 0.0571,
+    "multiple": 0.657
+   },
+   "0.02": {
+    "coverage": 0.0965,
+    "multiple": 0.597
+   },
+   "0.03": {
+    "coverage": 0.1321,
+    "multiple": 0.585
+   }
+  },
+  "lidar": {
+   "0.005": {
+    "coverage": 0.0945,
+    "multiple": 2.095
+   },
+   "0.01": {
+    "coverage": 0.1436,
+    "multiple": 1.653
+   },
+   "0.02": {
+    "coverage": 0.2142,
+    "multiple": 1.326
+   },
+   "0.03": {
+    "coverage": 0.2689,
+    "multiple": 1.191
+   }
+  },
+  "all": {
+   "0.005": {
+    "coverage": 0.0588,
+    "multiple": 1.303
+   },
+   "0.01": {
+    "coverage": 0.0938,
+    "multiple": 1.08
+   },
+   "0.02": {
+    "coverage": 0.1443,
+    "multiple": 0.893
+   },
+   "0.03": {
+    "coverage": 0.1829,
+    "multiple": 0.81
+   }
+  }
+ },
+ "rad_beats_bands19_folds": {
+  "0.005": 4,
+  "0.01": 4,
+  "0.02": 3,
+  "0.03": 3
+ },
+ "promotion_rule_met": false,
+ "all_arm_gain_share_top20": {
+  "b12": 0.0907,
+  "b16": 0.0846,
+  "b10": 0.0746,
+  "b7": 0.0657,
+  "b8": 0.0652,
+  "b4": 0.0545,
+  "b17": 0.0534,
+  "b13": 0.0521,
+  "b15": 0.0408,
+  "downface_max_max3": 0.0331,
+  "b18": 0.032,
+  "b1": 0.0284,
+  "b5": 0.0264,
+  "rad_K": 0.0262,
+  "downface_max_mean9": 0.0254,
+  "b11": 0.0245,
+  "b2": 0.017,
+  "step_max_mean9": 0.014,
+  "b19": 0.0124,
+  "upface_max_max7": 0.0124
+ },
+ "seconds": 629.4,
+ "generated_utc": "2026-09-26T22:40:00+00:00",
+ "sample_sizes": {
+  "positive": 40000,
+  "negative": 120000
+ },
+ "input_sha256": {
+  "training_features": "4371c82e3b8339b807bdffcf4ef59a225520fe2988d521be208ae33743123bc5",
+  "existing_faults": "7ba308ccdc4418b31a178f4f1ef21aaa6e152e4028f2f6f64b01f7eb25ae4093",
+  "template": "2176d08e485aa2cd2860ce8df539db4faf4d76163b38a4dd8c30a40454d35cbc",
+  "lidar_features": "d580bb8bdcdb941e32fefb8b38044bc5bf04e199bf2e83498c3576e6fc465568"
+ }
+}

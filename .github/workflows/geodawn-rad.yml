@@ -36,6 +36,27 @@ jobs:
           python scripts/verify_data.py
       - name: Build radiometric product
         run: python scripts/geodawn_rad.py
+      - name: Preserve fail-closed file-listing diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: geodawn-rad-diagnostics-${{ github.run_id }}
+          path: external/geodawn_rad/observed_files.json
+          if-no-files-found: ignore
+          retention-days: 30
+      - name: Commit safe observed listing after a fail-closed stop
+        if: failure() && github.ref != 'refs/heads/main'
+        run: |
+          if [ -f external/geodawn_rad/observed_files.json ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add external/geodawn_rad/observed_files.json
+            git commit -m "[run-rad] Record safe observed file listing (run ${GITHUB_RUN_ID})" || exit 0
+            for i in 1 2 3 4 5; do
+              git pull --rebase origin "${GITHUB_REF_NAME}" && git push origin "HEAD:${GITHUB_REF_NAME}" && break
+              sleep 10
+            done
+          fi
       - name: Commit compact product to this session branch
         if: github.ref != 'refs/heads/main'
         run: |

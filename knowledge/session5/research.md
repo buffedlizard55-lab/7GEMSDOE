@@ -149,3 +149,34 @@ file — catalogue-fitting with a U-Net is the floor, not the ceiling.
 * New: radiometric grids overlap the magnetic survey's acquisition blocks;
   block-aware normalisation (session-2 GeoDAWN finding: 200 m vs 400 m
   line spacing) applies to radiometrics too.
+
+## Session 6 implementation addendum — products and first H9 result (2026-09-26)
+
+**[official]** The USGS GeoDAWN ScienceBase item says the release contains
+compressed grids and GeoTIFF images; its linked [GeoDAWN ReadMe PDF](https://www.sciencebase.gov/catalog/file/get/657e1d85d34e23d3533209f7?name=GeoDAWN_ReadMe.pdf)
+documents UTM/WGS84 Zone 11, 50 m Area 1 and 100 m Area 2 grids and radiometric
+profile channels (`kcorr`, `tccorr`, `thcorr`, `ucorr`). The runner observed and
+checksum-verified `22103_area1_tiffs.zip` and `22103_area2_tiffs.zip`, selecting
+GeoTIFF members `*_k_*`, `*_th_*`, `*_u_*`, and `*_tc_*`. The resulting aligned
+four-band product and complete member/grid/hash evidence are in
+[`external/geodawn_rad/geodawn_rad.json`](../../external/geodawn_rad/geodawn_rad.json).
+This verifies transport and grid alignment, not scientific suitability or
+redistribution permission.
+
+**[measured] H9 initial raw-channel screen:** five geographic folds and the
+pre-registered 1 km buffer used the same common support (3,891,322 px), samples,
+LightGBM 4.6.0 learner and scoring protocol across `bands19`, `rad`, `lidar`,
+and `all`. At 1% emission, `rad` was 0.657× random vs 0.635× for bands19 and
+won 4/5 folds; at 2%, rad was 0.597× vs 0.592× and won only 3/5. The frozen
+rule requires a pooled improvement and ≥4/5 folds at both densities, so H9 is
+**not promoted**. This run used raw K/Th/U/TC values; it did not yet test the
+planned radiometric gradient/lineament representation or leave-one-acquisition-
+block-out transfer. Catalogue-only truth is not a private-test score.
+Full report: [`knowledge/session6/geodawn_experiment.json`](../session6/geodawn_experiment.json).
+
+**[measured] H2 ingestion:** the current QFFDB ZIP actually has lower-case
+`scale` and `certainty` fields. Its observed feature counts and unique values
+are recorded in [`external/qfaults/observed_schema.json`](../../external/qfaults/observed_schema.json).
+The rasterized product is a known-fault catalogue diagnostic, not an independent
+fault-discovery layer; any direct prediction use risks target/catalogue leakage.
+No H2 skill result or submission policy is claimed.

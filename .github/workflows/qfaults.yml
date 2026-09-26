@@ -34,6 +34,27 @@ jobs:
           python scripts/verify_data.py
       - name: Build QFFDB prior
         run: python scripts/qfaults_prior.py
+      - name: Preserve observed source schema on success or failure
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: qfaults-schema-diagnostics-${{ github.run_id }}
+          path: external/qfaults/observed_schema.json
+          if-no-files-found: ignore
+          retention-days: 30
+      - name: Commit safe schema evidence after a fail-closed stop
+        if: failure() && github.ref != 'refs/heads/main'
+        run: |
+          if [ -f external/qfaults/observed_schema.json ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add external/qfaults/observed_schema.json
+            git commit -m "[run-qfaults] Record observed schema (run ${GITHUB_RUN_ID})" || exit 0
+            for i in 1 2 3 4 5; do
+              git pull --rebase origin "${GITHUB_REF_NAME}" && git push origin "HEAD:${GITHUB_REF_NAME}" && break
+              sleep 10
+            done
+          fi
       - name: Commit compact product to this session branch
         if: github.ref != 'refs/heads/main'
         run: |

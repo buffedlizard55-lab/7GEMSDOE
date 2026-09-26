@@ -11,6 +11,13 @@ Verified, source-linked knowledge for the GEMS Prize Challenge. Read
 | 03_metric.md | DTI implementation evidence and economics |
 | 04_team_history.md | our accounts, scores, leaderboard snapshot, lessons |
 | inherited_evidence/ | machine-measured evidence inherited from the sibling GEMSDOE repo (see provenance below) |
+| session6/ | live-feed refresh, reproducible train-to-control replay, ingestion safeguards, three-pass review and next steps |
+
+## session6/ (2026-09-26)
+
+- `review.md` — three-pass implementation audit, live public results, verified local pipeline replay, API permission blockers and irregularities.
+- `local_verification.json` — dataset hashes, grid/census, training diagnostics, byte-identical control hash and feed snapshot.
+- `next_session.md` — prioritized H1 score decision, runner-data actions, experiments, limitations and stop conditions.
 
 ## inherited_evidence/ provenance
 

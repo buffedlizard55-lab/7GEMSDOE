@@ -43,6 +43,14 @@ def main():
     lcand=load('knowledge/session4/lidar_candidate.json'); scored=load('knowledge/session4/scored_files_analysis.json')
     lprod=load('external/dem/lidar_scarp_features.json')
     gaps=load('knowledge/session5/lidar_gaps.json'); fp=load('knowledge/session5/lidar_fp_audit.json')
+    feed=load('knowledge/feed.json'); sources=load('knowledge/sources.json'); team=load('knowledge/team_results.json')
+    session6_evidence=load('knowledge/session6/local_verification.json')
+    h9=load('knowledge/session6/geodawn_experiment.json')
+    rad_product=load('external/geodawn_rad/geodawn_rad.json')
+    qfault_product=load('external/qfaults/qfaults_prior.json')
+    exp=load('knowledge/session2/structural_experiment.json'); dem=load('knowledge/session2/dem_pilot.json')
+    spatial=load('knowledge/session3/spatial_experiment.json')
+    experts=load('knowledge/session3/expert_experiment.json')
     lc=lcand['candidates'][0]
     def mult(arm,f,key='pooled_nms'): return f"x{lexp[key][arm][f]['multiple']:.2f}"
     s4rows=[[a,mult(a,'0.005','pooled'),mult(a,'0.01','pooled'),mult(a,'0.02','pooled'),mult(a,'0.005'),mult(a,'0.01'),mult(a,'0.02')] for a in ('bands19','lidar','both')]
@@ -54,17 +62,27 @@ def main():
 <p>{link('knowledge/session4/lidar_experiment.json','Full experiment report')} · {link('knowledge/session4/research.md','Session 4 research & hypotheses')} · {link('knowledge/session4/review.md','Leaderboard forensics')}</p></section>'''
     gaprows=[[q,v['footprint_px'],v['gap_px'],f"{v['gap_fraction']*100:.1f}%",v['catalogue_px']] for q,v in gaps['quadrants'].items()]
     v2=fp['v2_policy']
-    session5=f'''<section class="card"><h2>Session 5: gap geography, FP audit, new runner jobs</h2>
+    h9rows=[[a, f"x{h9['pooled'][a]['0.01']['multiple']:.3f}",
+             f"x{h9['pooled'][a]['0.02']['multiple']:.3f}"]
+            for a in ('bands19','rad','lidar','all')]
+    session5=f'''<section class="card"><h2>Session 5–6: new evidence and external-data tests</h2>
 <p>Lidar covers <strong>{gaps['covered_px']:,}</strong> of {gaps['footprint_px']:,} footprint pixels; the gap is <strong>{gaps['gap_fraction']*100:.1f}%</strong> and still holds {gaps['catalogue_px_in_gap']:,} catalogue pixels (20.5% of known faults). The NE quadrant is {gaps['quadrants']['NE']['gap_fraction']*100:.1f}% gap — fill priority #1. The H1 candidate emits 0 px in gaps (verified).</p>
 {table(['Quadrant','Footprint px','Gap px','Gap %','Catalogue px'],gaprows)}
-<p>False-positive audit of the H1 candidate ({fp['emitted_px']:,} emitted px): closed loops are minor ({fp['loop_hole_px']} hole px), but <strong>{fp['emitted_cross_dominant_fraction']*100:.1f}%</strong> of emission is cross-slope dominant (channel-bank-like) and low relief is under-emitted (6.5% of emitted on 32.8% of footprint). A frozen v2 cleanup policy would drop only {v2['would_drop_total_px']:,} px — threshold tweaks are not the lever; channel/shoreline controls are. V2 stays code+policy until v1 scores.</p>
-<p>Runner-ready (dispatch on Actions): {link('https://github.com/buffedlizard55-lab/7GEMSDOE/actions','QFFDB scale-certainty prior (<code>[run-qfaults]</code>)')} for H2 and {link('https://github.com/buffedlizard55-lab/7GEMSDOE/actions','GeoDAWN radiometric grids K/Th/U/TC (<code>[run-rad]</code>)')} for H9 — the survey's own gamma-ray data, absent from the 19-band stack.</p>
-<p>{link('knowledge/session5/lidar_gaps.json','Gap report')} · {link('knowledge/session5/lidar_fp_audit.json','FP audit + frozen v2 policy')} · {link('knowledge/session5/research.md','Session 5 research: 15 sources, overlooked-data audit, H9–H12')} · {link('knowledge/session5/review.md','Three-pass audit')}</p></section>'''
+<p>False-positive audit of the H1 candidate ({fp['emitted_px']:,} emitted px): closed loops are minor ({fp['loop_hole_px']} hole px), but <strong>{fp['emitted_cross_dominant_fraction']*100:.1f}%</strong> of emission is cross-slope dominant (channel-bank-like) and low relief is under-emitted. The frozen v2 cleanup policy remains unpromoted until H1 scores.</p>
+<p>Runner products now exist: {link('external/qfaults/qfaults_prior_u8.tif','QFFDB 3-band diagnostic')} ({qfault_product['n_features']:,} observed features; <strong>catalogue leakage risk</strong>) and {link('external/geodawn_rad/geodawn_rad_u8.tif','GeoDAWN K/Th/U/TC grid')} (four-band uint8, exact competition grid). See the {link('external/qfaults/qfaults_prior.json','QFFDB manifest')} and {link('external/geodawn_rad/geodawn_rad.json','GeoDAWN manifest')} for hashes and source details.</p>
+<h3>H9 first screen — raw radiometric channels; no promotion</h3>
+{table(['Arm','Pooled skill at 1%','Pooled skill at 2%'],h9rows)}
+<p>Rad beats bands19 in {h9['rad_beats_bands19_folds']['0.01']}/5 folds at 1% and {h9['rad_beats_bands19_folds']['0.02']}/5 at 2%; the frozen rule requires ≥4/5 at both and <strong>fails</strong>. This is catalogue-based geographic localization, not leaderboard performance; radiometric lineament features and acquisition-block holdouts remain untested. No new submission is recommended.</p>
+<p>{link('knowledge/session6/geodawn_experiment.json','Full H9 report')} · {link('knowledge/session5/lidar_gaps.json','Gap report')} · {link('knowledge/session5/lidar_fp_audit.json','FP audit')} · {link('knowledge/session5/research.md','Session 5 sources and hypotheses')} · {link('knowledge/session6/review.md','Session 6 three-pass follow-up')}</p></section>'''
+    replay=session6_evidence['control_reproduction']
+    train=session6_evidence['retraining']
+    feed_snapshot=session6_evidence['official_feed']
+    session6=f'''<section class="card"><h2>Session 6: reproducible pipeline, current score and H9 result</h2>
+<p>The latest verified public feed ({e(feed_snapshot['automated_snapshot_utc'])}) has {feed_snapshot['ranked_entries']} ranks; leader {e(feed_snapshot['leader']['participant'])} is <strong>{feed_snapshot['leader']['score']:.4f}</strong>. The team's best known public result remains 0.1563. See {link('knowledge/feed.json','machine-readable current snapshot')}.</p>
+<p>CPU replay reproduced the preserved control byte-identically (SHA-256 <code>{replay['reproduced_sha256'][:12]}</code>); format gate PASS, and no file was published. H1 remains unscored. New QFFDB/GeoDAWN products are data inputs—not submission files.</p>
+<p>H9 raw radiometric channels narrowly exceed bands19 in pooled catalogue skill at 1% and 2%, but fail the pre-registered fold rule; no leaderboard gain or new geological discovery is claimed. H9 lineament edges and acquisition-block tests remain open. The GDR 1391 excerpt remains flagged for review and team file-to-score mismatches remain unresolved.</p>
+<p>{link('knowledge/session6/geodawn_experiment.json','H9 measured report')} · {link('knowledge/session6/review.md','Three-pass review')} · {link('knowledge/session6/local_verification.json','Local hashes and run evidence')} · {link('knowledge/session6/next_session.md','Next steps and limitations')}</p></section>'''
     forensic_rows=[[e(f['file']),e(f['account']),'—' if f['public_score'] is None else f"{f['public_score']:.4f}",f"{f['density']*100:.2f}%",f"{f['dispersion_index']:.2f}",('x%.2f'%f['skill_multiple']) if 'skill_multiple' in f else '—'] for f in scored['files']]
-    feed=load('knowledge/feed.json'); sources=load('knowledge/sources.json'); team=load('knowledge/team_results.json')
-    exp=load('knowledge/session2/structural_experiment.json'); dem=load('knowledge/session2/dem_pilot.json')
-    spatial=load('knowledge/session3/spatial_experiment.json')
-    experts=load('knowledge/session3/expert_experiment.json')
     geography=f'''<section class="card"><h2>New evidence: independent geography changes the decision</h2>
 <p>Four geographic quadrants, 1 km exclusion buffer and whole crossing-trace removal. H3 pooled diagnostic DTI: <strong>{spatial['aggregates']['strike30x3']['pooled_dti']:.6f}</strong>.
 It barely predicts away from visible catalogue traces. <strong>Do not treat H3 as a proven discovery upgrade.</strong></p>
@@ -84,12 +102,13 @@ It barely predicts away from visible catalogue traces. <strong>Do not treat H3 a
     scope='''<p>The task is to map <strong>geological faults</strong> across GeoDAWN—not to classify hot springs or prove geothermal vents. New expert-labeled faults drive initial scoring; expanded expert review determines final scoring. Scientific hypotheses below are not confirmed discoveries.</p>'''
     compliance=f'''<aside class="note"><strong>Rules flag:</strong> §3.4 allows <strong>three feedback submissions per week per participating entity</strong>, not per teammate account. One final submission across both rounds; teammates cannot submit separate finals.
 The supplied account list needs team-registration review. We do not multiply the budget across accounts. {link(RULES,'Official rules §3.4–3.6.2')}.</aside>'''
-    page('index.html','Executive summary',f'''<p class="eyebrow">DOWNLOAD → UPLOAD → PASTE THE NOTE</p><h2>Session 4: test region-wide lidar scarp evidence.</h2>
+    page('index.html','Executive summary',f'''<p class="eyebrow">DOWNLOAD → UPLOAD → PASTE THE NOTE</p><h2>Current H1 test: region-wide lidar scarp evidence.</h2>
 <p><strong>Recommended next upload</strong> (a decisive leaderboard test, not a proven winner): a thin-line map from a model trained only on 1 m lidar scarp descriptors. Group best is 0.1563; leader 0.3049. {link('how-to-submit.html','Exact submission instructions →')}</p>
 {card(lidar,'Lidar scarp model · ridge-thinned top 2%','Session 4 primary · H1 leaderboard test')}
 <p>{lc['emitted']:,} emitted pixels (binary 1.0; 0.0 elsewhere inside the footprint; NaN outside), all inside lidar coverage; dispersion index {lc['dispersion_index']:.2f} (line-like). Catalogue-based calibration with a 50% transfer discount predicts only ~{lcand['chosen']['expected_dti']:.2f}, below 0.1563; we still recommend it because that calibration is biased against lidar-mapped faults. Visible false-positive classes: closed loops (hills, shorelines) and arcuate range-front edges. Record the score with the SHA-256.</p>
 {session4}
 {session5}
+{session6}
 <h2>Preserved earlier candidates</h2>
 {card(structural,'H3 · Along-strike continuation','Experimental v2 · geographic stress test failed to establish discovery')}
 <p>Extends locally coherent fault traces preferentially along their strike (3 km support) rather than placing a broad halo everywhere (300 m cross-strike support). No deep model or geothermal thermal prior is included.</p>
@@ -143,6 +162,8 @@ No DrivenData login is available for uploading or final selection. GPU training 
 <aside class="note">Not geographic generalization: components can be spatial neighbors; random component splits are biased toward recovery near mapped faults. The full footprint is charged for false positives, including visible catalogue traces. The platform’s hidden evaluation mask is unavailable here. H3 alone cannot find isolated structures far from every mapped fault. A clean buffered geographic holdout is still required.</aside>
 <h3>H4 · Native-resolution scarps — bounded engineering pilot</h3><p>Latest stored pilot: <strong>{e(dem['status'])}</strong>, {e(dem['attempted_utc'])}. {link('knowledge/session2/dem_pilot.json','Evidence')}.
 Reads a 2048 × 2048 native 1 m window from USGS 3DEP, derives break-in-slope, and discards a 40 m nodata/edge buffer. Not calibrated, not a fault map, not yet fused into the submission.</p>
+<h3>H9 · GeoDAWN radiometrics — initial raw-channel screen</h3>
+<p>Official USGS K/Th/U/TC grids are absent from the supplied 19-band stack; they were retrieved separately from ScienceBase and aligned to the template. On common support and the H4 five-fold geographic protocol, raw-channel skill was {h9['pooled']['rad']['0.01']['multiple']:.3f}× random vs bands19 {h9['pooled']['bands19']['0.01']['multiple']:.3f}× at 1%, and {h9['pooled']['rad']['0.02']['multiple']:.3f}× vs {h9['pooled']['bands19']['0.02']['multiple']:.3f}× at 2%. It beat bands19 in {h9['rad_beats_bands19_folds']['0.01']}/5 and {h9['rad_beats_bands19_folds']['0.02']}/5 folds respectively; the pre-registered promotion rule <strong>fails</strong>. This diagnostic used raw channels, not the planned lineament-edge features; acquisition-block holdouts remain. Catalogue truth is not hidden-test truth or a leaderboard estimate. {link('knowledge/session6/geodawn_experiment.json','Full report')} · {link('external/geodawn_rad/geodawn_rad.json','Input manifest')}.</p>
 <h3>Next experiments (pre-register before training)</h3>
 {table(['ID / hypothesis','Data & scientific reason','Disproof / controls'],[
 ['H4b · Surface vs buried experts','Native 1 m DEM scarps plus magnetic/gravity contrasts; separate surface-expression and basin-fill arms.','Buffered entire-tile holdout; compare raw DEM vs curvature/scarp channels. Reject if benefit vanishes after road/drainage and nodata-edge controls.'],
@@ -163,7 +184,7 @@ OMP_NUM_THREADS=2 .venv/bin/python scripts/train_model.py
 {table(['ID','Source','Verified source claim','Proposed use (hypothesis)','Rights / ingestion gate','Reviewed'],source_rows)}
 <h3>Contrarian but testable</h3><p>Do not equate hot-spring density with fault probability. Faulds & Hinz report blind systems and complex structural settings; the USGS Gabbs Valley case required multiple independent types of evidence. This supports testing structure and cross-sensor agreement, not painting every nearby pixel as a fault.</p>
 <p>Do not equate smooth airborne grids with uniform information content. GeoDAWN’s two acquisition specifications and four blocks suggest that sensor geometry may confound a model. An acquisition-aware holdout is a more demanding scientific test than random pixels.</p>
-<h3>Source disagreements retained</h3><ul><li>GDR 1391 previously returned “No submission found” and remains unresolved. GDR 1591 was successfully retrieved via the page tool on 2026-09-26 and is the GeoDAWN landing record; this supersedes the earlier failed retrieval. Linked raw files are not yet downloaded or independently verified.</li>
+<h3>Source disagreements retained</h3><ul><li>GDR 1391 previously returned “No submission found” and remains unresolved. GDR 1591 was successfully retrieved via the page tool on 2026-09-26 and is the GeoDAWN landing record; this supersedes the earlier failed retrieval. The two radiometric TIFF archives were downloaded and matched to ScienceBase MD5/size; other linked files and per-asset reuse terms remain unverified.</li>
 <li>The user-provided sample raster contains positive fault pixels, despite the problem page describing an all-zero example. Geometry is usable; its values must not be interpreted as predictions.</li>
 <li>Third-party mirror hashes authenticate consistency with the inherited manifest, not the sponsor’s original bytes. Official account-authenticated comparison is outstanding.</li></ul>
 <p>{link('knowledge/sources.json','Auditable source registry')} · {link('knowledge/session2/research.md','Prior research')} · {link('knowledge/session3/research.md','Session 3 source audit')} · {link('knowledge/session4/research.md','Session 4: lidar, leaderboard theory, hypothesis register')} · {link('knowledge/session5/research.md','Session 5: overlooked data, geothermal science, H9–H12')}</p>''')
@@ -174,6 +195,8 @@ OMP_NUM_THREADS=2 .venv/bin/python scripts/train_model.py
 ['Geometry template','~/gems_data/example_submission.tif · 5,167,373 finite pixels','Same CRS/grid as features. Positive contents conflict with all-zero example prose.'],
 ['Native 1 m DEM pilot',link(load('knowledge/dem_pilot_source.json')['record']['url'],'Official USGS 3DEP tile'),'One bounded window only. Inventory URL inherited from OCR; not official competition CSV.'],
 ['Region-wide lidar scarp product',link('external/dem/lidar_scarp_features.json','12 uint8 channels, official grid')+' · '+link('knowledge/dem_tiles.json','716 official tile URLs'),'706 tiles processed on GitHub Actions; inventory is OCR-recovered, not the login-walled CSV; covers 75% of the footprint.'],
+['GeoDAWN radiometric product',link('external/geodawn_rad/geodawn_rad_u8.tif','Download four-band K/Th/U/TC')+' · '+link('external/geodawn_rad/geodawn_rad.json','hash/grid manifest'),'ScienceBase Area 1/2 TIFF archives size+MD5 checked; exact competition grid; uint8 feature data, not a submission; per-asset redistribution terms still require review.'],
+['QFFDB scale/certainty prior',link('external/qfaults/qfaults_prior_u8.tif','Download 3-band diagnostic')+' · '+link('external/qfaults/qfaults_prior.json','schema/product manifest'),'Known-fault catalogue; direct model use risks label leakage. Diagnostic only until spatial/source-independence checks pass.'],
 ['Scored group files',link('external/scored/manifest.json','8 vendored GeoTIFFs with source commits and SHA-256'),'Scores are group-reported/leaderboard observations; one file-account pairing unverified.'],
 ['Source registry',link('knowledge/sources.json','Claims, excerpts, links and rights'),'Candidate external layers are not license-approved simply by being reachable.'],
 ['Scores',link('knowledge/team_results.json','Group report')+' / '+link('knowledge/feed.json','Public best-score snapshot'),'No private scores, authenticated upload history or automatic score-to-file mapping.']])}
