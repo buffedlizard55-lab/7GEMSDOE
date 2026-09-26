@@ -7,6 +7,7 @@ on:
     - cron: '17 8 * * *'
 permissions:
   contents: write
+  pull-requests: write
 concurrency:
   group: research-feed
   cancel-in-progress: false
@@ -43,6 +44,22 @@ jobs:
             knowledge/feed.json
             knowledge/session2/dem_pilot.json
             scratch/browser/
+      - name: Publish branch evidence on its pull request for review
+        if: always() && github.ref != 'refs/heads/main'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python - <<'PYCODE'
+          from pathlib import Path
+          parts = ["## Automated research verification\nRun: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"]
+          for name in ['knowledge/feed.json', 'knowledge/session2/dem_pilot.json', 'scratch/browser/report.json']:
+              p = Path(name)
+              if p.exists():
+                  parts.append('<details><summary>' + name + '</summary>\n\n```json\n' + p.read_text() + '\n```\n</details>')
+          Path('/tmp/research-comment.md').write_text('\n\n'.join(parts))
+          PYCODE
+          number=$(gh pr list --head "$GITHUB_REF_NAME" --json number --jq '.[0].number')
+          if [ -n "$number" ]; then gh pr comment "$number" --body-file /tmp/research-comment.md; fi
       - name: Publish machine-readable feed without committing to any branch
         if: github.ref == 'refs/heads/main'
         env:
