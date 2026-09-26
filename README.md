@@ -57,12 +57,12 @@ Read this README at the start of every session. Status log: [`STATUS.md`](STATUS
 
 | Requirement | Where |
 |---|---|
-| One-click, format-valid **submission.tif** at the very top of the site | `docs/index.html` → `docs/downloads/submission.tif` (values in [0, 1], NaN outside footprint, gate PASS) |
-| Executive summary subpage for submitting | `docs/how-to-submit.html` |
-| Unique name + Note for submissions | `docs/downloads/submission_meta.json` → `suggested_submission_note` |
-| Distinct strategy targeting > 0.3049 | `docs/strategy.html` + `scripts/tune_*.py` (pseudo-new-fault proxies) |
-| Deep research from official verified sources, reusable knowledge base | `knowledge/01_science_faults_geothermal.md`, `docs/research.html` |
-| Organized, auditable data table with official links + hashes | `docs/data.html`, `knowledge/02_data_sources.md`, `scripts/verify_data.py` |
+| One-click, format-valid **submission.tif** at the very top of the site | `index.html` → `downloads/submission.tif` (values in [0, 1], NaN outside footprint, gate PASS) |
+| Executive summary subpage for submitting | `how-to-submit.html` |
+| Unique name + Note for submissions | `downloads/submission_meta.json` → `suggested_submission_note` |
+| Distinct strategy targeting > 0.3049 | `strategy.html` + `scripts/tune_*.py` (pseudo-new-fault proxies) |
+| Deep research from official verified sources, reusable knowledge base | `knowledge/01_science_faults_geothermal.md`, `research.html` |
+| Organized, auditable data table with official links + hashes | `data.html`, `knowledge/02_data_sources.md`, `scripts/verify_data.py` |
 | No manual input for data placement | `scripts/download_competition_data.sh` (Dropbox mirrors → git-bridge fallback, sha256-verified) |
 | Metric exactness | `scripts/metric.py` + `tests/test_metric.py` (reproduces the verified table bit-for-bit) |
 | Flag irregularities | `knowledge/00_competition_facts.md` §irregularities |
@@ -77,7 +77,7 @@ bash scripts/download_competition_data.sh        # official rasters → ~/gems_d
 .venv/bin/python scripts/train_model.py          # blind-fault detector (no distance feature)
 .venv/bin/python scripts/tune_components.py      # pseudo-new-fault holdout
 .venv/bin/python scripts/sweep_halos.py          # policy sweep on the holdout
-.venv/bin/python scripts/build_submission.py     # → docs/downloads/submission.tif (format-gated)
+.venv/bin/python scripts/build_submission.py     # → downloads/submission.tif (format-gated)
 .venv/bin/python -m pytest tests/ -q             # full test suite
 ```
 

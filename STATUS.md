@@ -7,7 +7,7 @@ Repo started from an empty initial commit; everything below built this session.
 ### Done
 1. **Competition facts verified line-by-line** from the problem page, About page,
    leaderboard and the sha256-pinned rules PDF extraction → `knowledge/00`,
-   `docs/research.html`. Irregularities flagged (sample-submission == labels;
+   `research.html`. Irregularities flagged (sample-submission == labels;
    GDR submission 1391 dead link; DEM PDF is a scan).
 2. **Data placement without manual steps**: the three official rasters were pulled
    from the sibling repo's hash-pinned git bridge (Dropbox is egress-blocked in
@@ -31,12 +31,14 @@ Repo started from an empty initial commit; everything below built this session.
    to r=15/h=0.6 (proxy 0.0249 vs catalogue-only 0.0090 vs blanket 0.0118).
    Contrarian, measured, documented.
 7. **Submission v1 built and format-gated**: `halo15-0.6 + blind-gbt(τ=0.5,
-   s=0.6)` → `docs/downloads/submission.tif` (2.9 MB, sha256
+   s=0.6)` → `downloads/submission.tif` (2.9 MB, sha256
    `90fb7dc0fc1f…`), PASS on every requirement including values-in-[0,1] and
    NaN-outside-footprint — the exact failure mode that rejected an earlier team
    download is gated out by tests.
-8. **GitHub Pages site**: executive summary with one-click download, how-to-submit
-   subpage, strategy/research/data/results/metric pages, all machine-measured.
+8. **GitHub Pages site** (served from the repo root — the Pages source is
+   legacy "/" on main and the token cannot change it): executive summary with
+   one-click download, how-to-submit subpage, strategy/research/data/results/
+   metric pages, all machine-measured.
 9. **CI**: hermetic test workflow (no external data needed).
 
 ### Blocked / limitations

@@ -1,7 +1,7 @@
 """Train the blind-fault detector: a gradient-boosted classifier that learns
 the geophysical signature of catalogued faults from the GeoDAWN bands ONLY.
 
-Deliberate design choice (documented in docs/strategy.html): the model gets
+Deliberate design choice (documented in strategy.html): the model gets
 NO distance-to-known-fault feature. It must generalise the fault signature to
 places the catalogue does not cover - that is the scored population (the
 private expert-labelled "new faults" absent from the USGS database).

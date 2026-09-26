@@ -22,7 +22,9 @@ CACHE_NPZ = DATA_DIR / "features_cache.npz"
 NORM_JSON = DATA_DIR / "norm_stats.json"
 ARTIFACT_DIR = DATA_DIR / "artifacts"
 
-DOCS_DOWNLOADS = REPO_ROOT / "docs" / "downloads"
+# GitHub Pages for this repo is served from the repo ROOT (legacy pages
+# source "/" on main - the token cannot change it), so the site lives at /.
+DOCS_DOWNLOADS = REPO_ROOT / "downloads"
 
 
 def ensure_data() -> None:
