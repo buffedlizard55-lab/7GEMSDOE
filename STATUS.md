@@ -1,8 +1,8 @@
 # Current status — session 6 (2026-09-26)
 
-- Refreshed the bundled feed from the latest validated GitHub release body:
-  107 ranked entries, timestamp 2026-09-26 21:12:55 UTC; DARD 0.3049; team best
-  0.1563 (extradr19 rank 24, SDCF9 rank 25; SDCF9 file still unknown).
+- Refreshed the bundled feed from the post-merge main workflow's validated
+  GitHub release body: 109 ranked entries, timestamp 2026-09-26 22:53:29 UTC;
+  DARD 0.3049; team best 0.1563 (extradr19 rank 24, SDCF9 rank 25; SDCF9 file still unknown).
 - Re-ran autonomous data placement via public sibling-repo bridge after Dropbox
   TLS failed; inherited SHA pins and `verify_data.py` passed. `prepare_data.py`
   completed (58,171 imputed band-pixels).

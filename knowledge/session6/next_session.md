@@ -80,12 +80,13 @@ guess schema or channel semantics.
 
 ## 4. Maintain the current-results feed and provenance
 
-The daily Actions research refresh succeeded in this session. The latest
-observed feed had 107 ranked entries at 2026-09-26 21:12:55 UTC and one source
-check (`ingenious-gdr1391`) that requires review. The sandbox could not download
-the release asset directly, but its authenticated GitHub API returned the
-release body and that body passed JSON/rank/score checks. Keep the stale-last-good
-behavior; do not erase the last valid rows when refresh fails. Distinguish
+The branch Actions refresh first validated 107 entries; after PR #7 merged, the
+main-only workflow refreshed the public release to 109 entries at
+2026-09-26 22:53:29 UTC. DARD remained 0.3049, and the only source check requiring
+review is `ingenious-gdr1391`. The sandbox could not download the release asset
+directly (EOF), but the authenticated GitHub release body was retrieved and
+validated; the new snapshot is bundled in `knowledge/feed.json`. Keep the
+stale-last-good behavior; do not erase valid rows when refresh fails. Distinguish
 automated excerpt checks from scientific source verification.
 
 ## 5. Open limitations and irregularities
