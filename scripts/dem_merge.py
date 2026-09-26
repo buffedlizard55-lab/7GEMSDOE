@@ -29,6 +29,9 @@ QUANT = {
     "valid": (1.0, "linear"),
 }
 BANDS = list(QUANT)
+# v1 product (run 36265492931) also carried these; its lapneg/lappos used xmax 0.3
+# and were elevation-biased (see scripts/dem_features.py), so never use them.
+LEGACY_QUANT = {"s1_max": (2.0, "sqrt"), "rough": (5.0, "sqrt")}
 
 
 def quantise(name, x):
@@ -42,7 +45,7 @@ def quantise(name, x):
 
 
 def dequantise(name, q):
-    xmax, how = QUANT[name]
+    xmax, how = QUANT[name] if name in QUANT else LEGACY_QUANT[name]
     u = (q.astype(np.float32) - 1) / 254
     x = (u ** 2 if how == "sqrt" else u) * xmax
     return np.where(q == 0, np.nan, x).astype(np.float32)

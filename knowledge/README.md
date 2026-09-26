@@ -27,3 +27,15 @@ runners against the official downloads, never hand-typed:
   (sha256 50d854b1… checked against the live PDF 2026-09-21)
 * `sciencebase_dois.json`, `qfaults_stats.json`, `shift_robustness.json`,
   `transfer_analysis.json` — supporting measurements
+
+## session4/ (2026-09-26)
+
+- `research.md` — new verified sources (GeoDAWN lidar, NBMG lidar discoveries, scarp
+  detection literature, QFFDB accuracy semantics), leaderboard theory, hypothesis register.
+- `review.md` — group scores vs leaderboard, score forensics, irregularities, [0,1] root cause.
+- `scored_files_analysis.json` — machine output of `scripts/analyze_scored_files.py`.
+- `lidar_experiment.json` — pre-registered 5-fold geographic lidar test.
+- `lidar_candidate.json` — rule-based density table and candidate statistics.
+- `next_session.md` — decision tree, backlog, limitations.
+- `../dem_tiles.json` — 716 official 3DEP tile URLs (OCR-recovered inventory, provenance header).
+- `../../external/dem/` — region-wide lidar product + per-tile SHA-256 log.

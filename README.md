@@ -1,61 +1,66 @@
 # 7GEMSDOE — fault discovery lab
 
-**Read this README at the start of every session**, then `AGENTS.md`, `STATUS.md`
-and [`knowledge/session3/review.md`](knowledge/session3/review.md).
+**Read this README at the start of every session**, then `AGENTS.md`, `STATUS.md`,
+[`knowledge/session4/next_session.md`](knowledge/session4/next_session.md) and
+[`knowledge/session4/review.md`](knowledge/session4/review.md).
 
 **Goal:** compete for the top prize in [DOE GEMS / DrivenData #306](https://www.drivendata.org/competitions/306/competition-doe-gems/)
 through scientifically grounded discovery of unmapped **geological faults**.
 Geothermal vents are the user's broader motivation, not the competition's raster target.
-**We have not demonstrated a score above 0.3049.** Best group-reported public score:
-0.1563, confirmed as an account best on 2026-09-26. Ranks are dynamic.
+**We have not demonstrated a score above 0.3049.** Best group public score: 0.1563
+(extradr19; SDCF9 also shows 0.1563 from an unrecorded file). Ranks are dynamic.
 
-## Latest decision — session 3 (2026-09-26)
-
-**Start with the measured failure, not another speculative submission.** Buffered
-geographic testing is now implemented and executed: four quadrants, 1 km catalogue
-exclusion, whole crossing connected-trace purge, matched-mass controls and three
-random-orientation seeds per fold. H3 pooled diagnostic DTI is **0.000125**: it
-barely predicts away from known traces. Connected raster traces are **not** real
-geological fault-system identifiers. Keep H3 reproducible; do not promote it.
-
-Two independent CPU models were trained on raw supplied bands, without global
-normalization or catalogue-distance features: terrain **0.063839** vs other
-geophysical bands **0.056197** pooled diagnostic DTI. Terrain wins all four folds.
-These are **not leaderboard estimates**, not a 1 m DEM model, and not a locked
-final test. No new file is promoted; the existing format-gated downloads remain.
-
-- [Structural/null/matched-mass experiment](knowledge/session3/spatial_experiment.json)
-- [Independent trained experts](knowledge/session3/expert_experiment.json)
-- [Verified-source science and site-claim audit](knowledge/session3/research.md)
-- [Next-session priorities and limitations](knowledge/session3/next_session.md)
-
-GDR **1591 now resolves** to the official GeoDAWN landing record (page-tool
-verification), superseding the earlier failure. Its landing license is CC BY 4.0;
-linked assets still need individual rights/coverage checks before ingestion.
-Packaging now preserves existing ZIP/manifest bytes on a repeat build and refuses
-mutated bundles. Source monitoring is still not scientific verification.
-
-Reproduce the new experiments after the data setup below:
-
-```bash
-.venv/bin/python scripts/spatial_validation.py
-OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 .venv/bin/python scripts/spatial_experts.py
-.venv/bin/python scripts/build_site.py
-.venv/bin/python -m pytest -q
-```
-
-## Download first
+## Download first — session 4 (2026-09-26)
 
 **[GitHub Pages / executive summary](https://buffedlizard55-lab.github.io/7GEMSDOE/)** ·
 [Exact submission instructions](https://buffedlizard55-lab.github.io/7GEMSDOE/how-to-submit.html)
 
-- **Preserved experimental H3 (not promoted):** `downloads/gems7-strike30x3-v2-2b06d45c5b57.tif` (and ZIP).
-  Note: `H3 tangent continuation 3km x 300m h0.6; no GBT; experimental | 2b06d45c5b57`.
-- **Preserved control:** `downloads/gems7-halo15-gbt-v1-90fb7dc0fc1f.tif` (and ZIP).
-- Local strict format PASS is not platform acceptance or evidence of a better score.
-  A short Note and full SHA-256 accompany every file; browser downloads verify the hash.
-- Sign-in and the upload/final-selection action require an authorized DrivenData session.
-  No credentials are requested or stored here. Nothing has been submitted automatically.
+- **Recommended next upload (decisive H1 test, not a proven winner):**
+  `downloads/gems7-lidarscarp-ridge-top2pct-dfa04fa218b8.tif` (and `.zip`).
+  Note: `Lidar scarp LightGBM (706 USGS 1 m tiles), ridge-thinned top 2% | dfa04fa218b8`.
+  Binary 1.0 on 76,859 thin-line pixels, 0.0 elsewhere inside the footprint, NaN outside;
+  float32, exact grid; strict local gate PASS. Record the score with the SHA-256.
+- Preserved earlier files: H3 `gems7-strike30x3-v2-2b06d45c5b57` and control
+  `gems7-halo15-gbt-v1-90fb7dc0fc1f` (not recommended over the lidar test).
+- **"Predicted values must be in range [0, 1]" root cause** (group record): NaN
+  *inside* the template footprint. A GEMSDOE file with 3,061 such pixels was rejected;
+  the filled version was accepted and scored 0.1563. Every file here has finite [0,1]
+  inside and NaN exactly outside.
+- Upload and final selection require the participant's authorized DrivenData session.
+  No credentials are requested or stored. Nothing has been submitted automatically.
+
+## Latest decision — session 4
+
+1. **Leaderboard forensics** (`scripts/analyze_scored_files.py`, `scripts/random_baseline.py`):
+   an exact random-emission baseline for the official metric (verified against
+   Monte-Carlo runs of the metric code) shows our best file is only **~1.9x random
+   coverage**; the leader's 0.3049 needs **~4-5x** at 1-2% density. The two uploads that
+   scored *below random* were the most blob-like. Emission is now thinned to 1 px ridges.
+   (Inference assumes the catalogue-gap upload had zero skill; see the review.)
+2. **Region-wide 1 m lidar** (`.github/workflows/dem-features.yml`): 706/716 official
+   USGS 3DEP tiles (~167 GB) → 12 scarp descriptors on the official grid
+   (`external/dem/`). Three defects were found and fixed with regression tests:
+   tile-seam artefact, curvature elevation bias, fan-induced strike bias.
+3. **Pre-registered geographic test** (`knowledge/session4/lidar_experiment.json`):
+   lidar-only ridge skill x2.33 / x1.81 / x1.47 at 0.5 / 1 / 2% vs 19 bands x1.14 / x0.99 / x0.87.
+   The 19 bands fall below random across geography. Local truth is the *catalogue*,
+   whose traces can sit up to 400 m from lidar-mapped faults
+   ([Hermant et al. 2025](https://pangea.stanford.edu/ERE/db/GeoConf/papers/SGW/2025/Hermant.pdf),
+   cited by the organisers) — so only a leaderboard upload measures transfer.
+
+- [Session 4 research, sources and hypothesis register](knowledge/session4/research.md)
+- [Leaderboard/score forensics and irregularities](knowledge/session4/review.md)
+- [Next-session decision tree and limitations](knowledge/session4/next_session.md)
+- Session 3 (buffered geography, H3 rejected as primary): [review](knowledge/session3/review.md)
+
+Reproduce session 4 after the data setup below:
+
+```bash
+.venv/bin/python scripts/analyze_scored_files.py        # score forensics
+OMP_NUM_THREADS=2 .venv/bin/python scripts/lidar_model.py        # pre-registered test (~30 min)
+OMP_NUM_THREADS=2 .venv/bin/python scripts/lidar_candidates.py   # rule-based candidate
+.venv/bin/python scripts/build_site.py && .venv/bin/python -m pytest -q
+```
 
 ## Current evidence and autonomous workflow
 
@@ -92,10 +97,13 @@ OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 .venv/bin/python scripts/train_model.py
 ```
 
 Detailed prior [requirements matrix](knowledge/session2/requirements_matrix.md),
-[current three-pass review](knowledge/session3/review.md) and
-[next-session plan](knowledge/session3/next_session.md).
+[session 3 review](knowledge/session3/review.md); the current plan is
+[session 4 next steps](knowledge/session4/next_session.md).
 
 ## Limits and next-session priorities
+
+Session 4 supersedes items 2-3 below with the lidar decision tree in
+[`knowledge/session4/next_session.md`](knowledge/session4/next_session.md).
 
 1. **Rules:** three feedback submissions/week per participating entity, one final
    submission across both rounds. Team members cannot submit separate finals
@@ -189,6 +197,22 @@ This is the standing brief, not a claim that all requested future research is co
   cases; (3) recheck against the entire request and improve reliability and completeness.
 - Open a pull request and merge it if checks and permissions allow. Preserve an explicit
   next-session list, limitations, experiments and observed failures.
+
+Session 4 additions (normalized restatement; the agent no longer holds the verbatim
+text after context condensation — paste the exact prompt here if a verbatim copy is required):
+
+- Review the repo, the five earlier group sites and their scores (GEMSDOE1/extradr19
+  0.1563; GEMSDOE2/smashi34 0.1560; GEMSDOE3 smrtdoog5 0.1193, SDCF9 0.1152, wbg1 0.0830;
+  GEMSDOE4 0.0343; 6GEMSDOE 0.0286) against the official leaderboard (top 0.3049, DARD).
+- Design a distinct, contrarian-but-scientific strategy, research, testing, analysis and
+  submission-generation system aimed at > 0.3049; find overlooked free official data;
+  new hypotheses; store verified knowledge as a reusable base.
+- Everyday-use system with an automatic, current feed (no manual page checking).
+- Site: downloadable submission at the very top; values in [0, 1]; unique name plus a
+  short Note; an executive-summary subpage explaining exactly how to submit.
+- Work previous-session next steps first; complete data placement autonomously; train,
+  predict in submission format, state limitations and needed access.
+- Three passes; create a PR and merge it to main; list remaining work for next session.
 
 **Core Values — Maximize P(Win):** “Maximize the Probability of Winning”: weigh tradeoffs,
 assess risk and choose the path that maximizes the probability of success. Set aside

@@ -1,0 +1,70 @@
+{
+ "description": "Group submissions with known public leaderboard scores (plus one never-uploaded diagnostic), vendored for reproducible analysis. Scores are group-reported/leaderboard observations, not re-verified by upload in this session.",
+ "retrieved": "2026-09-26",
+ "files": [
+  {
+   "file": "gemsdoe1-ens12-7f00890a.tif",
+   "sha256": "7f00890a62878d612fb5eef67a9a364a2df819433dde74b6762ce4fc0fc4fe15",
+   "source": "https://github.com/buffedlizard55-lab/GEMSDOE/blob/cceebbdcf9a7d2890bb0665defcb54dfc66ae452/data/evidence/runs/ens12-adopted-floor0.1-w0/submission.tif",
+   "account": "GEMSDOE1 / extradr19",
+   "public_score": 0.1563,
+   "attribution": "team record: sanitize.json + submission_meta.json in the source repo"
+  },
+  {
+   "file": "gemsdoe2-dual-union-f68e590f.tif",
+   "sha256": "f68e590f8534d036872f18170819b52366c728e68619f17c648dce9629b0aaf2",
+   "source": "https://github.com/buffedlizard55-lab/GEMSDOE2/blob/099b2d2e404dc12abac1be3cb4ba289b62898a5d/docs/gemsdoe2-dual-family-union-f68e590f.tif",
+   "account": "GEMSDOE2 / smashi34",
+   "public_score": 0.156,
+   "attribution": "UNVERIFIED pairing: group-reported score, file is the repo's published download"
+  },
+  {
+   "file": "gemsdoe3-pindrop-nodes-f347b70daa.tif",
+   "sha256": "f347b70daa95170bfc967b1c0b6bbf951496c2b74764a7102848ad6178829aca",
+   "source": "https://github.com/buffedlizard55-lab/GEMSDOE3/blob/512371de5d30162813803cdccbd4931ceeb065c7/docs/downloads/pindrop-v4-nodes-20260925T152420Z-f347b70daa.tif",
+   "account": "GEMSDOE3 / smrtdoog5",
+   "public_score": 0.1193,
+   "attribution": "team record: GEMSDOE3 README '1 - SUBMIT FIRST'"
+  },
+  {
+   "file": "gemsdoe3-pindrop-ridge-4e03fc9705.tif",
+   "sha256": "4e03fc97052e9bd673e48f1923ad17f15926f8db26d2befc033e1722381dc9b7",
+   "source": "https://github.com/buffedlizard55-lab/GEMSDOE3/blob/512371de5d30162813803cdccbd4931ceeb065c7/docs/downloads/pindrop-v4-ridge-20260925T152422Z-4e03fc9705.tif",
+   "account": "GEMSDOE3 / SDCF9",
+   "public_score": 0.1152,
+   "attribution": "team record: '3 - CONTROL - UPLOAD LAST'; SDCF9 later shows 0.1563 on the leaderboard from an unrecorded file"
+  },
+  {
+   "file": "gemsdoe3-pindrop-discovery-37f9d5b855.tif",
+   "sha256": "37f9d5b855ee1b6c302cb81cdae1414db94db427f5dc9da3538474df37cf1cad",
+   "source": "https://github.com/buffedlizard55-lab/GEMSDOE3/blob/512371de5d30162813803cdccbd4931ceeb065c7/docs/downloads/pindrop-v4-discovery-20260925T152423Z-37f9d5b855.tif",
+   "account": "GEMSDOE3 / wbg1",
+   "public_score": 0.083,
+   "attribution": "team record: '2 - SUBMIT SECOND' (catalogue-gap target)"
+  },
+  {
+   "file": "gemsdoe4-combined-237f0063.tif",
+   "sha256": "237f0063a440b2c6c4b822bcb0f74e5203586313b3b5ed6c5cabe70fa046f63f",
+   "source": "https://github.com/buffedlizard55-lab/GEMSDOE4/blob/1726ecadf1ce3c5462af9de19a8c66937a1ea33c/data/evidence/combined/submission.tif",
+   "account": "GEMSDOE4 / account not recorded",
+   "public_score": 0.0343,
+   "attribution": "group-reported score; file matched by sha256 prefix 237f0063a4"
+  },
+  {
+   "file": "gems6-hgb88-topk03-33cec71ff0.tif",
+   "sha256": "33cec71ff00b3f32d0d59c81c156f3f1488ffef46baa4b6499094e24ea1875ab",
+   "source": "https://github.com/buffedlizard55-lab/6GEMSDOE/blob/e2fe3f41c6f5dd2dcb2fc91958ee67698f114ada/downloads/gems6_hgb88-topk03_33cec71ff0.tif",
+   "account": "6GEMSDOE / account not recorded",
+   "public_score": 0.0286,
+   "attribution": "group-reported score; filename carries the hash prefix"
+  },
+  {
+   "file": "gemsdoe3-sgmc-gap-7251c22bb4.tif",
+   "sha256": "7251c22bb489198ae4709611c29cef3ac799d8942c2f1779086d5b59ae0e3097",
+   "source": "https://github.com/buffedlizard55-lab/GEMSDOE3/blob/512371de5d30162813803cdccbd4931ceeb065c7/docs/downloads/gapfinder-v2-sgmc-gap-20260925T045014Z-7251c22bb4.tif",
+   "account": "never uploaded",
+   "public_score": null,
+   "attribution": "SGMC geologic-map faults >300 m from labels; diagnostic only"
+  }
+ ]
+}

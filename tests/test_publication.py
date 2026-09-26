@@ -13,7 +13,7 @@ from validate_submission import validate
 from package_submission import package
 
 
-@pytest.mark.parametrize('meta_file',['control_meta.json','structural_meta.json'])
+@pytest.mark.parametrize('meta_file',['control_meta.json','structural_meta.json','lidar_meta.json'])
 def test_publication_bytes_zip_and_format(meta_file):
     m=json.loads((ROOT/'downloads'/meta_file).read_text())
     f=ROOT/'downloads'/m['file']

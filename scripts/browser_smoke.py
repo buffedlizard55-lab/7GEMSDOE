@@ -36,7 +36,7 @@ def main():
                 page.on('pageerror', lambda err: errors.append(str(err)))
                 page.route('https://api.github.com/**', lambda route: route.fulfill(json={'body':json.dumps(feed)}))
                 page.goto('http://127.0.0.1:8765',wait_until='networkidle')
-                assert page.locator('h2').first.inner_text()=='A valid file first. Better discovery next.'
+                assert page.locator('h2').first.inner_text()=='Session 4: test region-wide lidar scarp evidence.'
                 assert page.evaluate('document.documentElement.scrollWidth <= innerWidth + 1')
                 page.screenshot(path=str(OUT/f'home-{width}.png'),full_page=True)
                 page.locator('.copy-note').first.click()
@@ -44,7 +44,7 @@ def main():
                 with page.expect_download() as event:
                     page.locator('[data-verify-download]').first.click()
                 download=event.value
-                m=json.loads((ROOT/'downloads/structural_meta.json').read_text())
+                m=json.loads((ROOT/'downloads/lidar_meta.json').read_text())
                 assert download.suggested_filename == m['file']
                 assert hashlib.sha256(Path(download.path()).read_bytes()).hexdigest()==m['sha256']
                 page.locator('[data-verify-download]').first.evaluate("e => e.dataset.sha = '0'.repeat(64)")

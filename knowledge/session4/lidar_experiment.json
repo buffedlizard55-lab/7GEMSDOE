@@ -1,0 +1,901 @@
+{
+ "pre_registration": [
+  "H4b: does region-scale lidar scarp evidence localise faults better than the 19 bands?",
+  "",
+  "Pre-registered comparison (written before the lidar product existed):",
+  "* arms: ``bands19`` (supplied 19 bands), ``lidar`` (lidar descriptors + context),",
+  "  ``both`` (19 bands + lidar). Same learner, same samples, same folds.",
+  "* folds: 5x5 geographic blocks assigned to 5 folds; training pixels within",
+  "  1 km (10 px) of a test block are dropped (buffer).",
+  "* truth for this diagnostic: held-out *known* fault pixels. This measures",
+  "  localisation of faults with the same kinds of expression, not the hidden",
+  "  new-fault truth. It is not a leaderboard estimate.",
+  "* primary statistic: skill multiple = coverage(model top-f) / coverage(random)",
+  "  at emission densities f in {0.5%, 1%, 2%, 3%} of held-out valid pixels, using the",
+  "  official kernel (scripts/metric.py) and the exact random baseline",
+  "  (scripts/random_baseline.py). Secondary: ROC AUC.",
+  "Promotion rule: ``both`` must beat ``bands19`` on the pooled skill multiple at",
+  "f=1% and 2% AND in >= 4 of 5 folds, else lidar stays a research signal.",
+  "Secondary (emission policy, same pixel budget): top-f of the raw score vs top-f",
+  "restricted to 1 px ridge pixels (scripts/emission.py ridge_nms), per arm."
+ ],
+ "lidar_product": "/home/user/7GEMSDOE/external/dem/lidar_scarp_features_u8.tif",
+ "lidar_features": [
+  "ex_max",
+  "ex_mean",
+  "step_max",
+  "lapneg_max",
+  "lappos_max",
+  "downface_max",
+  "upface_max",
+  "cross_max",
+  "relief",
+  "coh100",
+  "valid",
+  "strike_c2",
+  "strike_s2",
+  "ex_max_max3",
+  "ex_max_max7",
+  "ex_max_mean9",
+  "ex_max_anom15",
+  "step_max_max3",
+  "step_max_max7",
+  "step_max_mean9",
+  "step_max_anom15",
+  "lapneg_max_max3",
+  "lapneg_max_max7",
+  "lapneg_max_mean9",
+  "lapneg_max_anom15",
+  "upface_max_max3",
+  "upface_max_max7",
+  "upface_max_mean9",
+  "upface_max_anom15",
+  "downface_max_max3",
+  "downface_max_max7",
+  "downface_max_mean9",
+  "downface_max_anom15"
+ ],
+ "universe_px": 3891322,
+ "positives_in_universe": 48376,
+ "densities": [
+  0.005,
+  0.01,
+  0.02,
+  0.03
+ ],
+ "random_coverage": {
+  "0.005": 0.045125315782898315,
+  "0.01": 0.08690121327844423,
+  "0.02": 0.16151715374757852,
+  "0.03": 0.22583647765869735
+ },
+ "folds": {
+  "0": {
+   "test_px": 49916,
+   "test_pos": 1002,
+   "train_pos": 40000,
+   "train_neg": 120000,
+   "arms": {
+    "bands19": {
+     "auc": 0.6443,
+     "skill": {
+      "0.005": {
+       "coverage": 0.0463,
+       "multiple": 1.027,
+       "dti_known": 0.0546
+      },
+      "0.01": {
+       "coverage": 0.0791,
+       "multiple": 0.91,
+       "dti_known": 0.0885
+      },
+      "0.02": {
+       "coverage": 0.1296,
+       "multiple": 0.802,
+       "dti_known": 0.133
+      },
+      "0.03": {
+       "coverage": 0.1637,
+       "multiple": 0.725,
+       "dti_known": 0.1553
+      }
+     },
+     "skill_nms": {
+      "0.005": {
+       "coverage": 0.0618,
+       "multiple": 1.369
+      },
+      "0.01": {
+       "coverage": 0.1076,
+       "multiple": 1.238
+      },
+      "0.02": {
+       "coverage": 0.1512,
+       "multiple": 0.936
+      },
+      "0.03": {
+       "coverage": 0.1798,
+       "multiple": 0.796
+      }
+     }
+    },
+    "lidar": {
+     "auc": 0.5876,
+     "skill": {
+      "0.005": {
+       "coverage": 0.0302,
+       "multiple": 0.669,
+       "dti_known": 0.0354
+      },
+      "0.01": {
+       "coverage": 0.0606,
+       "multiple": 0.697,
+       "dti_known": 0.067
+      },
+      "0.02": {
+       "coverage": 0.1294,
+       "multiple": 0.801,
+       "dti_known": 0.1285
+      },
+      "0.03": {
+       "coverage": 0.1706,
+       "multiple": 0.756,
+       "dti_known": 0.1542
+      }
+     },
+     "skill_nms": {
+      "0.005": {
+       "coverage": 0.0392,
+       "multiple": 0.868
+      },
+      "0.01": {
+       "coverage": 0.0862,
+       "multiple": 0.992
+      },
+      "0.02": {
+       "coverage": 0.1427,
+       "multiple": 0.883
+      },
+      "0.03": {
+       "coverage": 0.186,
+       "multiple": 0.824
+      }
+     }
+    },
+    "both": {
+     "auc": 0.6319,
+     "skill": {
+      "0.005": {
+       "coverage": 0.0509,
+       "multiple": 1.128,
+       "dti_known": 0.0599
+      },
+      "0.01": {
+       "coverage": 0.0808,
+       "multiple": 0.929,
+       "dti_known": 0.0901
+      },
+      "0.02": {
+       "coverage": 0.1118,
+       "multiple": 0.692,
+       "dti_known": 0.1137
+      },
+      "0.03": {
+       "coverage": 0.1389,
+       "multiple": 0.615,
+       "dti_known": 0.1296
+      }
+     },
+     "skill_nms": {
+      "0.005": {
+       "coverage": 0.0669,
+       "multiple": 1.483
+      },
+      "0.01": {
+       "coverage": 0.0885,
+       "multiple": 1.019
+      },
+      "0.02": {
+       "coverage": 0.1528,
+       "multiple": 0.946
+      },
+      "0.03": {
+       "coverage": 0.1875,
+       "multiple": 0.83
+      }
+     }
+    }
+   }
+  },
+  "1": {
+   "test_px": 1112843,
+   "test_pos": 13722,
+   "train_pos": 34309,
+   "train_neg": 120000,
+   "arms": {
+    "bands19": {
+     "auc": 0.6104,
+     "skill": {
+      "0.005": {
+       "coverage": 0.0185,
+       "multiple": 0.41,
+       "dti_known": 0.021
+      },
+      "0.01": {
+       "coverage": 0.0396,
+       "multiple": 0.456,
+       "dti_known": 0.0413
+      },
+      "0.02": {
+       "coverage": 0.0715,
+       "multiple": 0.443,
+       "dti_known": 0.0643
+      },
+      "0.03": {
+       "coverage": 0.1022,
+       "multiple": 0.452,
+       "dti_known": 0.0806
+      }
+     },
+     "skill_nms": {
+      "0.005": {
+       "coverage": 0.0353,
+       "multiple": 0.781
+      },
+      "0.01": {
+       "coverage": 0.0653,
+       "multiple": 0.752
+      },
+      "0.02": {
+       "coverage": 0.1166,
+       "multiple": 0.722
+      },
+      "0.03": {
+       "coverage": 0.1629,
+       "multiple": 0.721
+      }
+     }
+    },
+    "lidar": {
+     "auc": 0.6166,
+     "skill": {
+      "0.005": {
+       "coverage": 0.0907,
+       "multiple": 2.009,
+       "dti_known": 0.103
+      },
+      "0.01": {
+       "coverage": 0.1307,
+       "multiple": 1.504,
+       "dti_known": 0.1364
+      },
+      "0.02": {
+       "coverage": 0.1878,
+       "multiple": 1.163,
+       "dti_known": 0.1686
+      },
+      "0.03": {
+       "coverage": 0.2295,
+       "multiple": 1.016,
+       "dti_known": 0.1808
+      }
+     },
+     "skill_nms": {
+      "0.005": {
+       "coverage": 0.0978,
+       "multiple": 2.167
+      },
+      "0.01": {
+       "coverage": 0.1383,
+       "multiple": 1.592
+      },
+      "0.02": {
+       "coverage": 0.1995,
+       "multiple": 1.235
+      },
+      "0.03": {
+       "coverage": 0.246,
+       "multiple": 1.089
+      }
+     }
+    },
+    "both": {
+     "auc": 0.6202,
+     "skill": {
+      "0.005": {
+       "coverage": 0.033,
+       "multiple": 0.731,
+       "dti_known": 0.0375
+      },
+      "0.01": {
+       "coverage": 0.0585,
+       "multiple": 0.673,
+       "dti_known": 0.061
+      },
+      "0.02": {
+       "coverage": 0.1029,
+       "multiple": 0.637,
+       "dti_known": 0.0923
+      },
+      "0.03": {
+       "coverage": 0.1376,
+       "multiple": 0.609,
+       "dti_known": 0.1085
+      }
+     },
+     "skill_nms": {
+      "0.005": {
+       "coverage": 0.0508,
+       "multiple": 1.125
+      },
+      "0.01": {
+       "coverage": 0.0881,
+       "multiple": 1.013
+      },
+      "0.02": {
+       "coverage": 0.1432,
+       "multiple": 0.887
+      },
+      "0.03": {
+       "coverage": 0.19,
+       "multiple": 0.841
+      }
+     }
+    }
+   }
+  },
+  "2": {
+   "test_px": 487539,
+   "test_pos": 7459,
+   "train_pos": 40000,
+   "train_neg": 120000,
+   "arms": {
+    "bands19": {
+     "auc": 0.6529,
+     "skill": {
+      "0.005": {
+       "coverage": 0.0279,
+       "multiple": 0.618,
+       "dti_known": 0.0323
+      },
+      "0.01": {
+       "coverage": 0.0453,
+       "multiple": 0.521,
+       "dti_known": 0.049
+      },
+      "0.02": {
+       "coverage": 0.077,
+       "multiple": 0.477,
+       "dti_known": 0.0734
+      },
+      "0.03": {
+       "coverage": 0.1039,
+       "multiple": 0.46,
+       "dti_known": 0.0885
+      }
+     },
+     "skill_nms": {
+      "0.005": {
+       "coverage": 0.0406,
+       "multiple": 0.901
+      },
+      "0.01": {
+       "coverage": 0.0695,
+       "multiple": 0.799
+      },
+      "0.02": {
+       "coverage": 0.1285,
+       "multiple": 0.796
+      },
+      "0.03": {
+       "coverage": 0.1772,
+       "multiple": 0.785
+      }
+     }
+    },
+    "lidar": {
+     "auc": 0.6854,
+     "skill": {
+      "0.005": {
+       "coverage": 0.0892,
+       "multiple": 1.976,
+       "dti_known": 0.1031
+      },
+      "0.01": {
+       "coverage": 0.1369,
+       "multiple": 1.576,
+       "dti_known": 0.1476
+      },
+      "0.02": {
+       "coverage": 0.2087,
+       "multiple": 1.292,
+       "dti_known": 0.1985
+      },
+      "0.03": {
+       "coverage": 0.2673,
+       "multiple": 1.184,
+       "dti_known": 0.2275
+      }
+     },
+     "skill_nms": {
+      "0.005": {
+       "coverage": 0.0994,
+       "multiple": 2.203
+      },
+      "0.01": {
+       "coverage": 0.1564,
+       "multiple": 1.8
+      },
+      "0.02": {
+       "coverage": 0.2387,
+       "multiple": 1.478
+      },
+      "0.03": {
+       "coverage": 0.2996,
+       "multiple": 1.326
+      }
+     }
+    },
+    "both": {
+     "auc": 0.6876,
+     "skill": {
+      "0.005": {
+       "coverage": 0.0579,
+       "multiple": 1.284,
+       "dti_known": 0.0672
+      },
+      "0.01": {
+       "coverage": 0.0918,
+       "multiple": 1.056,
+       "dti_known": 0.0995
+      },
+      "0.02": {
+       "coverage": 0.142,
+       "multiple": 0.879,
+       "dti_known": 0.1362
+      },
+      "0.03": {
+       "coverage": 0.181,
+       "multiple": 0.801,
+       "dti_known": 0.1554
+      }
+     },
+     "skill_nms": {
+      "0.005": {
+       "coverage": 0.081,
+       "multiple": 1.795
+      },
+      "0.01": {
+       "coverage": 0.12,
+       "multiple": 1.381
+      },
+      "0.02": {
+       "coverage": 0.1775,
+       "multiple": 1.099
+      },
+      "0.03": {
+       "coverage": 0.2288,
+       "multiple": 1.013
+      }
+     }
+    }
+   }
+  },
+  "3": {
+   "test_px": 1434741,
+   "test_pos": 17832,
+   "train_pos": 29884,
+   "train_neg": 120000,
+   "arms": {
+    "bands19": {
+     "auc": 0.6521,
+     "skill": {
+      "0.005": {
+       "coverage": 0.0295,
+       "multiple": 0.653,
+       "dti_known": 0.0337
+      },
+      "0.01": {
+       "coverage": 0.0554,
+       "multiple": 0.637,
+       "dti_known": 0.0584
+      },
+      "0.02": {
+       "coverage": 0.0913,
+       "multiple": 0.565,
+       "dti_known": 0.0828
+      },
+      "0.03": {
+       "coverage": 0.12,
+       "multiple": 0.531,
+       "dti_known": 0.0956
+      }
+     },
+     "skill_nms": {
+      "0.005": {
+       "coverage": 0.0489,
+       "multiple": 1.083
+      },
+      "0.01": {
+       "coverage": 0.0811,
+       "multiple": 0.934
+      },
+      "0.02": {
+       "coverage": 0.1353,
+       "multiple": 0.838
+      },
+      "0.03": {
+       "coverage": 0.1835,
+       "multiple": 0.812
+      }
+     }
+    },
+    "lidar": {
+     "auc": 0.6886,
+     "skill": {
+      "0.005": {
+       "coverage": 0.0946,
+       "multiple": 2.096,
+       "dti_known": 0.1075
+      },
+      "0.01": {
+       "coverage": 0.1447,
+       "multiple": 1.665,
+       "dti_known": 0.1512
+      },
+      "0.02": {
+       "coverage": 0.2199,
+       "multiple": 1.361,
+       "dti_known": 0.1978
+      },
+      "0.03": {
+       "coverage": 0.2817,
+       "multiple": 1.247,
+       "dti_known": 0.2226
+      }
+     },
+     "skill_nms": {
+      "0.005": {
+       "coverage": 0.1073,
+       "multiple": 2.377
+      },
+      "0.01": {
+       "coverage": 0.1639,
+       "multiple": 1.886
+      },
+      "0.02": {
+       "coverage": 0.2524,
+       "multiple": 1.563
+      },
+      "0.03": {
+       "coverage": 0.3102,
+       "multiple": 1.374
+      }
+     }
+    },
+    "both": {
+     "auc": 0.7019,
+     "skill": {
+      "0.005": {
+       "coverage": 0.0457,
+       "multiple": 1.013,
+       "dti_known": 0.0524
+      },
+      "0.01": {
+       "coverage": 0.0736,
+       "multiple": 0.847,
+       "dti_known": 0.0776
+      },
+      "0.02": {
+       "coverage": 0.1226,
+       "multiple": 0.759,
+       "dti_known": 0.1118
+      },
+      "0.03": {
+       "coverage": 0.1656,
+       "multiple": 0.733,
+       "dti_known": 0.1326
+      }
+     },
+     "skill_nms": {
+      "0.005": {
+       "coverage": 0.0711,
+       "multiple": 1.575
+      },
+      "0.01": {
+       "coverage": 0.1185,
+       "multiple": 1.363
+      },
+      "0.02": {
+       "coverage": 0.1859,
+       "multiple": 1.151
+      },
+      "0.03": {
+       "coverage": 0.2364,
+       "multiple": 1.047
+      }
+     }
+    }
+   }
+  },
+  "4": {
+   "test_px": 806283,
+   "test_pos": 8361,
+   "train_pos": 39498,
+   "train_neg": 120000,
+   "arms": {
+    "bands19": {
+     "auc": 0.7376,
+     "skill": {
+      "0.005": {
+       "coverage": 0.0528,
+       "multiple": 1.171,
+       "dti_known": 0.0599
+      },
+      "0.01": {
+       "coverage": 0.0988,
+       "multiple": 1.137,
+       "dti_known": 0.1023
+      },
+      "0.02": {
+       "coverage": 0.1607,
+       "multiple": 0.995,
+       "dti_known": 0.1409
+      },
+      "0.03": {
+       "coverage": 0.2101,
+       "multiple": 0.93,
+       "dti_known": 0.1591
+      }
+     },
+     "skill_nms": {
+      "0.005": {
+       "coverage": 0.0912,
+       "multiple": 2.02
+      },
+      "0.01": {
+       "coverage": 0.1416,
+       "multiple": 1.629
+      },
+      "0.02": {
+       "coverage": 0.2038,
+       "multiple": 1.262
+      },
+      "0.03": {
+       "coverage": 0.2584,
+       "multiple": 1.144
+      }
+     }
+    },
+    "lidar": {
+     "auc": 0.7282,
+     "skill": {
+      "0.005": {
+       "coverage": 0.1148,
+       "multiple": 2.544,
+       "dti_known": 0.1283
+      },
+      "0.01": {
+       "coverage": 0.1665,
+       "multiple": 1.916,
+       "dti_known": 0.1687
+      },
+      "0.02": {
+       "coverage": 0.2443,
+       "multiple": 1.512,
+       "dti_known": 0.2085
+      },
+      "0.03": {
+       "coverage": 0.3041,
+       "multiple": 1.347,
+       "dti_known": 0.2244
+      }
+     },
+     "skill_nms": {
+      "0.005": {
+       "coverage": 0.1266,
+       "multiple": 2.804
+      },
+      "0.01": {
+       "coverage": 0.1848,
+       "multiple": 2.127
+      },
+      "0.02": {
+       "coverage": 0.2745,
+       "multiple": 1.7
+      },
+      "0.03": {
+       "coverage": 0.3385,
+       "multiple": 1.499
+      }
+     }
+    },
+    "both": {
+     "auc": 0.7577,
+     "skill": {
+      "0.005": {
+       "coverage": 0.0668,
+       "multiple": 1.481,
+       "dti_known": 0.0755
+      },
+      "0.01": {
+       "coverage": 0.1198,
+       "multiple": 1.378,
+       "dti_known": 0.1235
+      },
+      "0.02": {
+       "coverage": 0.1888,
+       "multiple": 1.169,
+       "dti_known": 0.1647
+      },
+      "0.03": {
+       "coverage": 0.2424,
+       "multiple": 1.073,
+       "dti_known": 0.183
+      }
+     },
+     "skill_nms": {
+      "0.005": {
+       "coverage": 0.1072,
+       "multiple": 2.376
+      },
+      "0.01": {
+       "coverage": 0.165,
+       "multiple": 1.898
+      },
+      "0.02": {
+       "coverage": 0.2349,
+       "multiple": 1.454
+      },
+      "0.03": {
+       "coverage": 0.2945,
+       "multiple": 1.304
+      }
+     }
+    }
+   }
+  }
+ },
+ "pooled": {
+  "bands19": {
+   "0.005": {
+    "coverage": 0.0305,
+    "multiple": 0.676
+   },
+   "0.01": {
+    "coverage": 0.0573,
+    "multiple": 0.66
+   },
+   "0.02": {
+    "coverage": 0.0963,
+    "multiple": 0.596
+   },
+   "0.03": {
+    "coverage": 0.1289,
+    "multiple": 0.571
+   }
+  },
+  "lidar": {
+   "0.005": {
+    "coverage": 0.0948,
+    "multiple": 2.101
+   },
+   "0.01": {
+    "coverage": 0.1416,
+    "multiple": 1.629
+   },
+   "0.02": {
+    "coverage": 0.2114,
+    "multiple": 1.309
+   },
+   "0.03": {
+    "coverage": 0.2663,
+    "multiple": 1.179
+   }
+  },
+  "both": {
+   "0.005": {
+    "coverage": 0.0477,
+    "multiple": 1.058
+   },
+   "0.01": {
+    "coverage": 0.0802,
+    "multiple": 0.923
+   },
+   "0.02": {
+    "coverage": 0.1312,
+    "multiple": 0.813
+   },
+   "0.03": {
+    "coverage": 0.1728,
+    "multiple": 0.765
+   }
+  }
+ },
+ "pooled_nms": {
+  "bands19": {
+   "0.005": {
+    "coverage": 0.0513,
+    "multiple": 1.137
+   },
+   "0.01": {
+    "coverage": 0.0859,
+    "multiple": 0.988
+   },
+   "0.02": {
+    "coverage": 0.1411,
+    "multiple": 0.874
+   },
+   "0.03": {
+    "coverage": 0.1896,
+    "multiple": 0.839
+   }
+  },
+  "lidar": {
+   "0.005": {
+    "coverage": 0.1053,
+    "multiple": 2.333
+   },
+   "0.01": {
+    "coverage": 0.1575,
+    "multiple": 1.812
+   },
+   "0.02": {
+    "coverage": 0.2368,
+    "multiple": 1.466
+   },
+   "0.03": {
+    "coverage": 0.2927,
+    "multiple": 1.296
+   }
+  },
+  "both": {
+   "0.005": {
+    "coverage": 0.073,
+    "multiple": 1.618
+   },
+   "0.01": {
+    "coverage": 0.1175,
+    "multiple": 1.352
+   },
+   "0.02": {
+    "coverage": 0.1803,
+    "multiple": 1.116
+   },
+   "0.03": {
+    "coverage": 0.2311,
+    "multiple": 1.023
+   }
+  }
+ },
+ "both_beats_bands19_folds": {
+  "0.005": 5,
+  "0.01": 5,
+  "0.02": 4,
+  "0.03": 4
+ },
+ "promotion_rule_met": true,
+ "both_gain_share_top20": {
+  "b12": 0.0908,
+  "b16": 0.0853,
+  "b10": 0.0779,
+  "b8": 0.073,
+  "b7": 0.0662,
+  "b4": 0.0554,
+  "b13": 0.0537,
+  "b17": 0.0502,
+  "b15": 0.0421,
+  "downface_max_max3": 0.0366,
+  "b18": 0.033,
+  "b1": 0.0296,
+  "b6": 0.0284,
+  "b5": 0.0275,
+  "b11": 0.0271,
+  "downface_max_mean9": 0.025,
+  "b2": 0.0176,
+  "upface_max_max7": 0.0138,
+  "b19": 0.0136,
+  "downface_max_max7": 0.0132
+ },
+ "seconds": 708.9
+}
