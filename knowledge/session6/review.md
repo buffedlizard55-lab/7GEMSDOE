@@ -138,3 +138,88 @@ Machine evidence and full hashes: [`local_verification.json`](local_verification
 * [USGS GeoDAWN data page](https://www.usgs.gov/data/geodawn-airborne-magnetic-and-radiometric-surveys-northwestern-great-basin-nevada-and)
 * [USGS QFFDB download referenced by the H2 runner](https://earthquake.usgs.gov/static/lfs/nshm/qfaults/Qfaults_GIS.zip)
 * [GDR INGENIOUS source record — current excerpt check needs review](https://gdr.openei.org/submissions/1391)
+
+## Session 6 follow-up — runner products and H9 first screen (2026-09-26)
+
+### Pass 1 — implement and verify
+
+* Direct `workflow_dispatch` attempts had returned HTTP 403, so runner jobs were
+  triggered by marker-prefixed pushes. QFFDB builds 36275308744 and 36275556486
+  succeeded; GeoDAWN builds 36275561534 and 36275797099 succeeded. Push CI
+  36275797108 and research refresh 36275797096 passed. Earlier failures are
+  preserved below as history, not silently rewritten.
+* QFFDB observed layer `Qfaults_US_Database.shp`, EPSG:4326, 112,809 features,
+  fields `scale` and `certainty`. The scale values include exact denominators,
+  `unspecified`, and one mixed-scale category; certainty values include Good,
+  Poor, Unknown and “Mapped using Lidar.” These are recorded in
+  `external/qfaults/observed_schema.json`. The three-band prior has 138,416
+  coarse, 30,877 fine and 670 lower-certainty pixels; product SHA-256
+  `538b45735833b341fc455dbbf06c47bc82a8bd8943c254ae6d3a5a07e72e22ca`.
+  Raw ZIPs are downloaded to a temporary directory, not retained in Git.
+* GeoDAWN ScienceBase Area 1/2 TIFF packages passed official listed-size and
+  MD5 checks, with SHA-256 values in `external/geodawn_rad/geodawn_rad.json`.
+  The archives list 13 TIFFs per area; K/Th/U/TC members were selected by
+  observed names. The output is a 4-band uint8 raster, exact competition grid,
+  5,166,085 nonzero pixels/channel and product SHA-256
+  `c22420f75999030d7cc65c9e31e50d232ea6158423bca051613a18a8b20ba682`.
+  Source grids observed from the TIFFs are EPSG:32611 at 100 m (Area 2) and
+  50 m (Area 1). Area 1 intentionally overrides Area 2 in overlap.
+* **H9 raw-channel diagnostic:** `scripts/radiometric_experiment.py` uses the
+  H4 5×5 geographic fold assignment, 10-pixel buffer, common support (3,891,322
+  pixels, 48,376 catalogue positives), matched 40k positive/120k negative
+  samples, same LightGBM 4.6.0 learner and random-coverage baseline. At 1%,
+  rad skill was 0.657 vs bands19 0.635; at 2%, 0.597 vs 0.592. Rad beat
+  bands19 in 4/5 folds at 1%, but 3/5 at 2%; the preregistered requirement
+  (pooled improvement and ≥4/5 folds at both 1% and 2%) **failed**. Report:
+  `knowledge/session6/geodawn_experiment.json`.
+
+### Pass 2 — assumption and edge-case audit
+
+* This is a raw-channel screen, not the planned radiometric-gradient/lineament
+  arm. The small pooled difference is not sufficient to promote H9. The global
+  robust percentile encoding is transductive; acquisition-block holdouts are
+  not isolated by the current 5×5 geographic split. Do not describe it as
+  independent validation of hidden truth or as a leaderboard estimate.
+* QFFDB is an existing fault catalogue. Its rasterized traces can encode known
+  labels or nearby geology and thus risk catalogue leakage; the resulting
+  product is for sensitivity/catalogue-gap analysis only until spatial and
+  source-independence checks are designed. `lower_certainty_trace` deliberately
+  avoids calling `Poor`/`Unknown` features literally inferred.
+* GeoDAWN channels are surface radiometric responses affected by lithology,
+  alteration, moisture, vegetation, altitude and acquisition geometry—not fault
+  detections. The USGS release describes Area 2 as geothermal-resource-focused,
+  but neither product proves geothermal-resource occurrence or a new fault.
+* GeoDAWN’s source listing includes other products (magnetics, profiles, maps,
+  flight paths and reports); this build uses only radiometric TIFFs. Per-asset
+  redistribution terms, radio-altitude masks and all Area 2 acquisition-block
+  polygons remain to be independently checked.
+* Raster QA compared both compact products to the locally restored official
+  template: dimensions, CRS and affine transform match exactly. GeoDAWN has
+  zeros outside the template and 1,288 missing-in-footprint cells per channel;
+  valid channel values are 1–255. QFFDB bands are binary {0,1}. These are
+  feature/prior products, not competition submission rasters.
+
+### Pass 3 — original request and merge/readiness check
+
+* The requested valid downloadable submission remains the H1 lidar TIFF at the
+  top of the site with exact Note and guide. H1 is still unscored, so no second
+  submission file is recommended or generated. The new external products are
+  explicitly not submission candidates.
+* Official leaderboard snapshot remains 107 entries at 2026-09-26 21:12:55 UTC,
+  DARD 0.3049; best group result remains 0.1563. Branch refresh workflows do
+  not publish the main-only release, so the public feed's timestamp is unchanged.
+  GDR 1391 remains `REVIEW_excerpt_missing`; this is a source-review flag, not
+  a verified source correction.
+* No new fault or geothermal vent has been field-verified. No score gain is
+  claimed. Review and merge only after the newest branch commits and required
+  checks are actually complete; `action_required` PR checks must not be mistaken
+  for passing checks.
+
+## Official-source additions for manual review
+
+* [GeoDAWN ScienceBase item / DOI 10.5066/P93LGLVQ](https://www.sciencebase.gov/catalog/item/657e1d85d34e23d3533209f7)
+* [GeoDAWN official USGS data page](https://www.usgs.gov/data/geodawn-airborne-magnetic-and-radiometric-surveys-northwestern-great-basin-nevada-and)
+* [GeoDAWN official ReadMe PDF (projection, grid origins/intervals, channel definitions)](https://www.sciencebase.gov/catalog/file/get/657e1d85d34e23d3533209f7?name=GeoDAWN_ReadMe.pdf)
+* [USGS Qfaults GIS download](https://earthquake.usgs.gov/static/lfs/nshm/qfaults/Qfaults_GIS.zip)
+* [USGS Qfaults current National Database layer schema and symbology](https://earthquake.usgs.gov/arcgis/rest/services/haz/Qfaults/MapServer/21?f=pjson)
+* [USGS report example defining location reliability and compiled map scale](https://earthquake.usgs.gov/static/lfs/nshm/qfaults/Reports/1191.pdf)

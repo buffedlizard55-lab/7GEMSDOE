@@ -9,13 +9,27 @@
 - CPU training replay: 304,940 samples/27 features; random-pixel holdout AUC
   0.9173 (not spatial validation). `build_submission.py --no-publish` reproduced
   the preserved control exactly, SHA-256 `90fb7dc0fc1f...`; no file published.
-- Hardened QFFDB ZIP extraction/CRS checks and GeoDAWN radiometric file selection,
-  finite-pixel quantisation and temporary path handling; added regression tests.
-- Both manual external-data workflow dispatches returned GitHub API HTTP 403.
-  GDR 1391 excerpt remains flagged. H1 lidar candidate still unscored; no new
-  candidate packaged, no competition upload, no score improvement claimed.
-- Full suite: **124 passed**, 50 existing Rasterio `PendingDeprecationWarning`s;
-  H1 submission-format gate PASS; feed contract PASS (107 ranks, GDR 1391 warning retained).
+- Hardened QFFDB ZIP extraction/CRS checks and GeoDAWN radiometric archive selection,
+  MD5 verification, safe TIFF-member handling, area mosaicking, finite quantisation
+  and output provenance; added regression tests.
+- Marker-prefixed runner builds succeeded after manual dispatch returned HTTP 403.
+  QFFDB observed 112,809 features with actual `scale`/`certainty` fields; compact
+  three-band grid product SHA-256 `538b45735833…` (138,416 coarse, 30,877 fine,
+  670 lower-certainty pixels). Direct use is flagged as catalogue leakage risk.
+- GeoDAWN Area 1/2 TIFF archives passed their official ScienceBase size/MD5 checks;
+  output K/Th/U/TC is four-band uint8, on the exact 3292×3730 EPSG:32611 template,
+  5,166,085 nonzero pixels/channel, product SHA-256 `c22420f75999…`.
+- H9 common-support, five-fold raw-channel diagnostic: rad vs bands19 pooled skill
+  x0.657 vs x0.635 at 1%, x0.597 vs x0.592 at 2%; rad wins 4/5 at 1% but 3/5 at
+  2%, so the pre-registered promotion rule FAILS. This is catalogue localization,
+  not leaderboard performance; lineament edges/acquisition-block holdouts remain.
+- QFFDB runs 36275308744/36275556486 and GeoDAWN runs 36275561534/36275797099
+  succeeded. Latest push CI 36275797108 and research refresh 36275797096 passed.
+  GDR 1391 remains flagged; H1 lidar candidate remains unscored. No new submission,
+  competition upload, leaderboard gain or verified geological discovery is claimed.
+- The complete suite was rerun after these changes: **133 passed**, 50 existing,
+  non-failing Rasterio deprecation warnings. QFFDB/GeoDAWN workflow build steps and
+  latest push CI/browser integration also passed.
 - Full review, evidence and next-session plan: `knowledge/session6/review.md`,
   `knowledge/session6/local_verification.json`, `knowledge/session6/next_session.md`.
 

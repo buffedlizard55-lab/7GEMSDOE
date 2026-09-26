@@ -28,29 +28,40 @@ These are decision rules, not predictions. Until a score is logged, do not
 package or submit a second file: it would confound the H1 test and use limited
 feedback budget.
 
-## 2. Retrieve the independent inputs (blocked in this session)
+## 2. External-data runner results and next validation
 
-The repository integration cannot call GitHub `workflow_dispatch` (both
-attempts returned HTTP 403, “Resource not accessible by integration”). The
-existing [QFFDB workflow](../../.github/workflows/qfaults.yml) and
-[GeoDAWN-radiometric workflow](../../.github/workflows/geodawn-rad.yml) remain
-ready for an authorized repository operator to dispatch, or for a permitted
-push-triggered run. Inspect the resulting observed file listings, manifest,
-CRS, checksums, rights note and coverage before using a product. The code now
-fails closed on QFFDB archive traversal/missing CRS and ambiguous radiometric
-files; a runner failure is an outcome to record, not a reason to guess a schema.
+Push-triggered runner builds succeeded after both direct `workflow_dispatch`
+requests returned HTTP 403. The products and machine evidence are in
+[`external/geodawn_rad`](../../external/geodawn_rad/) and
+[`external/qfaults`](../../external/qfaults/).
 
-If products land:
+* **GeoDAWN:** Area 1 and Area 2 TIFF packages were downloaded with their
+  ScienceBase-listed sizes and MD5 checks verified; source ZIPs are temporary
+  and are not stored in Git. The four-band K/Th/U/TC product is exact-grid,
+  uint8; manifest includes archive SHA-256, member names, source/output grid,
+  per-channel valid-pixel counts and product hash. USGS ReadMe documents 50 m
+  Area 1 and 100 m Area 2 grids; Area 1 takes priority in overlap.
+* **H9 first screen:** `knowledge/session6/geodawn_experiment.json` compares
+  raw radiometric channels with bands19/lidar/all on the same 5×5 geographic
+  folds, 1 km buffer, common support and matched samples. Rad narrowly improves
+  pooled skill at 1% and 2%, but wins only 3/5 folds at 2%; the pre-registered
+  promotion rule therefore **fails**. It used raw channels, not the planned
+  lineament/edge features, and does not isolate all acquisition blocks. Treat
+  it as an initial negative/weak result, not evidence of leaderboard gain.
+* **QFFDB:** observed shapefile fields are `scale` and `certainty`; the observed
+  category values and source hash are in `observed_schema.json`. The compact
+  three-band grid is a known-fault-catalogue diagnostic. It is **not an
+  independent discovery feature**; direct model use risks label/catalogue
+  leakage and needs spatial/source deduplication first. Its mapping scale and
+  lower-certainty labels are documented in `qfaults_prior.json`.
 
-1. Run H9 on the exact pre-registered spatial folds and matched-mass budgets in
-   `knowledge/session5/next_session.md`, comparing radiometrics alone against
-   bands19 and lidar, with survey/acquisition blocks held out where their
-   boundaries are available.
-2. Run H2 only after observing actual QFFDB scale/certainty fields and
-   definitions in the downloaded data. Unknown class stays unknown; do not
-   equate an undocumented field to mapping scale.
-3. Inspect per-asset licences before reuse. USGS public-domain status does not
-   automatically establish the terms of a separately mirrored derivative.
+Next experiments, after logging H1's participant-reported result and without
+packaging a second submission: derive radiometric gradient/lineament features;
+repeat matched-fold ablations; isolate acquisition blocks using official
+outline/flight-line geometry; and pre-register the H2 matched-mass diagnostic
+as catalogue sensitivity only. Check altitude-quality masks and asset-specific
+reuse terms before redistribution. A failure is an outcome, not a reason to
+guess schema or channel semantics.
 
 ## 3. Continue experiments that do not require a new upload
 
@@ -86,8 +97,9 @@ automated excerpt checks from scientific source verification.
   public sibling-repository bridge after Dropbox TLS failed. They were not
   independently authenticated against sponsor-published checksums. The official
   1m DEM links CSV is still not available locally.
-* **Runner permissions:** integration HTTP 403 blocked both manual workflow
-  dispatches; QFFDB/radiometric outputs do not yet exist.
+* **Runner permissions:** integration HTTP 403 blocked manual workflow dispatches;
+  marker-prefixed branch pushes worked. QFFDB and GeoDAWN manifests now exist, but
+  the research feed's main-only release was not refreshed by branch runs.
 * **Team bookkeeping:** SDCF9's leaderboard best 0.1563 does not match the only
   file we have attributed to that account (0.1152); obtain file/hash attribution.
   Verify participant entity/team registration and follow official rules §3.4

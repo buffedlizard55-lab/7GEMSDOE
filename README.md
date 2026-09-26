@@ -27,12 +27,21 @@ entries, and still shows DARD at **0.3049**; the known group best is **0.1563**
 This session autonomously placed the three mirrored rasters, reran preparation
 and CPU training, then rebuilt the historic control **byte-identically**
 (SHA-256 `90fb7dc0fc1f…`) without publishing or replacing any recommended file.
-Its random-pixel AUC is only a pipeline diagnostic, not spatial skill. H1 remains
-unscored; no new upload or leaderboard gain is claimed. All **124 tests pass**
-(the 50 Rasterio deprecation warnings remain non-failing). QFFDB/radiometric
-`workflow_dispatch` requests returned GitHub HTTP 403, and the feed flags the
-GDR 1391 excerpt for review. Full limitations and next-session priorities are
-in [`knowledge/session6/next_session.md`](knowledge/session6/next_session.md).
+Its random-pixel AUC is only a pipeline diagnostic, not spatial skill. The H1
+lidar submission remains unscored; no competition upload or leaderboard gain is
+claimed. Official-source runner products now exist: a three-band QFFDB
+scale/certainty diagnostic and a four-band GeoDAWN K/Th/U/TC raster, both on the
+competition grid with hashes in their manifests. The first H9 screen (raw
+radiometric channels, common spatial folds) showed only a small pooled edge over
+bands19 and **failed its promotion rule**; it is not a submission policy or a
+leaderboard estimate. QFFDB is a known-fault catalogue and is not treated as an
+independent discovery feature. Latest push CI, browser integration and runner
+builds passed; the 124-test baseline remains documented and new ingestion tests
+also pass in CI. The research feed remains the 21:12:55 UTC snapshot (107 rows,
+one GDR 1391 review flag); branch refreshes do not publish the main-only release.
+Full results, limitations and next steps are in
+[`knowledge/session6/review.md`](knowledge/session6/review.md) and
+[`knowledge/session6/next_session.md`](knowledge/session6/next_session.md).
 
 ## Download first — session 6 (2026-09-26; H1 candidate unchanged)
 
@@ -102,9 +111,12 @@ score-independent backlog and the standing brief's strategy question:
    no file packaged until v1 scores.
 3. **Overlooked official data**: GeoDAWN radiometrics K/Th/U/TC (same
    survey, absent from the 19-band stack; DOI 10.5066/P93LGLVQ) → H9;
-   QFFDB scale/certainty → H2. Both runner jobs are code-complete,
-   fail-closed and hermetic-tested
-   (dispatch `[run-qfaults]` / `[run-rad]` on Actions).
+   QFFDB scale/certainty → H2. Marker-prefixed Actions runs built both
+   products after dispatch returned HTTP 403. GeoDAWN's first common-fold
+   raw-channel screen narrowly beat bands19 at 1%/2% pooled, but failed the
+   frozen 4/5-fold rule at 2%; edge/lineament features and acquisition-block
+   holdouts remain untested. QFFDB's observed `scale`/`certainty` fields
+   support a diagnostic prior, but direct catalogue use risks leakage.
 4. **Strategy**: 15 verified sources, 10-item overlooked-data audit,
    H9–H12, and a verifiability-first final-round play (H12) aimed at the
    $250k expanded-label round rather than dot-optimal private-set DTI.
@@ -151,7 +163,13 @@ OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 .venv/bin/python scripts/train_model.py
 .venv/bin/python -m pytest -q
 # Optional rebuild of legacy control (does not auto-repackage immutable downloads):
 .venv/bin/python scripts/build_submission.py
+# Optional H9 raw-radiometric geographic screen (~10 min on 2 CPU threads):
+.venv/bin/python scripts/radiometric_experiment.py
 ```
+
+The H9 runner report uses the pinned LightGBM version in `requirements-repro.txt`.
+It compares raw GeoDAWN channels; it does not yet test derived lineament edges or
+isolate all acquisition blocks, and it emits no submission.
 
 Detailed prior [requirements matrix](knowledge/session2/requirements_matrix.md),
 [session 3 review](knowledge/session3/review.md); the current plan is
