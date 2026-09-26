@@ -1,0 +1,32 @@
+{
+  "status": "PASS",
+  "feed": "mocked release; real download bytes",
+  "checks": [
+    {
+      "width": 1440,
+      "status": "PASS",
+      "download_sha256": "2b06d45c5b5726be60ed7f953accda58919999a99b442bb87410377e0c4c034a",
+      "checks": [
+        "all pages",
+        "no horizontal viewport overflow",
+        "copy note",
+        "download hash",
+        "mismatch blocked",
+        "no JS errors"
+      ]
+    },
+    {
+      "width": 390,
+      "status": "PASS",
+      "download_sha256": "2b06d45c5b5726be60ed7f953accda58919999a99b442bb87410377e0c4c034a",
+      "checks": [
+        "all pages",
+        "no horizontal viewport overflow",
+        "copy note",
+        "download hash",
+        "mismatch blocked",
+        "no JS errors"
+      ]
+    }
+  ]
+}

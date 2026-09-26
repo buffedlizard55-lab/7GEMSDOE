@@ -28,3 +28,15 @@ def test_custom_metric_radius():
     p[3, 4] = 1; g[3,3] = 1
     assert dtvi_components(p, g, r_pixels=2)['TP_w'] == .5
     assert dtvi_components(p, g, r_pixels=1)['TP_w'] == 0
+
+
+def test_custom_radius_larger_than_image():
+    p=np.zeros((2,2)); p[0,0]=1
+    c=dtvi_components(p,p,r_pixels=6)
+    assert c['TP_w']==1 and c['FP_w']==0
+
+
+@pytest.mark.parametrize('radius',[0,-1,np.nan,np.inf])
+def test_invalid_radius(radius):
+    with pytest.raises(ValueError):
+        dtvi_components(np.ones((2,2)),np.ones((2,2)),r_pixels=radius)

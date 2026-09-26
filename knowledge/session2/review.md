@@ -47,3 +47,23 @@ Final test counts, runner results, browser checks, PR and deployment status will
 appended after execution, not predicted in advance. All remaining untested scientific
 strategies remain hypotheses. No score >0.3049, platform acceptance, field discovery,
 or exhaustive “no hallucinations” certification is claimed.
+
+### Final execution evidence so far
+
+- CPU extraction/training/inference completed in this sandbox. Fresh GBT AUC 0.9172875
+  is a random-pixel monitor only. Rebuilt control SHA-256 exactly matches the existing
+  published control (`90fb7dc0fc1f…`); see `rebuilt_control_meta.json` and `train_report.json`.
+- GitHub runner [36261339061](https://github.com/buffedlizard55-lab/7GEMSDOE/actions/runs/36261339061)
+  passed desktop 1440 px/mobile 390 px browser checks for all seven pages, no viewport
+  overflow, clipboard Note, real TIFF byte hash and intentional mismatch blocking.
+  Live-release response was mocked; it does not establish real release availability.
+- Same runner completed the native **1 m** DEM pilot: 4,194,304 valid crop pixels,
+  3,873,024 after a 40 m safety buffer. Source CRS is **EPSG:26911 (NAD83)**, not the
+  competition's EPSG:32611 (WGS84); reproject before any integration. This pilot is NOT
+  in either submission. Earlier central crop was entirely nodata; overview-based
+  valid-interior selection fixed it. Full-grid extrapolation is not justified.
+- Direct downloads in this sandbox serve HTTP 200 and hash-match both manifests.
+- Local browser installation and Actions artifact-download endpoints were egress-blocked;
+  runner evidence was recovered via its PR comment, not fabricated from job status.
+- Source monitor on runner found all five cited excerpts. Leaderboard requests returned
+  no HTML table; parser adjustment is in progress and last-good snapshots remain flagged.

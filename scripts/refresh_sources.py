@@ -59,6 +59,8 @@ def refresh(previous, getter=requests.get):
         result.update(status='refresh_failed', error=str(exc)[:500])
         if response is not None:
             soup = BeautifulSoup(response.text, 'html.parser')
+            pos=response.text.find('DARD')
+            result['page_diagnostics'] = dict(url=response.url, length=len(response.content), title=str(soup.title), participant_context=response.text[max(0,pos-3000):pos+1500] if pos>=0 else soup.get_text(' ',strip=True)[:5000], scripts=[s.get('src') for s in soup.find_all('script') if s.get('src')])
             result['parse_diagnostics'] = [dict(cells=[td.get_text(' ', strip=True) for td in tr.find_all(['td','th'])], html=str(tr)[:3000]) for tr in soup.select('table tr')[:3]]
     return result
 

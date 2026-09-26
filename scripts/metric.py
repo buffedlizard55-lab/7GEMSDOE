@@ -54,6 +54,8 @@ def _shift(arr: np.ndarray, dy: int, dx: int, fill: float = 0.0) -> np.ndarray:
     """Shift array so that out[y, x] = arr[y - dy, x - dx]; fill outside."""
     out = np.full_like(arr, fill, dtype=np.float64)
     h, w = arr.shape
+    if abs(dy) >= h or abs(dx) >= w:
+        return out
     ys0, ys1 = max(0, dy), min(h, h + dy)
     xs0, xs1 = max(0, dx), min(w, w + dx)
     out[ys0:ys1, xs0:xs1] = arr[ys0 - dy:ys1 - dy, xs0 - dx:xs1 - dx]
@@ -83,7 +85,6 @@ def dtvi_components(pred: np.ndarray, truth: np.ndarray,
         raise ValueError("predictions must be in [0, 1] (non-finite treated as 0)")
 
     g_mask = truth > 0
-    g_idx = np.argwhere(g_mask)          # (N, 2) rows of (y, x)
     n_truth = int(g_mask.sum())
 
     # --- TP_w and FN_w: for every truth pixel g, max over x within R of p(x)k(d) ---

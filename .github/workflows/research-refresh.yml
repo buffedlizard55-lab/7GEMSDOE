@@ -52,7 +52,7 @@ jobs:
           python - <<'PYCODE'
           from pathlib import Path
           parts = ["## Automated research verification\nRun: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"]
-          for name in ['knowledge/feed.json', 'knowledge/session2/dem_pilot.json', 'scratch/browser/report.json', '/tmp/browser-install.txt']:
+          for name in ['knowledge/feed.json', 'knowledge/session2/dem_pilot.json', 'scratch/browser/report.json']:
               p = Path(name)
               if p.exists():
                   parts.append('<details><summary>' + name + '</summary>\n\n```json\n' + p.read_text()[-16000:] + '\n```\n</details>')

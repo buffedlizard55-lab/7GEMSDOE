@@ -49,7 +49,7 @@ def test_outside_requires_nan(files, bad):
 
 
 @pytest.mark.parametrize('overrides', [dict(count=2), dict(dtype='float64'),
-    dict(crs='EPSG:4326'), dict(nodata=None), dict(transform=from_origin(0, 0, 1, 1))])
+    dict(crs='EPSG:4326'), dict(nodata=None), dict(transform=from_origin(200, 300, 100, 100))])
 def test_metadata(files, overrides):
     t, p, a = files
     write(p, a, **overrides)
