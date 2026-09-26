@@ -205,11 +205,12 @@ Machine evidence and full hashes: [`local_verification.json`](local_verification
   top of the site with exact Note and guide. H1 is still unscored, so no second
   submission file is recommended or generated. The new external products are
   explicitly not submission candidates.
-* Official leaderboard snapshot remains 107 entries at 2026-09-26 21:12:55 UTC,
-  DARD 0.3049; best group result remains 0.1563. Branch refresh workflows do
-  not publish the main-only release, so the public feed's timestamp is unchanged.
-  GDR 1391 remains `REVIEW_excerpt_missing`; this is a source-review flag, not
-  a verified source correction.
+* At the branch review checkpoint, the bundled leaderboard snapshot had 107
+  entries (21:12:55 UTC). After PR #7 merged, the main-only research refresh
+  succeeded (run 36277703129) and updated the public release and bundled feed to
+  109 entries at 22:53:29 UTC. DARD remains 0.3049; best group result remains
+  0.1563. GDR 1391 remains `REVIEW_excerpt_missing`; this is a source-review flag,
+  not a verified source correction.
 * No new fault or geothermal vent has been field-verified. No score gain is
   claimed. Review and merge only after the newest branch commits and required
   checks are actually complete; `action_required` PR checks must not be mistaken

@@ -17,7 +17,7 @@ Geothermal vents are the user's broader motivation, not the competition's raster
 
 ## Session 6 — verified current state (2026-09-26)
 
-The newest saved public feed is timestamped **21:12:55 UTC**, has 107 ranked
+The newest saved public feed is timestamped **22:53:29 UTC**, has 109 ranked
 entries, and still shows DARD at **0.3049**; the known group best is **0.1563**
 (extradr19, rank 24; SDCF9 rank 25 with unknown file attribution). See
 [`knowledge/feed.json`](knowledge/feed.json),
@@ -37,9 +37,9 @@ bands19 and **failed its promotion rule**; it is not a submission policy or a
 leaderboard estimate. QFFDB is a known-fault catalogue and is not treated as an
 independent discovery feature. Latest push CI, browser integration and runner
 builds passed; the 124-test baseline remains documented and new ingestion tests
-also pass in CI. The research feed remains the 21:12:55 UTC snapshot (107 rows,
-one GDR 1391 review flag); branch refreshes do not publish the main-only release.
-Full results, limitations and next steps are in
+also pass in CI. The post-merge main refresh updated the public feed at 22:53:29 UTC
+(109 rows; GDR 1391 remains flagged for manual review). Branch-only refreshes still
+do not publish the main-only release. Full results, limitations and next steps are in
 [`knowledge/session6/review.md`](knowledge/session6/review.md) and
 [`knowledge/session6/next_session.md`](knowledge/session6/next_session.md).
 

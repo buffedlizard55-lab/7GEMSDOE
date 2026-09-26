@@ -76,7 +76,9 @@ def main():
 <p>{link('knowledge/session6/geodawn_experiment.json','Full H9 report')} · {link('knowledge/session5/lidar_gaps.json','Gap report')} · {link('knowledge/session5/lidar_fp_audit.json','FP audit')} · {link('knowledge/session5/research.md','Session 5 sources and hypotheses')} · {link('knowledge/session6/review.md','Session 6 three-pass follow-up')}</p></section>'''
     replay=session6_evidence['control_reproduction']
     train=session6_evidence['retraining']
-    feed_snapshot=session6_evidence['official_feed']
+    feed_snapshot={'automated_snapshot_utc': feed['verified_utc'],
+                   'ranked_entries': len(feed['rows']),
+                   'leader': feed['rows'][0]}
     session6=f'''<section class="card"><h2>Session 6: reproducible pipeline, current score and H9 result</h2>
 <p>The latest verified public feed ({e(feed_snapshot['automated_snapshot_utc'])}) has {feed_snapshot['ranked_entries']} ranks; leader {e(feed_snapshot['leader']['participant'])} is <strong>{feed_snapshot['leader']['score']:.4f}</strong>. The team's best known public result remains 0.1563. See {link('knowledge/feed.json','machine-readable current snapshot')}.</p>
 <p>CPU replay reproduced the preserved control byte-identically (SHA-256 <code>{replay['reproduced_sha256'][:12]}</code>); format gate PASS, and no file was published. H1 remains unscored. New QFFDB/GeoDAWN products are data inputs—not submission files.</p>
