@@ -1,0 +1,977 @@
+{
+ "status": "measured_catalogue_diagnostic",
+ "generated_utc": "2026-09-26T23:20:15.847678+00:00",
+ "pre_registration": [
+  "Pre-registered H9b: GeoDAWN radiometric lineaments under geographic CV.",
+  "",
+  "Primary arms on identical support, folds, samples and LightGBM settings:",
+  "* bands19: the supplied competition features;",
+  "* rad_raw: the four independently quantised K/Th/U/total-count grids;",
+  "* rad_lineament: rad_raw plus the fixed mask-safe 100/300 m derivatives in",
+  "  radiometric_features.py.",
+  "",
+  "Promotion rule (frozen before measurement): rad_lineament must exceed BOTH",
+  "bands19 and rad_raw in pooled top-f coverage skill at 1% and 2%, and beat the",
+  "stronger comparator in at least 4/5 individual folds at each density. Ridge-NMS",
+  "results are secondary. No submission is generated regardless of outcome.",
+  "",
+  "The labels are known catalogue faults, not hidden competition truth. This test",
+  "measures geographic localisation of catalogue-like faults and cannot estimate a",
+  "leaderboard score or verify a newly discovered fault/geothermal resource."
+ ],
+ "hypothesis": "H9b: fixed mask-safe multiscale spatial boundaries in independent GeoDAWN K/Th/U/TC improve geographic fault localisation over both raw radiometrics and the supplied 19 bands.",
+ "primary_arm": "rad_lineament",
+ "comparators": [
+  "bands19",
+  "rad_raw"
+ ],
+ "promotion_rule": "rad_lineament > both bands19 and rad_raw pooled at 1% and 2%, and > the stronger comparator in >=4/5 folds at both densities",
+ "protocol": "H4 5x5 geographic blocks assigned to five folds; 10-pixel (1 km) test buffer; identical matched support/training samples/learner; top-f official-kernel coverage relative to exact random coverage",
+ "feature_policy": {
+  "scales_pixels": [
+   1.0,
+   3.0
+  ],
+  "nominal_scales_m": [
+   100,
+   300
+  ],
+  "missing_data": "normalised convolution plus a one-cell derivative-support erosion; zero-coded survey edges are not treated as geological edges",
+  "ratio_exclusion": "No K/Th, K/U or Th/U ratios: each compact source channel was independently quantised, so ratios would not retain physical meaning.",
+  "derived_count": 30,
+  "derived_names": [
+   "K_grad_s1",
+   "K_lapabs_s1",
+   "Th_grad_s1",
+   "Th_lapabs_s1",
+   "U_grad_s1",
+   "U_lapabs_s1",
+   "TC_grad_s1",
+   "TC_lapabs_s1",
+   "edge_rss_s1",
+   "edge_max_s1",
+   "edge_coherence_s1",
+   "edge_cos2_s1",
+   "edge_sin2_s1",
+   "K_grad_s3",
+   "K_lapabs_s3",
+   "Th_grad_s3",
+   "Th_lapabs_s3",
+   "U_grad_s3",
+   "U_lapabs_s3",
+   "TC_grad_s3",
+   "TC_lapabs_s3",
+   "edge_rss_s3",
+   "edge_max_s3",
+   "edge_coherence_s3",
+   "edge_cos2_s3",
+   "edge_sin2_s3",
+   "K_contrast_s3",
+   "Th_contrast_s3",
+   "U_contrast_s3",
+   "TC_contrast_s3"
+  ]
+ },
+ "source": {
+  "doi": "10.5066/P93LGLVQ",
+  "sciencebase_item": "657e1d85d34e23d3533209f7",
+  "product": "external/geodawn_rad/geodawn_rad_u8.tif",
+  "sha256": "c22420f75999030d7cc65c9e31e50d232ea6158423bca051613a18a8b20ba682",
+  "channels": [
+   "K",
+   "Th",
+   "U",
+   "TC"
+  ],
+  "quantisation": "Per-channel 1st-99th-percentile uint8 1..255 in the runner product; 0 is missing. Values are not original physical concentrations."
+ },
+ "input_sha256": {
+  "training_features": "4371c82e3b8339b807bdffcf4ef59a225520fe2988d521be208ae33743123bc5",
+  "existing_faults": "7ba308ccdc4418b31a178f4f1ef21aaa6e152e4028f2f6f64b01f7eb25ae4093",
+  "template": "2176d08e485aa2cd2860ce8df539db4faf4d76163b38a4dd8c30a40454d35cbc"
+ },
+ "universe_px": 5164300,
+ "positives_in_universe": 60894,
+ "rad_support_px": 5164300,
+ "densities": [
+  0.005,
+  0.01,
+  0.02,
+  0.03
+ ],
+ "random_coverage": {
+  "0.005": 0.045125315782898315,
+  "0.01": 0.08690121327844423,
+  "0.02": 0.16151715374757852,
+  "0.03": 0.22583647765869735
+ },
+ "fold_seed": 20260926,
+ "sample_sizes_max": {
+  "positive": 40000,
+  "negative": 120000
+ },
+ "learner": {
+  "library": "LightGBM",
+  "version": "4.6.0",
+  "n_estimators": 300,
+  "learning_rate": 0.05,
+  "num_leaves": 63,
+  "min_child_samples": 100,
+  "subsample": 0.8,
+  "colsample_bytree": 0.8,
+  "reg_lambda": 5.0,
+  "random_state": 20260926
+ },
+ "execution_note": "A pre-measurement attempt retaining the optional fused diagnostic and all arrays simultaneously was killed by the sandbox memory limit. The diagnostic-only fused arm was removed and arms are loaded sequentially; the three primary arms, samples, folds and promotion rule are unchanged.",
+ "folds": {
+  "0": {
+   "test_px": 541953,
+   "test_pos": 5222,
+   "train_pos": 40000,
+   "train_neg": 120000,
+   "arms": {
+    "rad_raw": {
+     "auc": 0.576867,
+     "skill": {
+      "0.005": {
+       "coverage": 0.059456,
+       "multiple": 1.317585,
+       "dti_known": 0.065726
+      },
+      "0.01": {
+       "coverage": 0.091454,
+       "multiple": 1.052391,
+       "dti_known": 0.090932
+      },
+      "0.02": {
+       "coverage": 0.139522,
+       "multiple": 0.86382,
+       "dti_known": 0.115813
+      },
+      "0.03": {
+       "coverage": 0.17911,
+       "multiple": 0.793098,
+       "dti_known": 0.127561
+      }
+     },
+     "skill_nms": {
+      "0.005": {
+       "coverage": 0.064198,
+       "multiple": 1.422659
+      },
+      "0.01": {
+       "coverage": 0.102238,
+       "multiple": 1.176482
+      },
+      "0.02": {
+       "coverage": 0.163658,
+       "multiple": 1.013255
+      },
+      "0.03": {
+       "coverage": 0.214488,
+       "multiple": 0.949749
+      }
+     }
+    },
+    "rad_lineament": {
+     "auc": 0.583237,
+     "skill": {
+      "0.005": {
+       "coverage": 0.040522,
+       "multiple": 0.89798,
+       "dti_known": 0.044915
+      },
+      "0.01": {
+       "coverage": 0.071542,
+       "multiple": 0.823252,
+       "dti_known": 0.071349
+      },
+      "0.02": {
+       "coverage": 0.124349,
+       "multiple": 0.769879,
+       "dti_known": 0.103211
+      },
+      "0.03": {
+       "coverage": 0.166911,
+       "multiple": 0.739081,
+       "dti_known": 0.118635
+      }
+     },
+     "skill_nms": {
+      "0.005": {
+       "coverage": 0.050055,
+       "multiple": 1.109254
+      },
+      "0.01": {
+       "coverage": 0.089811,
+       "multiple": 1.033487
+      },
+      "0.02": {
+       "coverage": 0.149843,
+       "multiple": 0.927723
+      },
+      "0.03": {
+       "coverage": 0.200987,
+       "multiple": 0.889966
+      }
+     }
+    },
+    "bands19": {
+     "auc": 0.692314,
+     "skill": {
+      "0.005": {
+       "coverage": 0.072897,
+       "multiple": 1.615436,
+       "dti_known": 0.082207
+      },
+      "0.01": {
+       "coverage": 0.1182,
+       "multiple": 1.360163,
+       "dti_known": 0.121162
+      },
+      "0.02": {
+       "coverage": 0.183712,
+       "multiple": 1.137415,
+       "dti_known": 0.157246
+      },
+      "0.03": {
+       "coverage": 0.226317,
+       "multiple": 1.002129,
+       "dti_known": 0.166166
+      }
+     },
+     "skill_nms": {
+      "0.005": {
+       "coverage": 0.10904,
+       "multiple": 2.416372
+      },
+      "0.01": {
+       "coverage": 0.152516,
+       "multiple": 1.755052
+      },
+      "0.02": {
+       "coverage": 0.218155,
+       "multiple": 1.350661
+      },
+      "0.03": {
+       "coverage": 0.271457,
+       "multiple": 1.202008
+      }
+     }
+    }
+   }
+  },
+  "1": {
+   "test_px": 1165263,
+   "test_pos": 14240,
+   "train_pos": 40000,
+   "train_neg": 120000,
+   "arms": {
+    "rad_raw": {
+     "auc": 0.556724,
+     "skill": {
+      "0.005": {
+       "coverage": 0.041877,
+       "multiple": 0.928025,
+       "dti_known": 0.047666
+      },
+      "0.01": {
+       "coverage": 0.06525,
+       "multiple": 0.750847,
+       "dti_known": 0.068152
+      },
+      "0.02": {
+       "coverage": 0.111284,
+       "multiple": 0.688991,
+       "dti_known": 0.099526
+      },
+      "0.03": {
+       "coverage": 0.148287,
+       "multiple": 0.656611,
+       "dti_known": 0.11595
+      }
+     },
+     "skill_nms": {
+      "0.005": {
+       "coverage": 0.048511,
+       "multiple": 1.075026
+      },
+      "0.01": {
+       "coverage": 0.078819,
+       "multiple": 0.906993
+      },
+      "0.02": {
+       "coverage": 0.13166,
+       "multiple": 0.815148
+      },
+      "0.03": {
+       "coverage": 0.173372,
+       "multiple": 0.76769
+      }
+     }
+    },
+    "rad_lineament": {
+     "auc": 0.561091,
+     "skill": {
+      "0.005": {
+       "coverage": 0.038938,
+       "multiple": 0.862878,
+       "dti_known": 0.044238
+      },
+      "0.01": {
+       "coverage": 0.06496,
+       "multiple": 0.747514,
+       "dti_known": 0.067645
+      },
+      "0.02": {
+       "coverage": 0.106231,
+       "multiple": 0.657707,
+       "dti_known": 0.094721
+      },
+      "0.03": {
+       "coverage": 0.142023,
+       "multiple": 0.628875,
+       "dti_known": 0.110704
+      }
+     },
+     "skill_nms": {
+      "0.005": {
+       "coverage": 0.047721,
+       "multiple": 1.057514
+      },
+      "0.01": {
+       "coverage": 0.075653,
+       "multiple": 0.870562
+      },
+      "0.02": {
+       "coverage": 0.126515,
+       "multiple": 0.78329
+      },
+      "0.03": {
+       "coverage": 0.169331,
+       "multiple": 0.749793
+      }
+     }
+    },
+    "bands19": {
+     "auc": 0.607799,
+     "skill": {
+      "0.005": {
+       "coverage": 0.033496,
+       "multiple": 0.742297,
+       "dti_known": 0.038194
+      },
+      "0.01": {
+       "coverage": 0.051114,
+       "multiple": 0.588186,
+       "dti_known": 0.053539
+      },
+      "0.02": {
+       "coverage": 0.08205,
+       "multiple": 0.507995,
+       "dti_known": 0.074029
+      },
+      "0.03": {
+       "coverage": 0.108562,
+       "multiple": 0.480713,
+       "dti_known": 0.085968
+      }
+     },
+     "skill_nms": {
+      "0.005": {
+       "coverage": 0.044477,
+       "multiple": 0.985638
+      },
+      "0.01": {
+       "coverage": 0.071692,
+       "multiple": 0.824981
+      },
+      "0.02": {
+       "coverage": 0.119518,
+       "multiple": 0.739972
+      },
+      "0.03": {
+       "coverage": 0.159479,
+       "multiple": 0.70617
+      }
+     }
+    }
+   }
+  },
+  "2": {
+   "test_px": 950539,
+   "test_pos": 12920,
+   "train_pos": 40000,
+   "train_neg": 120000,
+   "arms": {
+    "rad_raw": {
+     "auc": 0.554088,
+     "skill": {
+      "0.005": {
+       "coverage": 0.028672,
+       "multiple": 0.635392,
+       "dti_known": 0.032886
+      },
+      "0.01": {
+       "coverage": 0.046056,
+       "multiple": 0.529977,
+       "dti_known": 0.048766
+      },
+      "0.02": {
+       "coverage": 0.073726,
+       "multiple": 0.45646,
+       "dti_known": 0.067736
+      },
+      "0.03": {
+       "coverage": 0.098355,
+       "multiple": 0.435513,
+       "dti_known": 0.079862
+      }
+     },
+     "skill_nms": {
+      "0.005": {
+       "coverage": 0.033575,
+       "multiple": 0.744043
+      },
+      "0.01": {
+       "coverage": 0.057577,
+       "multiple": 0.662553
+      },
+      "0.02": {
+       "coverage": 0.09535,
+       "multiple": 0.590338
+      },
+      "0.03": {
+       "coverage": 0.140451,
+       "multiple": 0.621914
+      }
+     }
+    },
+    "rad_lineament": {
+     "auc": 0.555008,
+     "skill": {
+      "0.005": {
+       "coverage": 0.018014,
+       "multiple": 0.399193,
+       "dti_known": 0.020637
+      },
+      "0.01": {
+       "coverage": 0.033814,
+       "multiple": 0.389106,
+       "dti_known": 0.03577
+      },
+      "0.02": {
+       "coverage": 0.058366,
+       "multiple": 0.361361,
+       "dti_known": 0.053588
+      },
+      "0.03": {
+       "coverage": 0.083914,
+       "multiple": 0.371571,
+       "dti_known": 0.068083
+      }
+     },
+     "skill_nms": {
+      "0.005": {
+       "coverage": 0.024943,
+       "multiple": 0.552757
+      },
+      "0.01": {
+       "coverage": 0.048022,
+       "multiple": 0.552602
+      },
+      "0.02": {
+       "coverage": 0.094212,
+       "multiple": 0.583296
+      },
+      "0.03": {
+       "coverage": 0.13604,
+       "multiple": 0.602381
+      }
+     }
+    },
+    "bands19": {
+     "auc": 0.6364,
+     "skill": {
+      "0.005": {
+       "coverage": 0.030415,
+       "multiple": 0.674019,
+       "dti_known": 0.034941
+      },
+      "0.01": {
+       "coverage": 0.049709,
+       "multiple": 0.57202,
+       "dti_known": 0.052813
+      },
+      "0.02": {
+       "coverage": 0.081012,
+       "multiple": 0.501566,
+       "dti_known": 0.074836
+      },
+      "0.03": {
+       "coverage": 0.106998,
+       "multiple": 0.473784,
+       "dti_known": 0.087438
+      }
+     },
+     "skill_nms": {
+      "0.005": {
+       "coverage": 0.037431,
+       "multiple": 0.829482
+      },
+      "0.01": {
+       "coverage": 0.06456,
+       "multiple": 0.742907
+      },
+      "0.02": {
+       "coverage": 0.112299,
+       "multiple": 0.695276
+      },
+      "0.03": {
+       "coverage": 0.15948,
+       "multiple": 0.706175
+      }
+     }
+    }
+   }
+  },
+  "3": {
+   "test_px": 1603774,
+   "test_pos": 19312,
+   "train_pos": 40000,
+   "train_neg": 120000,
+   "arms": {
+    "rad_raw": {
+     "auc": 0.56332,
+     "skill": {
+      "0.005": {
+       "coverage": 0.028802,
+       "multiple": 0.638274,
+       "dti_known": 0.032621
+      },
+      "0.01": {
+       "coverage": 0.053494,
+       "multiple": 0.615569,
+       "dti_known": 0.055461
+      },
+      "0.02": {
+       "coverage": 0.096133,
+       "multiple": 0.59519,
+       "dti_known": 0.085387
+      },
+      "0.03": {
+       "coverage": 0.126305,
+       "multiple": 0.559275,
+       "dti_known": 0.098164
+      }
+     },
+     "skill_nms": {
+      "0.005": {
+       "coverage": 0.037463,
+       "multiple": 0.830192
+      },
+      "0.01": {
+       "coverage": 0.071969,
+       "multiple": 0.828165
+      },
+      "0.02": {
+       "coverage": 0.121901,
+       "multiple": 0.754727
+      },
+      "0.03": {
+       "coverage": 0.17219,
+       "multiple": 0.762456
+      }
+     }
+    },
+    "rad_lineament": {
+     "auc": 0.567368,
+     "skill": {
+      "0.005": {
+       "coverage": 0.027187,
+       "multiple": 0.602487,
+       "dti_known": 0.030827
+      },
+      "0.01": {
+       "coverage": 0.047754,
+       "multiple": 0.54952,
+       "dti_known": 0.049624
+      },
+      "0.02": {
+       "coverage": 0.086796,
+       "multiple": 0.537377,
+       "dti_known": 0.077232
+      },
+      "0.03": {
+       "coverage": 0.122069,
+       "multiple": 0.540519,
+       "dti_known": 0.094882
+      }
+     },
+     "skill_nms": {
+      "0.005": {
+       "coverage": 0.036888,
+       "multiple": 0.817455
+      },
+      "0.01": {
+       "coverage": 0.068356,
+       "multiple": 0.786594
+      },
+      "0.02": {
+       "coverage": 0.121942,
+       "multiple": 0.754979
+      },
+      "0.03": {
+       "coverage": 0.170944,
+       "multiple": 0.756935
+      }
+     }
+    },
+    "bands19": {
+     "auc": 0.647626,
+     "skill": {
+      "0.005": {
+       "coverage": 0.030401,
+       "multiple": 0.673695,
+       "dti_known": 0.034709
+      },
+      "0.01": {
+       "coverage": 0.056957,
+       "multiple": 0.655425,
+       "dti_known": 0.059694
+      },
+      "0.02": {
+       "coverage": 0.09539,
+       "multiple": 0.590587,
+       "dti_known": 0.085828
+      },
+      "0.03": {
+       "coverage": 0.127053,
+       "multiple": 0.562588,
+       "dti_known": 0.100143
+      }
+     },
+     "skill_nms": {
+      "0.005": {
+       "coverage": 0.053777,
+       "multiple": 1.191721
+      },
+      "0.01": {
+       "coverage": 0.087462,
+       "multiple": 1.006456
+      },
+      "0.02": {
+       "coverage": 0.136089,
+       "multiple": 0.842566
+      },
+      "0.03": {
+       "coverage": 0.182497,
+       "multiple": 0.808094
+      }
+     }
+    }
+   }
+  },
+  "4": {
+   "test_px": 902771,
+   "test_pos": 9200,
+   "train_pos": 40000,
+   "train_neg": 120000,
+   "arms": {
+    "rad_raw": {
+     "auc": 0.571972,
+     "skill": {
+      "0.005": {
+       "coverage": 0.02132,
+       "multiple": 0.472469,
+       "dti_known": 0.023795
+      },
+      "0.01": {
+       "coverage": 0.047097,
+       "multiple": 0.541962,
+       "dti_known": 0.047457
+      },
+      "0.02": {
+       "coverage": 0.096512,
+       "multiple": 0.597536,
+       "dti_known": 0.081423
+      },
+      "0.03": {
+       "coverage": 0.134651,
+       "multiple": 0.596234,
+       "dti_known": 0.097876
+      }
+     },
+     "skill_nms": {
+      "0.005": {
+       "coverage": 0.040328,
+       "multiple": 0.893685
+      },
+      "0.01": {
+       "coverage": 0.077761,
+       "multiple": 0.894825
+      },
+      "0.02": {
+       "coverage": 0.135609,
+       "multiple": 0.839593
+      },
+      "0.03": {
+       "coverage": 0.184121,
+       "multiple": 0.815286
+      }
+     }
+    },
+    "rad_lineament": {
+     "auc": 0.563922,
+     "skill": {
+      "0.005": {
+       "coverage": 0.014447,
+       "multiple": 0.320152,
+       "dti_known": 0.016096
+      },
+      "0.01": {
+       "coverage": 0.036197,
+       "multiple": 0.416534,
+       "dti_known": 0.036435
+      },
+      "0.02": {
+       "coverage": 0.077138,
+       "multiple": 0.477583,
+       "dti_known": 0.065067
+      },
+      "0.03": {
+       "coverage": 0.118846,
+       "multiple": 0.526247,
+       "dti_known": 0.08621
+      }
+     },
+     "skill_nms": {
+      "0.005": {
+       "coverage": 0.030616,
+       "multiple": 0.678462
+      },
+      "0.01": {
+       "coverage": 0.063745,
+       "multiple": 0.733534
+      },
+      "0.02": {
+       "coverage": 0.119295,
+       "multiple": 0.738591
+      },
+      "0.03": {
+       "coverage": 0.163949,
+       "multiple": 0.725964
+      }
+     }
+    },
+    "bands19": {
+     "auc": 0.727524,
+     "skill": {
+      "0.005": {
+       "coverage": 0.053782,
+       "multiple": 1.191839,
+       "dti_known": 0.060566
+      },
+      "0.01": {
+       "coverage": 0.086329,
+       "multiple": 0.993417,
+       "dti_known": 0.088238
+      },
+      "0.02": {
+       "coverage": 0.141399,
+       "multiple": 0.875445,
+       "dti_known": 0.12173
+      },
+      "0.03": {
+       "coverage": 0.191035,
+       "multiple": 0.845899,
+       "dti_known": 0.141954
+      }
+     },
+     "skill_nms": {
+      "0.005": {
+       "coverage": 0.071937,
+       "multiple": 1.594167
+      },
+      "0.01": {
+       "coverage": 0.122197,
+       "multiple": 1.406165
+      },
+      "0.02": {
+       "coverage": 0.197757,
+       "multiple": 1.224372
+      },
+      "0.03": {
+       "coverage": 0.26244,
+       "multiple": 1.162081
+      }
+     }
+    }
+   }
+  }
+ },
+ "caveats": [
+  "Known catalogue traces are the only truth; this is not a hidden-test or leaderboard estimate.",
+  "The source rasters were globally warped and quantised before folds; the transform is unsupervised but transductive.",
+  "Survey acquisition blocks are not isolated by the 5x5 folds; a leave-one-block-out check remains required.",
+  "Radiometric gradients can mark lithologic/soil/moisture/vegetation/acquisition boundaries rather than faults.",
+  "No geochemical ratios are computed from independently quantised channels.",
+  "No submission is generated; H1 remains the pending decisive upload."
+ ],
+ "pooled": {
+  "bands19": {
+   "0.005": {
+    "coverage": 0.038305,
+    "multiple": 0.848848
+   },
+   "0.01": {
+    "coverage": 0.063742,
+    "multiple": 0.733505
+   },
+   "0.02": {
+    "coverage": 0.103745,
+    "multiple": 0.642315
+   },
+   "0.03": {
+    "coverage": 0.136653,
+    "multiple": 0.605096
+   }
+  },
+  "rad_raw": {
+   "0.005": {
+    "coverage": 0.033331,
+    "multiple": 0.738625
+   },
+   "0.01": {
+    "coverage": 0.056954,
+    "multiple": 0.655382
+   },
+   "0.02": {
+    "coverage": 0.0987,
+    "multiple": 0.611082
+   },
+   "0.03": {
+    "coverage": 0.131304,
+    "multiple": 0.581414
+   }
+  },
+  "rad_lineament": {
+   "0.005": {
+    "coverage": 0.027207,
+    "multiple": 0.60293
+   },
+   "0.01": {
+    "coverage": 0.049114,
+    "multiple": 0.565168
+   },
+   "0.02": {
+    "coverage": 0.08707,
+    "multiple": 0.539075
+   },
+   "0.03": {
+    "coverage": 0.121998,
+    "multiple": 0.540206
+   }
+  }
+ },
+ "pooled_nms": {
+  "bands19": {
+   "0.005": {
+    "coverage": 0.055617,
+    "multiple": 1.232495
+   },
+   "0.01": {
+    "coverage": 0.089742,
+    "multiple": 1.032686
+   },
+   "0.02": {
+    "coverage": 0.143521,
+    "multiple": 0.88858
+   },
+   "0.03": {
+    "coverage": 0.191938,
+    "multiple": 0.849896
+   }
+  },
+  "rad_raw": {
+   "0.005": {
+    "coverage": 0.041947,
+    "multiple": 0.929568
+   },
+   "0.01": {
+    "coverage": 0.073988,
+    "multiple": 0.851402
+   },
+   "0.02": {
+    "coverage": 0.124202,
+    "multiple": 0.76897
+   },
+   "0.03": {
+    "coverage": 0.171162,
+    "multiple": 0.757904
+   }
+  },
+  "rad_lineament": {
+   "0.005": {
+    "coverage": 0.037068,
+    "multiple": 0.821455
+   },
+   "0.01": {
+    "coverage": 0.066891,
+    "multiple": 0.769739
+   },
+   "0.02": {
+    "coverage": 0.119121,
+    "multiple": 0.737511
+   },
+   "0.03": {
+    "coverage": 0.16468,
+    "multiple": 0.729202
+   }
+  }
+ },
+ "lineament_beats_stronger_comparator_folds": {
+  "0.005": 0,
+  "0.01": 0,
+  "0.02": 0,
+  "0.03": 0
+ },
+ "promotion_rule_met": false,
+ "lineament_gain_share": {
+  "rad_TC_rank": 0.116257,
+  "rad_K_rank": 0.088996,
+  "rad_Th_rank": 0.069486,
+  "rad_U_rank": 0.055328,
+  "Th_grad_s3": 0.038318,
+  "K_grad_s3": 0.038126,
+  "TC_lapabs_s3": 0.032788,
+  "TC_grad_s1": 0.030566,
+  "TC_grad_s3": 0.030127,
+  "edge_sin2_s3": 0.029715,
+  "K_lapabs_s3": 0.028451,
+  "U_grad_s3": 0.02824,
+  "TC_contrast_s3": 0.027865,
+  "edge_cos2_s3": 0.027006,
+  "Th_contrast_s3": 0.023484,
+  "Th_lapabs_s3": 0.023246,
+  "edge_max_s3": 0.022802,
+  "U_contrast_s3": 0.022732,
+  "U_lapabs_s3": 0.022721,
+  "K_grad_s1": 0.021295,
+  "K_contrast_s3": 0.020677,
+  "edge_coherence_s3": 0.02036,
+  "Th_grad_s1": 0.019038,
+  "edge_rss_s3": 0.017495,
+  "TC_lapabs_s1": 0.016738,
+  "edge_cos2_s1": 0.016205,
+  "K_lapabs_s1": 0.015385,
+  "U_grad_s1": 0.014996,
+  "U_lapabs_s1": 0.01487,
+  "Th_lapabs_s1": 0.014752,
+  "edge_sin2_s1": 0.014633,
+  "edge_coherence_s1": 0.013907,
+  "edge_rss_s1": 0.012802,
+  "edge_max_s1": 0.010593
+ },
+ "seconds": 691.7
+}
