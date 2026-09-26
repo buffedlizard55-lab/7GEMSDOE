@@ -3,6 +3,9 @@ name: Lidar scarp features
 # reach USGS hosts, so hosted runners download the official tiles, compute 2 m
 # scarp descriptors and aggregate them onto the official 100 m grid. Only the
 # compact uint8 product + provenance logs are committed back (session branches only).
+# Cost control: the ~40-minute extraction runs only on manual dispatch or when the
+# pushing commit message contains "[run-dem]"; path-matching edits alone (e.g. a
+# read-side helper in dem_merge.py) no longer re-download ~167 GB of tiles.
 on:
   workflow_dispatch:
     inputs:
@@ -23,6 +26,7 @@ concurrency:
   cancel-in-progress: true
 jobs:
   extract:
+    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[run-dem]')
     runs-on: ubuntu-latest
     timeout-minutes: 150
     strategy:
@@ -57,7 +61,8 @@ jobs:
           retention-days: 30
   merge:
     needs: extract
-    if: always()
+    # merge partial results (failed tiles are logged) but never skipped/cancelled runs
+    if: always() && (needs.extract.result == 'success' || needs.extract.result == 'failure')
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
