@@ -6,6 +6,8 @@ from pathlib import Path
 
 import numpy as np
 import pytest
+import rasterio
+from rasterio.transform import Affine
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
 import geodawn_rad as GR
@@ -86,6 +88,23 @@ def test_inspect_tiff_zip_rejects_unsafe_duplicate_and_symlink_members(tmp_path)
 
 def test_safe_basename_strips_windows_and_posix_paths():
     assert GR._safe_basename(r"..\\nested/path.tif") == "path.tif"
+
+
+def test_warp_to_grid_preserves_source_grid_metadata(tmp_path):
+    source = tmp_path / "source.tif"
+    transform = Affine(100, 0, 0, 0, -100, 200)
+    with rasterio.open(source, "w", driver="GTiff", width=2, height=2,
+                       count=1, dtype="float32", crs="EPSG:32611",
+                       transform=transform, nodata=-9999) as dst:
+        dst.write(np.array([[1, 2], [3, 4]], dtype=np.float32), 1)
+    values, mask, metadata = GR.warp_to_grid(
+        source, (2, 2), transform, "EPSG:32611")
+    assert mask.all()
+    assert np.array_equal(values, [[1, 2], [3, 4]])
+    assert metadata["width"] == metadata["height"] == 2
+    assert metadata["crs"] == "EPSG:32611"
+    assert metadata["resolution"] == [100.0, 100.0]
+    assert metadata["nodata"] == -9999.0
 
 
 def test_quantise_robust_and_nodata_zero():

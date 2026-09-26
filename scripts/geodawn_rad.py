@@ -18,14 +18,14 @@ public domain -- verify asset terms on the runner and record them).
 What this script does (runs on GitHub Actions; the sandbox cannot reach
 ScienceBase):
   1. queries the ScienceBase JSON API for the item's file list,
-  2. selects radiometric grid GeoTIFFs by filename pattern
-     (K / Th / U / total-count / dose), FAILING CLOSED with the observed
-     file list if nothing matches (names are NOT assumed),
-  3. downloads, reprojects each grid to the official competition grid
-     (EPSG:32611, 100 m, 3292x3730, bilinear), and
-  4. writes external/geodawn_rad/geodawn_rad_u8.tif (uint8, <=4 bands) +
-     external/geodawn_rad/geodawn_rad.json manifest with source URLs,
-     sha256s, observed file list and rights notes.
+  2. verifies and downloads the official Area 1/Area 2 GeoTIFF ZIPs by
+     recorded size and ScienceBase MD5; safe-lists ZIP members and selects
+     K / Th / U / total-count GeoTIFFs, failing closed on ambiguity,
+  3. reprojects both areas to the official grid (bilinear), with higher-
+     resolution Area 1 taking precedence in overlap, and
+  4. writes external/geodawn_rad/geodawn_rad_u8.tif (uint8, four bands) +
+     a manifest with archive hashes, member names, source/output grid,
+     output SHA-256 and rights/caveat notes.
 
 Hermetic core (tested in tests/test_geodawn_rad.py): select_rad_files()
 and quantise() are pure functions over a file-listing dict / numpy array.
@@ -192,6 +192,15 @@ def warp_to_grid(path: Path, shape, transform, crs):
     with rasterio.open(path) as src:
         if src.crs is None:
             raise ValueError(f"radiometric grid has no CRS: {path.name}")
+        source_grid = {
+            "width": src.width,
+            "height": src.height,
+            "crs": str(src.crs),
+            "resolution": list(src.res),
+            "transform": list(src.transform)[:6],
+            "dtype": src.dtypes[0],
+            "nodata": src.nodata,
+        }
         src_arr = src.read(1)
         src_mask = src.read_masks(1) > 0
         dst = np.zeros(shape, np.float32)
@@ -204,7 +213,7 @@ def warp_to_grid(path: Path, shape, transform, crs):
                   dst_transform=transform, dst_crs=crs,
                   resampling=Resampling.nearest)
     valid = (dst_mask > 0) & np.isfinite(dst)
-    return dst, valid
+    return dst, valid, source_grid
 
 
 def quantise(x: np.ndarray, mask: np.ndarray) -> np.ndarray:
@@ -235,6 +244,14 @@ def fetch_bytes(url: str, timeout: int = 300) -> bytes:
     req = urllib.request.Request(url, headers={"User-Agent": "7GEMSDOE-rad/1.0"})
     with urllib.request.urlopen(req, timeout=timeout) as r:
         return r.read()
+
+
+def sha256_file(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as stream:
+        for chunk in iter(lambda: stream.read(1 << 20), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
 
 
 def main() -> None:
@@ -271,13 +288,14 @@ def main() -> None:
                     path = Path(td) / _safe_basename(source["name"])
                     hashes = download_to(source["url"], path, source.get("size", 0),
                                          source.get("md5", ""))
-                    values, mask = warp_to_grid(path, shape, transform, crs)
+                    values, mask, source_grid = warp_to_grid(path, shape, transform, crs)
                 mosaics[channel][mask] = values[mask]
                 mosaic_masks[channel] |= mask
                 selected_records[channel] = [{
                     "area": "item",
                     "name": source["name"],
                     "sha256": hashes["sha256"],
+                    "source_grid": source_grid,
                     "valid_px": int(mask.sum()),
                 }]
         else:
@@ -320,7 +338,8 @@ def main() -> None:
                                     if not chunk:
                                         break
                                     dst.write(chunk)
-                            values, mask = warp_to_grid(raster_path, shape, transform, crs)
+                            values, mask, source_grid = warp_to_grid(
+                                raster_path, shape, transform, crs)
                             # Area 1 is higher resolution (50 m vs 100 m per the
                             # USGS readme) and intentionally overrides Area 2.
                             mosaics[channel][mask] = values[mask]
@@ -330,6 +349,7 @@ def main() -> None:
                                 "archive": source["name"],
                                 "member": info.filename,
                                 "member_size": info.file_size,
+                                "source_grid": source_grid,
                                 "valid_px": int(mask.sum()),
                             })
                             raster_path.unlink()
@@ -369,6 +389,15 @@ def main() -> None:
         dst.write(arr)
     manifest = {
         "product": "external/geodawn_rad/geodawn_rad_u8.tif",
+        "product_sha256": sha256_file(out_tif),
+        "grid": {
+            "width": shape[1],
+            "height": shape[0],
+            "crs": crs,
+            "transform": list(transform)[:6],
+            "dtype": "uint8",
+            "nodata": 0,
+        },
         "channels": list(CHANNEL_PATTERNS.keys()),
         "doi": DOI,
         "sciencebase_item": SCIENCEBASE_ITEM,
