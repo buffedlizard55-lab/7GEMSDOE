@@ -89,3 +89,18 @@
 See `next_session.md` for the ordered continuation plan. The highest-value next
 work is native terrain evidence and acquisition-aware generalization, not another
 untested union or wider halo.
+
+## Runner evidence (after local passes)
+
+[Research run 36263421996](https://github.com/buffedlizard55-lab/7GEMSDOE/actions/runs/36263421996)
+passed on commit e7e83d8. Its desktop (1440 px) and mobile (390 px) browser checks
+passed: all pages, no horizontal overflow, copy Note, real download SHA, blocked
+hash mismatch and no JavaScript errors. Report saved in `browser_report.json`.
+Feed is explicitly mocked in the browser suite; separate real HTTP refresh found
+106 ranks across three pages and all six registered official-source excerpts.
+The verified runner feed replaces the bundled snapshot, including timestamps.
+
+Direct artifact download failed with outbound EOF. The exact workflow-posted JSON
+was retrieved from the PR comment through the GitHub API instead; no success was
+invented for the failed artifact request. Local tests: 83 pass; GitHub test job
+also passed. Merge and subsequent deployment are still verified on GitHub.
