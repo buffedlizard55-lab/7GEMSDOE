@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How to submit — 7GEMSDOE</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<header class="site">
+  <div class="wrap" style="max-width:1060px;margin:0 auto;padding:0 18px;">
+    <h1><span class="gem">7GEMS</span>DOE — How to submit</h1>
+    <nav class="site">
+      <a href="index.html">Executive summary</a>
+      <a class="active" href="how-to-submit.html">How to submit</a>
+      <a href="strategy.html">Strategy</a>
+      <a href="research.html">Research</a>
+      <a href="data.html">Data</a>
+      <a href="results.html">Results</a>
+      <a href="metric.html">Metric</a>
+    </nav>
+    <p class="tag">Executive summary of the submission procedure — click-by-click, rules-anchored, no manual file fixing.</p>
+  </div>
+</header>
+<main>
+
+<section class="hero">
+  <h2>Step 0 — get the file</h2>
+  <a class="btn" href="downloads/submission.tif" download>⬇ Download submission.tif (2.9 MB)</a>
+  <p class="small">sha256 <code>90fb7dc0fc1f6e7d3dbb20927417c6af7d110ca41167329d792c75c145f75b6a</code> ·
+  verify after download: <code>sha256sum submission.tif</code></p>
+</section>
+
+<h2>The submission form, field by field</h2>
+<div class="card">
+  <p>The platform dialog (“New submission”) asks for exactly two things:</p>
+  <table>
+    <tr><th>Field</th><th>What to enter</th></tr>
+    <tr><td><strong>File to submit</strong></td>
+        <td>The <code>submission.tif</code> downloaded above. A single-band GeoTIFF is accepted
+        directly (a <code>.zip</code> containing one GeoTIFF also works). It must match the submission
+        format's CRS, shape and geotransform — ours is generated from the official template, so it does.</td></tr>
+    <tr><td><strong>Note (optional)</strong></td>
+        <td><code>halo r15/h0.6 + blind GBT v1 (7GEMSDOE)</code><br>
+        <span class="small">A unique, descriptive comment so the team can tell submissions apart later
+        (the form's own example: “clustering with k=25”). Change the version tag per artifact.</span></td></tr>
+  </table>
+  <p>Then press submit. Scores appear on the <a href="https://www.drivendata.org/competitions/306/competition-doe-gems/leaderboard/">public leaderboard</a>
+  (public-set DW-Tversky). Limit: <strong>three submissions per week</strong> (rules PDF).</p>
+</div>
+
+<h2>Step-by-step</h2>
+<div class="card">
+  <ol>
+    <li>Sign in to DrivenData and open the competition:
+        <a href="https://www.drivendata.org/competitions/306/competition-doe-gems/">competition-doe-gems</a>.</li>
+    <li>Download <a href="downloads/submission.tif" download>submission.tif</a> from this page and
+        (optionally) check its sha256 against the value in Step 0.</li>
+    <li>Open <strong>Submit</strong> → <strong>New submission</strong>.</li>
+    <li><strong>File to submit:</strong> choose <code>submission.tif</code>.</li>
+    <li><strong>Note:</strong> paste the suggested note above (or your own unique tag).</li>
+    <li>Submit. Watch the public leaderboard for the DW-Tversky score.</li>
+    <li>Before the deadline, choose the single submission that counts for both prize rounds
+        (you will not see private scores when choosing — rules §prize structure).</li>
+  </ol>
+</div>
+
+<h2>Why earlier submissions failed validation, and why this one cannot</h2>
+<div class="card">
+  <p>The platform rejection <em>“Predicted values must be in range [0, 1]”</em> fires when the raster
+  contains any pixel that is not a finite number in [0, 1] inside the scored footprint — in practice,
+  NaN leaking into the footprint. Our build enforces the opposite geometry and re-reads the written
+  bytes:</p>
+  <table>
+    <tr><th>Requirement (problem page)</th><th>How it is enforced</th></tr>
+    <tr><td>single band, float32</td><td>written from the official template metadata; gate checks dtype/count</td></tr>
+    <tr><td>CRS EPSG:32611, same bounds &amp; geotransform</td><td>copied verbatim from <code>example_submission.tif</code>; gate compares exactly</td></tr>
+    <tr><td>values between 0 and 1</td><td>hard clip before write; gate asserts min ≥ 0, max ≤ 1 on all finite pixels</td></tr>
+    <tr><td>outside bounds = null/NaN</td><td>NaN exactly on the template's footprint complement; gate asserts finite-inside / NaN-outside</td></tr>
+  </table>
+  <p class="small">Gate: <code>scripts/validate_submission.py</code> (also runnable standalone against any
+  candidate and the official template). Regression tests: <code>tests/test_submission_format.py</code>.</p>
+</div>
+
+<h2>Generating new submission files</h2>
+<div class="card">
+  <pre>bash scripts/download_competition_data.sh    # once per machine
+.venv/bin/python scripts/extract_features.py
+.venv/bin/python scripts/train_model.py
+.venv/bin/python scripts/build_submission.py # rebuild docs/downloads/submission.tif + meta</pre>
+  <p>Every artifact carries its policy, sha256, build time and monitors in
+  <code>docs/downloads/submission_meta.json</code> — paste a unique version tag into the Note field for each.</p>
+</div>
+
+<div class="note"><strong>Strategic reminder:</strong> both prize rounds score NEW faults absent from the
+public catalogue (rules §1.1, §3.3, §3.5 — verbatim quotes in <a href="research.html">Research</a>).
+A public-leaderboard score is a partial signal; the private set decides the Initial Prize Round, and
+expert review of <em>every</em> submission expands the labels for the Final Round. Pick your selected
+submission accordingly.</div>
+
+</main>
+<footer class="site">7GEMSDOE · built for the DOE GEMS Prize Challenge</footer>
+</body>
+</html>

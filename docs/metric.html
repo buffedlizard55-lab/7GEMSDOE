@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Metric — 7GEMSDOE</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<header class="site">
+  <div class="wrap" style="max-width:1060px;margin:0 auto;padding:0 18px;">
+    <h1><span class="gem">7GEMS</span>DOE — Metric</h1>
+    <nav class="site">
+      <a href="index.html">Executive summary</a>
+      <a href="how-to-submit.html">How to submit</a>
+      <a href="strategy.html">Strategy</a>
+      <a href="research.html">Research</a>
+      <a href="data.html">Data</a>
+      <a href="results.html">Results</a>
+      <a class="active" href="metric.html">Metric</a>
+    </nav>
+    <p class="tag">Distance-weighted Tversky index — implemented verbatim from the problem page and proven by tests.</p>
+  </div>
+</header>
+<main>
+
+<h2>Definition (official)</h2>
+<div class="card">
+  <p>From the <a href="https://www.drivendata.org/competitions/306/competition-doe-gems/page/967/#performance-metric">problem page</a>:
+  predictions p(x) ∈ [0, 1]; ground-truth set G; triangular kernel k(d) = max(1 − d/R, 0) with
+  <strong>R = 300 m</strong> (3 px at 100 m):</p>
+  <pre>TP_w = Σ_{g∈G}  max_{x: d(x,g)≤R}  p(x)·k(d(x,g))
+FP_w = Σ_{x: p(x)>0}  p(x)·[1 − max_{g∈G} k(d(x,g))]
+FN_w = Σ_{g∈G}  [1 − max_{x: d(x,g)≤R} p(x)·k(d(x,g))]
+DTI  = TP_w / (TP_w + α·FP_w + β·FN_w + ε),  α = 0.2, β = 0.8</pre>
+  <p>Identity (checked in tests): <code>TP_w + FN_w = |G|</code> for any prediction, giving the closed form
+  <code>DTI = TP_w / (0.2·(TP_w + FP_w) + 0.8·|G|)</code>.</p>
+</div>
+
+<h2>Verification evidence</h2>
+<table>
+  <tr><th>Test layer</th><th>What it proves</th><th>Result</th></tr>
+  <tr><td>Brute-force cross-check (4 seeds, 16×16 grids)</td><td>fast implementation ≡ O(|G|·|P|) reference</td><td><span class="pill ok">PASS</span></td></tr>
+  <tr><td>Algebraic identities + range guard</td><td>TP_w+FN_w=|G|; out-of-range rejection</td><td><span class="pill ok">PASS</span></td></tr>
+  <tr><td>Worked-example arithmetic from the problem page</td><td>TPw 3.00 / FPw 1.89 / FNw 2.00 → 0.60 as printed</td><td><span class="pill ok">PASS</span></td></tr>
+  <tr><td>Reproduction of the inherited verified strategy table (15 deterministic rows, real competition fixture window)</td><td>bit-level agreement to &lt;1e-8 on DTI</td><td><span class="pill ok">PASS</span></td></tr>
+</table>
+<p class="small">Run: <code>.venv/bin/python -m pytest tests/ -q</code> — 25+ tests. Fixture window: real
+512×512 slice of the official rasters (5,154 fault px / 261,835 valid px), committed under
+<code>tests/fixture/</code>.</p>
+
+<h2>Measured anchors</h2>
+<table>
+  <tr><th>Strategy (fixture window)</th><th>DTI vs catalogue</th></tr>
+  <tr><td>all zeros</td><td>0.0000</td></tr>
+  <tr><td>all ones (blanket)</td><td>0.0956 — the floor any real model must beat</td></tr>
+  <tr><td>uniform p = 0.05 / 0.1 / 0.25 / 0.5</td><td>0.0390 / 0.0566 / 0.0778 / 0.0888 (flat — uniform mass buys nothing)</td></tr>
+  <tr><td>exact catalogue copy</td><td>0.9999</td></tr>
+  <tr><td>catalogue dilated r = 1 / 2 / 3</td><td>0.8818 / 0.7336 / 0.5887</td></tr>
+  <tr><td>triangular ramp r = 3 / 5 / 8</td><td>0.8118 / 0.6223 / 0.4504</td></tr>
+  <tr><td>precise 25 % / 50 % / 75 % of faults</td><td>0.5545 / 0.7939 / 0.9166</td></tr>
+</table>
+<p class="small">Source: <code>knowledge/inherited_evidence/metric_strategy.json</code>, reproduced exactly by
+<code>tests/test_metric.py</code>.</p>
+
+<h2>Reading the numbers correctly</h2>
+<div class="note">All catalogue-based DTIs above are <strong>plumbing monitors</strong>: both prize rounds score
+expert-labelled NEW faults absent from the catalogue (rules §1.1/§3.3/§3.5). Against that population the
+economics flip — wide, structurally-anchored soft mass beats thin precision, as measured by the
+component-holdout proxy (<a href="strategy.html">Strategy</a>).</div>
+
+</main>
+<footer class="site">7GEMSDOE · built for the DOE GEMS Prize Challenge</footer>
+</body>
+</html>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Data — 7GEMSDOE</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<header class="site">
+  <div class="wrap" style="max-width:1060px;margin:0 auto;padding:0 18px;">
+    <h1><span class="gem">7GEMS</span>DOE — Data inventory</h1>
+    <nav class="site">
+      <a href="index.html">Executive summary</a>
+      <a href="how-to-submit.html">How to submit</a>
+      <a href="strategy.html">Strategy</a>
+      <a href="research.html">Research</a>
+      <a class="active" href="data.html">Data</a>
+      <a href="results.html">Results</a>
+      <a href="metric.html">Metric</a>
+    </nav>
+    <p class="tag">Every byte sha256-verified. Audit command: <code>python scripts/verify_data.py</code> → ALL CHECKS PASS (2026-09-26).</p>
+  </div>
+</header>
+<main>
+
+<h2>Official competition files</h2>
+<table>
+  <tr><th>File</th><th>Canonical</th><th>Bytes</th><th>sha256</th><th>Status</th></tr>
+  <tr><td>gems-geodawn-numerical-features.tif</td><td>training_features.tif</td><td>418,912,844</td>
+      <td><code>4371c82e3b83…ae33743123bc5</code></td><td><span class="pill ok">PASS</span> 19 bands float32</td></tr>
+  <tr><td>existing_faults.tif</td><td>labels.tif</td><td>425,830</td>
+      <td><code>7ba308ccdc44…7eb25ae4093</code></td><td><span class="pill ok">PASS</span> int8; 60,988 pos / 5,167,373 valid px</td></tr>
+  <tr><td>example_submission.tif</td><td>sample_submission.tif</td><td>1,599,597</td>
+      <td><code>2176d08e485a…40454d35cbc</code></td><td><span class="pill ok">PASS</span> geometry template; bit-identical to labels inside footprint (flagged)</td></tr>
+  <tr><td>GEMS_96647.pdf</td><td>rules</td><td>455,140</td>
+      <td><code>50d854b1e023…401c36938</code></td><td><span class="pill ok">verified</span> verbatim quotes extracted</td></tr>
+  <tr><td>Digital-elevation-model-links-JSON.pdf</td><td>DEM links</td><td>23,032,446</td>
+      <td><code>c2996eaf0adc…65f2c775</code></td><td><span class="pill warn">scan</span> no text layer; 716 tile URLs OCR-recovered &amp; bucket-verified upstream</td></tr>
+  <tr><td>1m_DEM_links.csv</td><td>—</td><td>—</td><td>—</td><td><span class="pill bad">login-walled</span> open item: needs DrivenData credentials or manual mirror</td></tr>
+</table>
+<p class="small">Full pins: <code>knowledge/inherited_evidence/data_bridge_manifest.json</code> +
+<code>inventory.json</code> (measured on GitHub-hosted runners against the official downloads).</p>
+
+<h2>Download routes (no manual steps for the three rasters)</h2>
+<div class="card">
+  <ol>
+    <li><strong>Dropbox mirrors</strong> linked from the competition page — exact URLs in
+        <code>scripts/download_competition_data.sh</code>; every file hash-checked after download.</li>
+    <li><strong>Git bridge fallback</strong> (used automatically when Dropbox is unreachable, as in this
+        sandbox): sibling public repo
+        <a href="https://github.com/buffedlizard55-lab/GEMSDOE">buffedlizard55-lab/GEMSDOE</a>
+        <code>data/bridge/</code> — 5 parts ≤ 100 MB, reassembled and hash-verified by
+        <code>scripts/assemble_data_bridge.py</code>.</li>
+    <li><strong>DrivenData data tab</strong> — authoritative, login-walled
+        (<a href="https://www.drivendata.org/competitions/306/competition-doe-gems/data/">link</a>).
+        The only file not yet mirrored: <code>1m_DEM_links.csv</code>.</li>
+  </ol>
+</div>
+
+<h2>Band semantics (measured from the file's own tags)</h2>
+<table>
+  <tr><th>#</th><th>Band</th><th>Category</th><th>#</th><th>Band</th><th>Category</th></tr>
+  <tr><td>1</td><td>Magnetic anomaly</td><td>magnetic</td><td>11</td><td>Isostatic gravity vertical gradient</td><td>gravity</td></tr>
+  <tr><td>2</td><td>Reduced-to-pole magnetic</td><td>magnetic</td><td>12</td><td>Detrended elevation</td><td>topographic</td></tr>
+  <tr><td>3</td><td>TMI horizontal gradient</td><td>magnetic</td><td>13</td><td>Isostatic gravity anomaly</td><td>gravity</td></tr>
+  <tr><td>4</td><td>Geodetic second invariant</td><td>strain</td><td>14</td><td>Total magnetic intensity</td><td>magnetic</td></tr>
+  <tr><td>5</td><td>Isostatic gravity slope</td><td>gravity</td><td>15</td><td>Depth to basement</td><td>subsurface</td></tr>
+  <tr><td>6</td><td>Tilt angle / total curvature</td><td>magnetic</td><td>16</td><td>Earthquake density</td><td>seismic</td></tr>
+  <tr><td>7</td><td>Geodetic shear rate</td><td>strike-slip / strain</td><td>17</td><td>Surface conductivity</td><td>subsurface</td></tr>
+  <tr><td>8</td><td>Geodetic dilatation rate</td><td>strain</td><td>18</td><td>Isostatic gravity horizontal gradient</td><td>gravity</td></tr>
+  <tr><td>9</td><td>TMI vertical gradient</td><td>magnetic</td><td>19</td><td>Detrended elevation slope</td><td>topographic</td></tr>
+  <tr><td>10</td><td>Distance to earthquake</td><td>seismic</td><td colspan="3"></td></tr>
+</table>
+<p class="small">The problem page prose implies ~10 groups; the file carries 19 bands (measured).
+Derived channels added by our pipeline: Sobel edge magnitude of bands 2, 3, 6, 12, 14, 18 and 5×5
+local σ of bands 6, 18 → 27 channels total (<code>scripts/extract_features.py</code>).</p>
+
+<h2>Storage policy</h2>
+<div class="card">
+  <p>Large rasters live in <code>$GEMS_DATA_DIR</code> (default <code>~/gems_data</code>), outside git.
+  Committed artifacts are small: test fixtures (~5 MB), the submission artifact (~3 MB), and JSON
+  evidence. Any machine can rebuild the data placement with
+  <code>bash scripts/download_competition_data.sh</code> and verify it with
+  <code>python scripts/verify_data.py</code>.</p>
+</div>
+
+</main>
+<footer class="site">7GEMSDOE · built for the DOE GEMS Prize Challenge</footer>
+</body>
+</html>
