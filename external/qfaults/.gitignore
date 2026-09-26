@@ -1,0 +1,2 @@
+# Raw public source archive is downloaded to a temporary directory by the workflow.
+*.zip

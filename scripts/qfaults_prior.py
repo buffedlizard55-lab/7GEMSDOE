@@ -1,6 +1,6 @@
 """QFFDB mapping-scale / certainty prior (session 5, backlog #4, tests H2).
 
-H2 (mapping-scale deficit): coarse (1:250k) or inferred QFFDB traces are
+H2 (mapping-scale deficit): coarse (1:250k) or lower-certainty QFFDB traces are
 where expert re-mapping yields the most new pixels, because corrected
 geometry sits 1-3 px off the old trace.
 
@@ -17,7 +17,7 @@ USGS hosts):
      (EPSG:32611, 100 m, 3292x3730):
        coarse_trace  = trace mapped at >= 1:250,000 (or unknown scale)
        fine_trace    = trace mapped at < 1:250,000
-       inferred_trace= trace flagged inferred / moderately constrained
+       lower_certainty_trace= trace flagged inferred / moderately constrained / poor / unknown
   5. writes external/qfaults/qfaults_prior_u8.tif (uint8, 3 bands) +
      external/qfaults/qfaults_prior.json manifest with source URL, zip
      sha256, feature count and the observed field list.
@@ -99,11 +99,13 @@ def classify_trace(props: dict, scale_field: str | None,
     denom = parse_scale_denominator(props.get(scale_field)) if scale_field else None
     cert = str(props.get(certainty_field, "") or "").strip().lower() if certainty_field else ""
     coarse = denom is None or denom >= COARSE_DENOM
-    inferred = any(k in cert for k in ("infer", "moderate", "approximate", "unknown", "poor"))
-    # 'well constrained' / 'wellconstrained' is explicitly NOT inferred.
+    low_certainty = any(k in cert for k in (
+        "infer", "moderate", "approximate", "unknown", "poor"))
+    # 'well constrained' / 'wellconstrained' is explicitly not low certainty.
     if "well" in cert:
-        inferred = False
-    return {"coarse": coarse, "fine": not coarse, "inferred": inferred,
+        low_certainty = False
+    return {"coarse": coarse, "fine": not coarse,
+            "low_certainty": low_certainty,
             "scale_denom": denom, "certainty_raw": cert or None}
 
 
@@ -114,13 +116,13 @@ def rasterize_prior(geometries: list,
     """Rasterize [(geometry, class_dict)] onto the grid -> (3, H, W) uint8.
 
     geometries: iterable of (geojson-geometry-dict, classify_trace() dict).
-    Bands: 0 coarse_trace, 1 fine_trace, 2 inferred_trace.
+    Bands: 0 coarse_trace, 1 fine_trace, 2 lower_certainty_trace.
     """
     coarse = [(g, 1) for g, c in geometries if c["coarse"]]
     fine = [(g, 1) for g, c in geometries if c["fine"]]
-    inferred = [(g, 1) for g, c in geometries if c["inferred"]]
+    low_certainty = [(g, 1) for g, c in geometries if c["low_certainty"]]
     out = np.zeros((3,) + shape, dtype=np.uint8)
-    for i, shapes in enumerate((coarse, fine, inferred)):
+    for i, shapes in enumerate((coarse, fine, low_certainty)):
         if shapes:
             out[i] = rasterize(shapes, out_shape=shape, transform=transform,
                                fill=0, default_value=1, dtype="uint8")
@@ -254,7 +256,7 @@ def build_from_zip(zip_path: Path) -> dict:
                        width=shape[1], count=3, dtype="uint8", crs=crs,
                        transform=transform, compress="lzw",
                        nodata=0) as dst:
-        dst.descriptions = ("coarse_trace", "fine_trace", "inferred_trace")
+        dst.descriptions = ("coarse_trace", "fine_trace", "lower_certainty_trace")
         dst.write(arr)
     return {
         "observed_fields": observed_fields,
@@ -264,7 +266,7 @@ def build_from_zip(zip_path: Path) -> dict:
         "n_features": len(feats),
         "coarse_px": int(arr[0].sum()),
         "fine_px": int(arr[1].sum()),
-        "inferred_px": int(arr[2].sum()),
+        "lower_certainty_px": int(arr[2].sum()),
     }
 
 
@@ -275,9 +277,11 @@ def main() -> None:
     args = ap.parse_args()
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     if args.zip is None:
-        zip_path = OUT_DIR / "Qfaults_GIS.zip"
         print(f"downloading {QFAULTS_URL}", flush=True)
-        sha = download_zip(QFAULTS_URL, zip_path)
+        with tempfile.TemporaryDirectory(prefix="qfaults-source-") as td:
+            zip_path = Path(td) / "Qfaults_GIS.zip"
+            sha = download_zip(QFAULTS_URL, zip_path)
+            stats = build_from_zip(zip_path)
         source = QFAULTS_URL
     else:
         zip_path = args.zip
@@ -285,17 +289,33 @@ def main() -> None:
         h.update(zip_path.read_bytes())
         sha = h.hexdigest()
         source = f"local file {args.zip}"
-    stats = build_from_zip(zip_path)
+        stats = build_from_zip(zip_path)
+    out_tif = OUT_DIR / "qfaults_prior_u8.tif"
+    with rasterio.open(out_tif) as product:
+        grid = {
+            "width": product.width,
+            "height": product.height,
+            "crs": str(product.crs),
+            "transform": list(product.transform)[:6],
+            "dtype": product.dtypes[0],
+        }
+    product_hash = hashlib.sha256(out_tif.read_bytes()).hexdigest()
     manifest = {
         "product": "external/qfaults/qfaults_prior_u8.tif",
-        "bands": ["coarse_trace", "fine_trace", "inferred_trace"],
+        "bands": ["coarse_trace", "fine_trace", "lower_certainty_trace"],
         "source": source,
         "zip_sha256": sha,
+        "product_sha256": product_hash,
+        "grid": grid,
         "retrieved_utc": datetime.now(timezone.utc).isoformat(),
-        "rights": "USGS-authored data are public domain (17 U.S.C. 105); "
-                  "verify + retain attribution before reuse.",
+        "rights": "USGS-authored source data; verify source attribution and terms before reuse.",
         "coarse_definition": f"mapped scale denominator >= {COARSE_DENOM} "
-                             "(or scale unknown)",
+                             "(or scale unknown / mixed-scale)",
+        "limitations": [
+            "QFFDB is an existing fault catalogue, not an independent discovery signal; direct model use risks catalogue/label leakage.",
+            "lower_certainty_trace means source certainty contains inferred, moderate, approximate, poor or unknown; it is not a verified probability.",
+            "Use for catalogue-gap/sensitivity analysis only unless spatial overlap and source-independence controls are passed.",
+        ],
         **stats,
     }
     (OUT_DIR / "qfaults_prior.json").write_text(json.dumps(manifest, indent=1) + "\n")

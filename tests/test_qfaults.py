@@ -28,17 +28,17 @@ def test_find_field_matches_observed_legacy_names_case_insensitively():
     assert QP.find_field(["unrelated"], QP.CERTAINTY_FIELDS) is None
 
 
-def test_classify_trace_coarse_and_inferred():
+def test_classify_trace_coarse_and_low_certainty():
     c = QP.classify_trace({"MAPPEDSCALE": "1:500,000", "CERTAINTY": "inferred"},
                           "MAPPEDSCALE", "CERTAINTY")
-    assert c["coarse"] and not c["fine"] and c["inferred"]
+    assert c["coarse"] and not c["fine"] and c["low_certainty"]
     assert c["scale_denom"] == 500000
 
 
 def test_classify_trace_fine_well_constrained():
     c = QP.classify_trace({"MAPPEDSCALE": "1:24,000", "CERTAINTY": "well constrained"},
                           "MAPPEDSCALE", "CERTAINTY")
-    assert c["fine"] and not c["coarse"] and not c["inferred"]
+    assert c["fine"] and not c["coarse"] and not c["low_certainty"]
 
 
 def test_classify_trace_unknown_scale_is_coarse():
@@ -49,17 +49,17 @@ def test_classify_trace_unknown_scale_is_coarse():
 
 def test_classify_trace_missing_fields():
     c = QP.classify_trace({}, None, None)
-    assert c["coarse"] and not c["inferred"]
+    assert c["coarse"] and not c["low_certainty"]
     assert c["scale_denom"] is None
 
 
 def test_rasterize_prior_band_assignment():
     tr = Affine(100, 0, 0, 0, -100, 1000)
     line = {"type": "LineString", "coordinates": [(50, 950), (50, 150)]}
-    coarse = {"coarse": True, "fine": False, "inferred": True,
+    coarse = {"coarse": True, "fine": False, "low_certainty": True,
               "scale_denom": 500000, "certainty_raw": "inferred"}
-    fine = {"coarse": False, "fine": True, "inferred": False,
-              "scale_denom": 24000, "certainty_raw": "well constrained"}
+    fine = {"coarse": False, "fine": True, "low_certainty": False,
+            "scale_denom": 24000, "certainty_raw": "well constrained"}
     arr = QP.rasterize_prior([(line, coarse)], (10, 10), tr)
     assert arr.shape == (3, 10, 10) and arr.dtype == np.uint8
     assert arr[0].sum() > 0 and arr[1].sum() == 0 and arr[2].sum() > 0
