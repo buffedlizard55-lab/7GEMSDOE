@@ -154,6 +154,7 @@ def safe_extract_zip(archive: zipfile.ZipFile, destination: Path) -> None:
     """
     root = destination.resolve()
     members = archive.infolist()
+    seen_targets = set()
     for member in members:
         posix = PurePosixPath(member.filename)
         windows = PureWindowsPath(member.filename)
@@ -163,6 +164,9 @@ def safe_extract_zip(archive: zipfile.ZipFile, destination: Path) -> None:
         target = (root / Path(*posix.parts)).resolve()
         if target != root and root not in target.parents:
             raise ValueError(f"archive path escapes destination: {member.filename!r}")
+        if target in seen_targets:
+            raise ValueError(f"duplicate archive path: {member.filename!r}")
+        seen_targets.add(target)
         mode = member.external_attr >> 16
         if stat.S_ISLNK(mode):
             raise ValueError(f"symbolic link not allowed in archive: {member.filename!r}")
@@ -185,6 +189,14 @@ def build_from_zip(zip_path: Path) -> dict:
         with fiona.open(shp) as col:
             observed_fields = list(col.schema["properties"].keys())
             crs_input = col.crs_wkt or col.crs
+            OUT_DIR.mkdir(parents=True, exist_ok=True)
+            (OUT_DIR / "observed_schema.json").write_text(json.dumps({
+                "status": "inspection_started",
+                "archive_name": Path(zip_path).name,
+                "layer": str(shp.name),
+                "observed_fields": observed_fields,
+                "source_crs": str(crs_input or ""),
+            }, indent=1))
             src_crs = str(crs_input or "")
             try:
                 source_crs = parse_layer_crs(crs_input)
@@ -193,6 +205,17 @@ def build_from_zip(zip_path: Path) -> dict:
             target_crs = CRS.from_epsg(32611)
             scale_field = next((f for f in SCALE_FIELDS if f in col.schema["properties"]), None)
             cert_field = next((f for f in CERTAINTY_FIELDS if f in col.schema["properties"]), None)
+            schema_report = {
+                "status": "schema_observed",
+                "archive_name": Path(zip_path).name,
+                "layer": str(shp.name),
+                "observed_fields": observed_fields,
+                "source_crs": src_crs,
+                "scale_field": scale_field,
+                "certainty_field": cert_field,
+            }
+            (OUT_DIR / "observed_schema.json").write_text(
+                json.dumps(schema_report, indent=1))
             if scale_field is None and cert_field is None:
                 raise SystemExit(
                     "Qfaults schema lacks every known scale/certainty field; "

@@ -1,4 +1,5 @@
 """Hermetic tests for scripts/qfaults_prior.py (no network, no fiona)."""
+import stat
 import sys
 import zipfile
 from pathlib import Path
@@ -100,3 +101,25 @@ def test_safe_extract_allows_nested_regular_files(tmp_path):
     with zipfile.ZipFile(archive_path) as archive:
         QP.safe_extract_zip(archive, destination)
     assert (destination / "Qfaults/trace.shp").read_text() == "test"
+
+
+def test_safe_extract_rejects_duplicate_normalized_targets(tmp_path):
+    archive_path = tmp_path / "duplicate.zip"
+    with zipfile.ZipFile(archive_path, "w") as archive:
+        archive.writestr("Qfaults/trace.shp", "first")
+        with pytest.warns(UserWarning, match="Duplicate name"):
+            archive.writestr("Qfaults/trace.shp", "second")
+    with zipfile.ZipFile(archive_path) as archive:
+        with pytest.raises(ValueError, match="duplicate archive path"):
+            QP.safe_extract_zip(archive, tmp_path / "extract")
+
+
+def test_safe_extract_rejects_symbolic_links(tmp_path):
+    archive_path = tmp_path / "symlink.zip"
+    info = zipfile.ZipInfo("Qfaults/link.shp")
+    info.external_attr = (stat.S_IFLNK | 0o777) << 16
+    with zipfile.ZipFile(archive_path, "w") as archive:
+        archive.writestr(info, "../outside.shp")
+    with zipfile.ZipFile(archive_path) as archive:
+        with pytest.raises(ValueError, match="symbolic link"):
+            QP.safe_extract_zip(archive, tmp_path / "extract")
