@@ -18,7 +18,7 @@ Guarantees enforced before writing:
   * NaN exactly outside the official template footprint
   * CRS/transform/shape copied verbatim from example_submission.tif
 Then scripts/validate_submission.py re-reads the written file as an
-independent gate. Artifact is copied to docs/downloads/ with sha256 and a
+independent gate. Artifact is copied to downloads/ with sha256 and a
 machine-written meta file (suggested submission Note included).
 """
 
@@ -118,7 +118,7 @@ def main() -> int:
         return 1
     print("format gate: PASS")
 
-    # local monitors (NOT leaderboard predictions - see docs/metric page)
+    # local monitors (NOT leaderboard predictions - see the Metric page)
     from metric import dtvi
     catalog_dti = dtvi(np.nan_to_num(pred, nan=0.0), truth.astype(np.float64))
     blanket = np.where(footprint, 1.0, 0.0)

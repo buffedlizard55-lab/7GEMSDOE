@@ -13,8 +13,8 @@ import numpy as np
 import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
-ARTIFACT = ROOT / "docs" / "downloads" / "submission.tif"
-META = ROOT / "docs" / "downloads" / "submission_meta.json"
+ARTIFACT = ROOT / "downloads" / "submission.tif"
+META = ROOT / "downloads" / "submission_meta.json"
 
 # pinned constants from the official template (knowledge/02_data_sources.md)
 EXPECTED = {
@@ -33,7 +33,7 @@ def rasterio():
 
 
 def test_artifact_exists():
-    assert ARTIFACT.exists(), "docs/downloads/submission.tif missing - run build_submission.py"
+    assert ARTIFACT.exists(), "downloads/submission.tif missing - run build_submission.py"
     assert META.exists()
 
 
