@@ -1,0 +1,30 @@
+{
+  "checked_utc": "2026-09-26T18:35:07.107354+00:00",
+  "sources": [
+    {
+      "url": "https://buffedlizard55-lab.github.io/GEMSDOE/docs/index.html",
+      "status": "failed",
+      "error": "HTTPSConnectionPool(host='buffedlizard55-lab.github.io', port=443): Max retries exceeded with url: /GEMSDOE/docs/index.html (Caused by SSLError(SSLZeroReturnError(6, 'TLS/SSL connection has been closed (EOF) (_ssl.c:992)')))"
+    },
+    {
+      "url": "https://buffedlizard55-lab.github.io/GEMSDOE2/docs/index.html",
+      "status": "failed",
+      "error": "HTTPSConnectionPool(host='buffedlizard55-lab.github.io', port=443): Max retries exceeded with url: /GEMSDOE2/docs/index.html (Caused by SSLError(SSLZeroReturnError(6, 'TLS/SSL connection has been closed (EOF) (_ssl.c:992)')))"
+    },
+    {
+      "url": "https://buffedlizard55-lab.github.io/GEMSDOE3/docs/index.html",
+      "status": "failed",
+      "error": "HTTPSConnectionPool(host='buffedlizard55-lab.github.io', port=443): Max retries exceeded with url: /GEMSDOE3/docs/index.html (Caused by SSLError(SSLZeroReturnError(6, 'TLS/SSL connection has been closed (EOF) (_ssl.c:992)')))"
+    },
+    {
+      "url": "https://buffedlizard55-lab.github.io/GEMSDOE4/",
+      "status": "failed",
+      "error": "HTTPSConnectionPool(host='buffedlizard55-lab.github.io', port=443): Max retries exceeded with url: /GEMSDOE4/ (Caused by SSLError(SSLZeroReturnError(6, 'TLS/SSL connection has been closed (EOF) (_ssl.c:992)')))"
+    },
+    {
+      "url": "https://buffedlizard55-lab.github.io/6GEMSDOE/",
+      "status": "failed",
+      "error": "HTTPSConnectionPool(host='buffedlizard55-lab.github.io', port=443): Max retries exceeded with url: /6GEMSDOE/ (Caused by SSLError(SSLZeroReturnError(6, 'TLS/SSL connection has been closed (EOF) (_ssl.c:992)')))"
+    }
+  ]
+}

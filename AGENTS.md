@@ -1,6 +1,6 @@
 # Start every session here
 
-1. Read README.md (mission brief), STATUS.md, knowledge/session2/review.md and current
+1. Read README.md (mission brief), STATUS.md, knowledge/session3/review.md and current
    machine evidence before changing models or prose.
 2. Maximize P(Win): prioritize independent discovery signal and valid reproducible
    submissions over cosmetic changes or public-score chasing. Own the outcome:
@@ -15,3 +15,7 @@
 7. Preserve the control and frozen test protocol; name new artifacts by policy+hash.
 8. Run three passes: implement/test; inspect bugs/assumptions/edges; check the full
    request and end-to-end outcome. Record limitations and next steps.
+
+9. Read knowledge/session3/next_session.md. Do not promote H3 on the old component
+   proxy: its geographic coverage failed. Do not call the four inspected diagnostic
+   quadrants an untouched final test. Preserve raw expert results and source caveats.

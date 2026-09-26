@@ -1,7 +1,7 @@
 # 7GEMSDOE — fault discovery lab
 
 **Read this README at the start of every session**, then `AGENTS.md`, `STATUS.md`
-and [`knowledge/session2/review.md`](knowledge/session2/review.md).
+and [`knowledge/session3/review.md`](knowledge/session3/review.md).
 
 **Goal:** compete for the top prize in [DOE GEMS / DrivenData #306](https://www.drivendata.org/competitions/306/competition-doe-gems/)
 through scientifically grounded discovery of unmapped **geological faults**.
@@ -9,12 +9,47 @@ Geothermal vents are the user's broader motivation, not the competition's raster
 **We have not demonstrated a score above 0.3049.** Best group-reported public score:
 0.1563, confirmed as an account best on 2026-09-26. Ranks are dynamic.
 
+## Latest decision — session 3 (2026-09-26)
+
+**Start with the measured failure, not another speculative submission.** Buffered
+geographic testing is now implemented and executed: four quadrants, 1 km catalogue
+exclusion, whole crossing connected-trace purge, matched-mass controls and three
+random-orientation seeds per fold. H3 pooled diagnostic DTI is **0.000125**: it
+barely predicts away from known traces. Connected raster traces are **not** real
+geological fault-system identifiers. Keep H3 reproducible; do not promote it.
+
+Two independent CPU models were trained on raw supplied bands, without global
+normalization or catalogue-distance features: terrain **0.063839** vs other
+geophysical bands **0.056197** pooled diagnostic DTI. Terrain wins all four folds.
+These are **not leaderboard estimates**, not a 1 m DEM model, and not a locked
+final test. No new file is promoted; the existing format-gated downloads remain.
+
+- [Structural/null/matched-mass experiment](knowledge/session3/spatial_experiment.json)
+- [Independent trained experts](knowledge/session3/expert_experiment.json)
+- [Verified-source science and site-claim audit](knowledge/session3/research.md)
+- [Next-session priorities and limitations](knowledge/session3/next_session.md)
+
+GDR **1591 now resolves** to the official GeoDAWN landing record (page-tool
+verification), superseding the earlier failure. Its landing license is CC BY 4.0;
+linked assets still need individual rights/coverage checks before ingestion.
+Packaging now preserves existing ZIP/manifest bytes on a repeat build and refuses
+mutated bundles. Source monitoring is still not scientific verification.
+
+Reproduce the new experiments after the data setup below:
+
+```bash
+.venv/bin/python scripts/spatial_validation.py
+OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 .venv/bin/python scripts/spatial_experts.py
+.venv/bin/python scripts/build_site.py
+.venv/bin/python -m pytest -q
+```
+
 ## Download first
 
 **[GitHub Pages / executive summary](https://buffedlizard55-lab.github.io/7GEMSDOE/)** ·
 [Exact submission instructions](https://buffedlizard55-lab.github.io/7GEMSDOE/how-to-submit.html)
 
-- **New experimental H3:** `downloads/gems7-strike30x3-v2-2b06d45c5b57.tif` (and ZIP).
+- **Preserved experimental H3 (not promoted):** `downloads/gems7-strike30x3-v2-2b06d45c5b57.tif` (and ZIP).
   Note: `H3 tangent continuation 3km x 300m h0.6; no GBT; experimental | 2b06d45c5b57`.
 - **Preserved control:** `downloads/gems7-halo15-gbt-v1-90fb7dc0fc1f.tif` (and ZIP).
 - Local strict format PASS is not platform acceptance or evidence of a better score.
@@ -56,8 +91,9 @@ OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 .venv/bin/python scripts/train_model.py
 .venv/bin/python scripts/build_submission.py
 ```
 
-Detailed [requirements matrix](knowledge/session2/requirements_matrix.md) and
-[next-session plan](knowledge/session2/next_session.md).
+Detailed prior [requirements matrix](knowledge/session2/requirements_matrix.md),
+[current three-pass review](knowledge/session3/review.md) and
+[next-session plan](knowledge/session3/next_session.md).
 
 ## Limits and next-session priorities
 
@@ -65,13 +101,14 @@ Detailed [requirements matrix](knowledge/session2/requirements_matrix.md) and
    submission across both rounds. Team members cannot submit separate finals
    ([official PDF §3.4](https://docs.nlr.gov/docs/fy26osti/96647.pdf)). Review the group
    registrations; do not multiply the limit across accounts.
-2. Implement buffered geographic + fault-system holdouts, matched-mass controls and
-   randomized-tangent nulls. Component-only H3 is not enough for model promotion.
+2. Buffered geographic + connected-trace holdouts, matched-mass controls and random
+   tangents are now measured. Next obtain real fault-system IDs and reserve untouched
+   geography; H3 did not establish independent discovery.
 3. Extend H4 to multiple verified native 1 m tiles, road/drainage controls, full-grid
    coverage and calibration. Do not equate slope breaks with faults.
-4. Implement survey-block holdouts and positive-unlabeled training; normalize within
-   training folds. Compare independent terrain and geophysical experts, not more
-   untested unions of historical outputs.
+4. Implement survey-block holdouts and positive-unlabeled training. Raw independent
+   terrain/geophysical experts now avoid global normalization; legacy GBT still uses
+   transductive normalization and is not spatial validation evidence.
 5. Record the actual uploaded file hash and its individual score. Public account-best
    scraping cannot recover authenticated submission history or private scores.
 6. A GPU and more storage would make deep ensembles practical; code integration,

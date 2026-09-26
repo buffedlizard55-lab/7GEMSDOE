@@ -44,3 +44,16 @@ def test_invalid_publication_does_not_write(tmp_path):
     with pytest.raises(ValueError):
         package(tmp_path/'missing.tif',ROOT/'downloads/submission.tif','test','note',out)
     assert not out.exists()
+
+
+def test_packaging_is_idempotent_and_rejects_mutation(tmp_path):
+    candidate=ROOT/'downloads/submission.tif'
+    first=package(candidate,candidate,'repeat','fixed note',tmp_path)
+    before={p.name:p.read_bytes() for p in tmp_path.iterdir()}
+    assert package(candidate,candidate,'repeat','fixed note',tmp_path)==first
+    assert before=={p.name:p.read_bytes() for p in tmp_path.iterdir()}
+    with pytest.raises(ValueError,match='metadata mismatch'):
+        package(candidate,candidate,'repeat','changed note',tmp_path)
+    (tmp_path/first['zip']).write_bytes(b'corrupt')
+    with pytest.raises(ValueError,match='immutable ZIP'):
+        package(candidate,candidate,'repeat','fixed note',tmp_path)

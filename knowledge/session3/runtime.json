@@ -1,0 +1,16 @@
+{
+  "numpy": "2.4.6",
+  "scipy": "1.17.1",
+  "rasterio": "1.4.4",
+  "scikit_learn": "1.9.1",
+  "source_sha256": {
+    "scripts/spatial_validation.py": "7810aadeee62733a3d4a97da7abfc5047e9977d5c39012cfbf588c648e714069",
+    "scripts/spatial_experts.py": "3d34f6869b14c2c53ff0a2bb52ed1ca85e8433bb436f3c12d468504c8384e3b7",
+    "scripts/structural_prior.py": "49b1eecd235f504661ba73034dfdc798c219c05ebfadf609df3d7134c284909b",
+    "scripts/metric.py": "337f25e36bc109e397468e6991fe56eacb73e1f95799653afe81df715d3a6d97"
+  },
+  "report_sha256": {
+    "knowledge/session3/spatial_experiment.json": "52855901397475a9ef1d6e8abd91ab9f2e10fb8816c1b29be208cc5cab04a41b",
+    "knowledge/session3/expert_experiment.json": "ff2e81ceff6e637c1fed1135877b97be31e04b2bf8cdae8370ac3fdc5ca9b938"
+  }
+}
