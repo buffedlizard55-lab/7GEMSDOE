@@ -1,5 +1,21 @@
 {
  "product": "external/geodawn_rad/geodawn_rad_u8.tif",
+ "product_sha256": "c22420f75999030d7cc65c9e31e50d232ea6158423bca051613a18a8b20ba682",
+ "grid": {
+  "width": 3292,
+  "height": 3730,
+  "crs": "EPSG:32611",
+  "transform": [
+   100.0,
+   0.0,
+   243350.0,
+   0.0,
+   -100.0,
+   4508550.0
+  ],
+  "dtype": "uint8",
+  "nodata": 0
+ },
  "channels": [
   "K",
   "Th",
@@ -8,7 +24,7 @@
  ],
  "doi": "10.5066/P93LGLVQ",
  "sciencebase_item": "657e1d85d34e23d3533209f7",
- "retrieved_utc": "2026-09-26T22:14:35.184366+00:00",
+ "retrieved_utc": "2026-09-26T22:18:21.936744+00:00",
  "archives": {
   "2": {
    "name": "22103_area2_tiffs.zip",
@@ -149,6 +165,25 @@
      "archive": "22103_area2_tiffs.zip",
      "member": "22103_area2_tiffs/22103_k_a2.tif",
      "member_size": 49531308,
+     "source_grid": {
+      "width": 3292,
+      "height": 3730,
+      "crs": "EPSG:32611",
+      "resolution": [
+       100.0,
+       100.0
+      ],
+      "transform": [
+       100.0,
+       0.0,
+       243350.0,
+       0.0,
+       -100.0,
+       4508550.0
+      ],
+      "dtype": "float32",
+      "nodata": -999999.0
+     },
      "valid_px": 5167628
     },
     {
@@ -156,6 +191,25 @@
      "archive": "22103_area1_tiffs.zip",
      "member": "22103_area1_tiffs/22103_k_a1.tif",
      "member_size": 5289136,
+     "source_grid": {
+      "width": 1338,
+      "height": 979,
+      "crs": "EPSG:32611",
+      "resolution": [
+       50.0,
+       50.0
+      ],
+      "transform": [
+       50.0,
+       0.0,
+       406575.0,
+       0.0,
+       -50.0,
+       4202725.0
+      ],
+      "dtype": "float32",
+      "nodata": -999999.0
+     },
      "valid_px": 243065
     }
    ],
@@ -168,6 +222,25 @@
      "archive": "22103_area2_tiffs.zip",
      "member": "22103_area2_tiffs/22103_th_a2.tif",
      "member_size": 49531284,
+     "source_grid": {
+      "width": 3292,
+      "height": 3730,
+      "crs": "EPSG:32611",
+      "resolution": [
+       100.0,
+       100.0
+      ],
+      "transform": [
+       100.0,
+       0.0,
+       243350.0,
+       0.0,
+       -100.0,
+       4508550.0
+      ],
+      "dtype": "float32",
+      "nodata": -999999.0
+     },
      "valid_px": 5167628
     },
     {
@@ -175,6 +248,25 @@
      "archive": "22103_area1_tiffs.zip",
      "member": "22103_area1_tiffs/22103_th_a1.tif",
      "member_size": 5289098,
+     "source_grid": {
+      "width": 1338,
+      "height": 979,
+      "crs": "EPSG:32611",
+      "resolution": [
+       50.0,
+       50.0
+      ],
+      "transform": [
+       50.0,
+       0.0,
+       406575.0,
+       0.0,
+       -50.0,
+       4202725.0
+      ],
+      "dtype": "float32",
+      "nodata": -999999.0
+     },
      "valid_px": 243065
     }
    ],
@@ -187,6 +279,25 @@
      "archive": "22103_area2_tiffs.zip",
      "member": "22103_area2_tiffs/22103_u_a2.tif",
      "member_size": 49531302,
+     "source_grid": {
+      "width": 3292,
+      "height": 3730,
+      "crs": "EPSG:32611",
+      "resolution": [
+       100.0,
+       100.0
+      ],
+      "transform": [
+       100.0,
+       0.0,
+       243350.0,
+       0.0,
+       -100.0,
+       4508550.0
+      ],
+      "dtype": "float32",
+      "nodata": -999999.0
+     },
      "valid_px": 5167628
     },
     {
@@ -194,6 +305,25 @@
      "archive": "22103_area1_tiffs.zip",
      "member": "22103_area1_tiffs/22103_u_a1.tif",
      "member_size": 5289098,
+     "source_grid": {
+      "width": 1338,
+      "height": 979,
+      "crs": "EPSG:32611",
+      "resolution": [
+       50.0,
+       50.0
+      ],
+      "transform": [
+       50.0,
+       0.0,
+       406575.0,
+       0.0,
+       -50.0,
+       4202725.0
+      ],
+      "dtype": "float32",
+      "nodata": -999999.0
+     },
      "valid_px": 243065
     }
    ],
@@ -206,6 +336,25 @@
      "archive": "22103_area2_tiffs.zip",
      "member": "22103_area2_tiffs/22103_tc_a2.tif",
      "member_size": 49531354,
+     "source_grid": {
+      "width": 3292,
+      "height": 3730,
+      "crs": "EPSG:32611",
+      "resolution": [
+       100.0,
+       100.0
+      ],
+      "transform": [
+       100.0,
+       0.0,
+       243350.0,
+       0.0,
+       -100.0,
+       4508550.0
+      ],
+      "dtype": "float32",
+      "nodata": -999999.0
+     },
      "valid_px": 5167628
     },
     {
@@ -213,6 +362,25 @@
      "archive": "22103_area1_tiffs.zip",
      "member": "22103_area1_tiffs/22103_tc_a1.tif",
      "member_size": 5289096,
+     "source_grid": {
+      "width": 1338,
+      "height": 979,
+      "crs": "EPSG:32611",
+      "resolution": [
+       50.0,
+       50.0
+      ],
+      "transform": [
+       50.0,
+       0.0,
+       406575.0,
+       0.0,
+       -50.0,
+       4202725.0
+      ],
+      "dtype": "float32",
+      "nodata": -999999.0
+     },
      "valid_px": 243065
     }
    ],
