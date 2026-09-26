@@ -1,0 +1,9 @@
+[
+  {"site":"GEMSDOE1","account":"extradr19","reported_score":0.1563,"sha_prefix":null,"strategy":"Adopted deep-model recall ensemble (current site description; exact uploaded bytes unconfirmed)","url":"https://buffedlizard55-lab.github.io/GEMSDOE/docs/index.html"},
+  {"site":"GEMSDOE2","account":"smashi34","reported_score":0.1560,"sha_prefix":null,"strategy":"Dual-family union (current site description; exact uploaded bytes unconfirmed)","url":"https://buffedlizard55-lab.github.io/GEMSDOE2/docs/index.html"},
+  {"site":"GEMSDOE3 nodes","account":"smrtdoog5","reported_score":0.1193,"sha_prefix":"f347b70daa","strategy":"Pindrop nodes; 155,021 emitted pixels per site manifest","url":"https://buffedlizard55-lab.github.io/GEMSDOE3/docs/index.html"},
+  {"site":"GEMSDOE3 dense","account":"SDCF9","reported_score":0.1152,"sha_prefix":"4e03fc9705","strategy":"Pindrop dense ridge control; same reported budget","url":"https://buffedlizard55-lab.github.io/GEMSDOE3/docs/index.html"},
+  {"site":"GEMSDOE3 gap","account":"wbg1","reported_score":0.0830,"sha_prefix":"37f9d5b855","strategy":"Pindrop catalogue-gap target","url":"https://buffedlizard55-lab.github.io/GEMSDOE3/docs/index.html"},
+  {"site":"GEMSDOE4","account":null,"reported_score":0.0343,"sha_prefix":null,"strategy":"Lineament + proxy-label strategy (current site; uploaded version not authenticated)","url":"https://buffedlizard55-lab.github.io/GEMSDOE4/"},
+  {"site":"6GEMSDOE","account":null,"reported_score":0.0286,"sha_prefix":null,"strategy":"88-channel HGB, hard top 3% (current site; uploaded version not authenticated)","url":"https://buffedlizard55-lab.github.io/6GEMSDOE/"}
+]

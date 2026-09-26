@@ -1,0 +1,593 @@
+{
+  "status": "ok",
+  "verified_utc": "2026-09-26T18:12:41.641583+00:00",
+  "source": "https://www.drivendata.org/competitions/306/competition-doe-gems/leaderboard/",
+  "method": "automated official HTML/HTMX table parse",
+  "rows": [
+    {
+      "rank": 1,
+      "participant": "DARD",
+      "score": 0.3049
+    },
+    {
+      "rank": 2,
+      "participant": "alexoktaba",
+      "score": 0.2993
+    },
+    {
+      "rank": 3,
+      "participant": "HardcoreTechGod",
+      "score": 0.2854
+    },
+    {
+      "rank": 4,
+      "participant": "mzoorob",
+      "score": 0.2843
+    },
+    {
+      "rank": 5,
+      "participant": "joeyfezster",
+      "score": 0.2589
+    },
+    {
+      "rank": 6,
+      "participant": "GrigorSargsyan",
+      "score": 0.2504
+    },
+    {
+      "rank": 7,
+      "participant": "xiaofanhu",
+      "score": 0.2367
+    },
+    {
+      "rank": 8,
+      "participant": "exposed",
+      "score": 0.234
+    },
+    {
+      "rank": 9,
+      "participant": "hiii12345",
+      "score": 0.2262
+    },
+    {
+      "rank": 10,
+      "participant": "tchu",
+      "score": 0.222
+    },
+    {
+      "rank": 11,
+      "participant": "oshbocker",
+      "score": 0.2185
+    },
+    {
+      "rank": 12,
+      "participant": "moongrega",
+      "score": 0.2174
+    },
+    {
+      "rank": 13,
+      "participant": "Batik Shirt Brothers",
+      "score": 0.1956
+    },
+    {
+      "rank": 14,
+      "participant": "doegemsDrivendata",
+      "score": 0.1847
+    },
+    {
+      "rank": 15,
+      "participant": "ndavis7",
+      "score": 0.1797
+    },
+    {
+      "rank": 16,
+      "participant": "ad3002",
+      "score": 0.177
+    },
+    {
+      "rank": 17,
+      "participant": "nsabaj",
+      "score": 0.1744
+    },
+    {
+      "rank": 18,
+      "participant": "jgaines",
+      "score": 0.1694
+    },
+    {
+      "rank": 19,
+      "participant": "dmitry_v",
+      "score": 0.1672
+    },
+    {
+      "rank": 20,
+      "participant": "hall4jm",
+      "score": 0.1642
+    },
+    {
+      "rank": 21,
+      "participant": "VictorCallejas",
+      "score": 0.1629
+    },
+    {
+      "rank": 22,
+      "participant": "Scotty77",
+      "score": 0.159
+    },
+    {
+      "rank": 23,
+      "participant": "fishnchips",
+      "score": 0.1587
+    },
+    {
+      "rank": 24,
+      "participant": "extradr19",
+      "score": 0.1563
+    },
+    {
+      "rank": 25,
+      "participant": "SDCF9",
+      "score": 0.1563
+    },
+    {
+      "rank": 26,
+      "participant": "smashi34",
+      "score": 0.156
+    },
+    {
+      "rank": 27,
+      "participant": "hudsonenterprises",
+      "score": 0.1543
+    },
+    {
+      "rank": 28,
+      "participant": "Aero",
+      "score": 0.15
+    },
+    {
+      "rank": 29,
+      "participant": "GeoTrace",
+      "score": 0.1498
+    },
+    {
+      "rank": 30,
+      "participant": "mlandry",
+      "score": 0.1481
+    },
+    {
+      "rank": 31,
+      "participant": "Milieunomics",
+      "score": 0.1466
+    },
+    {
+      "rank": 32,
+      "participant": "kbrodt",
+      "score": 0.1456
+    },
+    {
+      "rank": 33,
+      "participant": "syntropy-digital",
+      "score": 0.1433
+    },
+    {
+      "rank": 34,
+      "participant": "Beacon",
+      "score": 0.1407
+    },
+    {
+      "rank": 35,
+      "participant": "Waltz157",
+      "score": 0.1403
+    },
+    {
+      "rank": 36,
+      "participant": "Milieu",
+      "score": 0.1401
+    },
+    {
+      "rank": 37,
+      "participant": "joano",
+      "score": 0.135
+    },
+    {
+      "rank": 38,
+      "participant": "zeaal",
+      "score": 0.135
+    },
+    {
+      "rank": 39,
+      "participant": "jorgeschmidt",
+      "score": 0.1256
+    },
+    {
+      "rank": 40,
+      "participant": "mtrpdx",
+      "score": 0.1219
+    },
+    {
+      "rank": 41,
+      "participant": "smrtdoog5",
+      "score": 0.1193
+    },
+    {
+      "rank": 42,
+      "participant": "ahkarl13",
+      "score": 0.1148
+    },
+    {
+      "rank": 43,
+      "participant": "DBbun",
+      "score": 0.1119
+    },
+    {
+      "rank": 44,
+      "participant": "mctamro",
+      "score": 0.1007
+    },
+    {
+      "rank": 45,
+      "participant": "lfiaschi",
+      "score": 0.0982
+    },
+    {
+      "rank": 46,
+      "participant": "finding_true_north",
+      "score": 0.0966
+    },
+    {
+      "rank": 47,
+      "participant": "dreanarc",
+      "score": 0.0926
+    },
+    {
+      "rank": 48,
+      "participant": "ganesh_stemx",
+      "score": 0.0902
+    },
+    {
+      "rank": 49,
+      "participant": "tarabird90",
+      "score": 0.0878
+    },
+    {
+      "rank": 50,
+      "participant": "wbg1",
+      "score": 0.083
+    },
+    {
+      "rank": 51,
+      "participant": "ranulfomascarineto",
+      "score": 0.0811
+    },
+    {
+      "rank": 52,
+      "participant": "Ndabenhle",
+      "score": 0.0806
+    },
+    {
+      "rank": 53,
+      "participant": "dr.danger",
+      "score": 0.0781
+    },
+    {
+      "rank": 54,
+      "participant": "JerryDataWorks",
+      "score": 0.0765
+    },
+    {
+      "rank": 55,
+      "participant": "vsoni1",
+      "score": 0.0751
+    },
+    {
+      "rank": 56,
+      "participant": "zenitramar",
+      "score": 0.0694
+    },
+    {
+      "rank": 57,
+      "participant": "Emre_Cirak",
+      "score": 0.068
+    },
+    {
+      "rank": 58,
+      "participant": "GeoMIT",
+      "score": 0.0623
+    },
+    {
+      "rank": 59,
+      "participant": "jigglypanda",
+      "score": 0.0608
+    },
+    {
+      "rank": 60,
+      "participant": "JJ0236",
+      "score": 0.0598
+    },
+    {
+      "rank": 61,
+      "participant": "Alherma7",
+      "score": 0.0593
+    },
+    {
+      "rank": 62,
+      "participant": "Power",
+      "score": 0.0557
+    },
+    {
+      "rank": 63,
+      "participant": "GeothermalMap",
+      "score": 0.0554
+    },
+    {
+      "rank": 64,
+      "participant": "eniolagalileo",
+      "score": 0.0545
+    },
+    {
+      "rank": 65,
+      "participant": "Jichor",
+      "score": 0.0533
+    },
+    {
+      "rank": 66,
+      "participant": "_Wah_",
+      "score": 0.0501
+    },
+    {
+      "rank": 67,
+      "participant": "sukantabasu",
+      "score": 0.05
+    },
+    {
+      "rank": 68,
+      "participant": "pietro.foini",
+      "score": 0.0476
+    },
+    {
+      "rank": 69,
+      "participant": "ChaiCoders",
+      "score": 0.0449
+    },
+    {
+      "rank": 70,
+      "participant": "Team Scooby",
+      "score": 0.0446
+    },
+    {
+      "rank": 71,
+      "participant": "jfper21",
+      "score": 0.044
+    },
+    {
+      "rank": 72,
+      "participant": "justforbaseline",
+      "score": 0.0427
+    },
+    {
+      "rank": 73,
+      "participant": "Marlawn7",
+      "score": 0.0412
+    },
+    {
+      "rank": 74,
+      "participant": "smudge",
+      "score": 0.0372
+    },
+    {
+      "rank": 75,
+      "participant": "Ehimenathan",
+      "score": 0.0319
+    },
+    {
+      "rank": 76,
+      "participant": "kpomazi",
+      "score": 0.0316
+    },
+    {
+      "rank": 77,
+      "participant": "DLegorreta",
+      "score": 0.0314
+    },
+    {
+      "rank": 78,
+      "participant": "cohezion",
+      "score": 0.0281
+    },
+    {
+      "rank": 79,
+      "participant": "aentrikin",
+      "score": 0.0268
+    },
+    {
+      "rank": 80,
+      "participant": "secondlifegeo",
+      "score": 0.0265
+    },
+    {
+      "rank": 81,
+      "participant": "megadragon",
+      "score": 0.0242
+    },
+    {
+      "rank": 82,
+      "participant": "notmyfault",
+      "score": 0.0239
+    },
+    {
+      "rank": 83,
+      "participant": "ials",
+      "score": 0.0231
+    },
+    {
+      "rank": 84,
+      "participant": "StarAtNyte",
+      "score": 0.0211
+    },
+    {
+      "rank": 85,
+      "participant": "ilyausmanov2001",
+      "score": 0.0211
+    },
+    {
+      "rank": 86,
+      "participant": "BravadoWorks",
+      "score": 0.0182
+    },
+    {
+      "rank": 87,
+      "participant": "GrobeStreet",
+      "score": 0.0178
+    },
+    {
+      "rank": 88,
+      "participant": "chawki_riahi",
+      "score": 0.0172
+    },
+    {
+      "rank": 89,
+      "participant": "PandaKarma",
+      "score": 0.0148
+    },
+    {
+      "rank": 90,
+      "participant": "SirAbo",
+      "score": 0.0146
+    },
+    {
+      "rank": 91,
+      "participant": "the_alchimist",
+      "score": 0.0142
+    },
+    {
+      "rank": 92,
+      "participant": "angelsg",
+      "score": 0.0137
+    },
+    {
+      "rank": 93,
+      "participant": "AiWatson343",
+      "score": 0.0134
+    },
+    {
+      "rank": 94,
+      "participant": "Xyflow",
+      "score": 0.013
+    },
+    {
+      "rank": 95,
+      "participant": "TommyCheeze",
+      "score": 0.0122
+    },
+    {
+      "rank": 96,
+      "participant": "EarthSAR",
+      "score": 0.0121
+    },
+    {
+      "rank": 97,
+      "participant": "redrookai",
+      "score": 0.012
+    },
+    {
+      "rank": 98,
+      "participant": "BrandenKMurray",
+      "score": 0.0118
+    },
+    {
+      "rank": 99,
+      "participant": "senovr",
+      "score": 0.0113
+    },
+    {
+      "rank": 100,
+      "participant": "teod",
+      "score": 0.0105
+    },
+    {
+      "rank": 101,
+      "participant": "MICADEE",
+      "score": 0.01
+    },
+    {
+      "rank": 102,
+      "participant": "otero555",
+      "score": 0.009
+    },
+    {
+      "rank": 103,
+      "participant": "OlehSekirkin",
+      "score": 0.0078
+    },
+    {
+      "rank": 104,
+      "participant": "deactivated-8d0c903",
+      "score": 0.0019
+    },
+    {
+      "rank": 105,
+      "participant": "kgl-ctf",
+      "score": 0.0
+    },
+    {
+      "rank": 106,
+      "participant": "trilabs",
+      "score": 0.0
+    }
+  ],
+  "attempted_utc": "2026-09-26T18:12:41.641583+00:00",
+  "error": null,
+  "source_checks": [
+    {
+      "id": "competition",
+      "url": "https://www.drivendata.org/competitions/306/competition-doe-gems/page/967/",
+      "checked_utc": "2026-09-26T18:12:41.641583+00:00",
+      "status": "excerpt_found",
+      "sha256": "59bdd7027a8446f3e597a0aa96344a8312348122432dbb3f165d76c4464f9758"
+    },
+    {
+      "id": "geodawn",
+      "url": "https://www.usgs.gov/data/geodawn-airborne-magnetic-and-radiometric-surveys-northwestern-great-basin-nevada-and",
+      "checked_utc": "2026-09-26T18:12:41.641583+00:00",
+      "status": "excerpt_found",
+      "sha256": "8cd525dd8309325841e7a9b8f95be1d0c61975128e3ba37ad30b58f5ede4f524"
+    },
+    {
+      "id": "structure",
+      "url": "https://www.osti.gov/biblio/1724082",
+      "checked_utc": "2026-09-26T18:12:41.641583+00:00",
+      "status": "excerpt_found",
+      "sha256": "664d6d484643cb7618dc0ff20b4f60719711e2e5bb802f32c1a6da60a36bb4c6"
+    },
+    {
+      "id": "playfairway",
+      "url": "https://www.usgs.gov/publications/discovering-blind-geothermal-systems-great-basin-region-integrated-geologic-and",
+      "checked_utc": "2026-09-26T18:12:41.641583+00:00",
+      "status": "excerpt_found",
+      "sha256": "bcc24295d2017f9f8867ff745ca0819c3317d96d6290ab173738f0a5a2a28436"
+    },
+    {
+      "id": "about",
+      "url": "https://www.drivendata.org/competitions/306/competition-doe-gems/page/968/",
+      "checked_utc": "2026-09-26T18:12:41.641583+00:00",
+      "status": "excerpt_found",
+      "sha256": "144578aa24b519bdc698918852727614e2c816f21c3ccf11dcfbbe34f629eb86"
+    }
+  ],
+  "table_source": "https://www.drivendata.org/competitions/306/competition-doe-gems/leaderboard_partial/?page=1",
+  "pages": [
+    {
+      "url": "https://www.drivendata.org/competitions/306/competition-doe-gems/leaderboard_partial/?page=1",
+      "sha256": "88cb234d28c86176c5c33fa8d1794086226dd67ac95167fba25dc47ffc74c2ec"
+    },
+    {
+      "url": "https://www.drivendata.org/competitions/306/competition-doe-gems/leaderboard_partial/?page=2",
+      "sha256": "f26dd869802b7e6bbad680b140c424c3622834ff060b6bfe9f6e5d443c9c0108"
+    },
+    {
+      "url": "https://www.drivendata.org/competitions/306/competition-doe-gems/leaderboard_partial/?page=3",
+      "sha256": "edc25e65cebc2706621cc80ae9f3a9be12daa63e03e8dd84fb21d8a3dade6b91"
+    }
+  ],
+  "response_sha256": "edc25e65cebc2706621cc80ae9f3a9be12daa63e03e8dd84fb21d8a3dade6b91"
+}

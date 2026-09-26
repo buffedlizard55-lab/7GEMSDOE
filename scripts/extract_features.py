@@ -16,7 +16,9 @@ derives edge/texture features, robustly normalises every channel to [0, 1]
 The submission footprint is asserted equal to the official template
 (example_submission.tif): predictions must be finite exactly inside it.
 Pixels inside the footprint where some band is NaN are imputed with the
-band median and counted in the report (measured: 3,073 band-pixels).
+band median and counted in the report (this session: 58,171 band-pixels).
+Normalization uses the full footprint and is therefore transductive; fit within
+training folds before making claims of strict out-of-region generalization.
 """
 
 from __future__ import annotations

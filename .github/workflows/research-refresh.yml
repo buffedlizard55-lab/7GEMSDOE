@@ -1,0 +1,73 @@
+name: Research refresh
+on:
+  workflow_dispatch:
+  push:
+    branches: [main, "arena/**"]
+  schedule:
+    - cron: '17 8 * * *'
+permissions:
+  contents: write
+  pull-requests: write
+concurrency:
+  group: research-feed
+  cancel-in-progress: false
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install -r requirements.txt
+      - name: Restore last successful public snapshot if available
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh release view research-feed --json body --jq .body > /tmp/previous-feed.json; then
+            python -c 'import json,pathlib; p=pathlib.Path("/tmp/previous-feed.json"); j=json.loads(p.read_text()); assert j.get("rows"); pathlib.Path("knowledge/feed.json").write_text(p.read_text())'
+          fi
+      - run: python scripts/refresh_sources.py
+      - run: python scripts/dem_pilot.py
+      - run: python scripts/build_site.py
+      - run: python -m pytest tests/ -q
+      - name: Browser integration checks
+        run: |
+          pip install playwright
+          playwright install --with-deps chromium 2>&1 | tee /tmp/browser-install.txt
+          python scripts/browser_smoke.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: research-evidence
+          path: |
+            knowledge/feed.json
+            knowledge/session2/dem_pilot.json
+            scratch/browser/
+      - name: Publish branch evidence on its pull request for review
+        if: always() && github.ref != 'refs/heads/main'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python - <<'PYCODE'
+          from pathlib import Path
+          parts = ["## Automated research verification\nRun: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"]
+          for name in ['knowledge/feed.json', 'knowledge/session2/dem_pilot.json', 'scratch/browser/report.json']:
+              p = Path(name)
+              if p.exists():
+                  parts.append('<details><summary>' + name + '</summary>\n\n```json\n' + p.read_text() + '\n```\n</details>')
+          Path('/tmp/research-comment.md').write_text('\n\n'.join(parts))
+          PYCODE
+          number=$(gh pr list --head "$GITHUB_REF_NAME" --json number --jq '.[0].number')
+          if [ -n "$number" ]; then gh pr comment "$number" --body-file /tmp/research-comment.md; fi
+      - name: Publish machine-readable feed without committing to any branch
+        if: github.ref == 'refs/heads/main'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh release view research-feed >/dev/null 2>&1; then
+            gh release edit research-feed --notes-file knowledge/feed.json --latest=false
+          else
+            gh release create research-feed --target "$GITHUB_SHA" --title "Automated research feed" --notes-file knowledge/feed.json --latest=false
+          fi
+          gh release upload research-feed knowledge/feed.json knowledge/session2/dem_pilot.json --clobber

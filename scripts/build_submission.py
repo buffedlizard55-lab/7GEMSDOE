@@ -56,6 +56,10 @@ def load_truth_mask():
 
 
 def main() -> int:
+    import argparse
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--no-publish", action="store_true", help="rebuild and validate only in external artifacts directory")
+    args = parser.parse_args()
     ensure_data()
     t0 = time.time()
     p = POLICY
@@ -81,6 +85,8 @@ def main() -> int:
     # --- blind detector emission ------------------------------------------
     p_model = np.load(ARTIFACT_DIR / "p_model.npy")
     assert p_model.shape == truth.shape
+    if not np.isfinite(p_model[footprint]).all() or np.any((p_model[footprint] < 0) | (p_model[footprint] > 1)):
+        raise ValueError("model probabilities must be finite and in [0,1] inside footprint")
     emis = np.clip((np.nan_to_num(p_model, nan=0.0) - p["model_tau"])
                    / (1.0 - p["model_tau"]), 0.0, 1.0) * p["model_scale"]
     emis = emis.astype(np.float32)
@@ -126,7 +132,8 @@ def main() -> int:
 
     sha = hashlib.sha256(out_path.read_bytes()).hexdigest()
     DOCS_DOWNLOADS.mkdir(parents=True, exist_ok=True)
-    shutil.copy(out_path, DOCS_DOWNLOADS / "submission.tif")
+    if not args.no_publish:
+        shutil.copy(out_path, DOCS_DOWNLOADS / "submission.tif")
     report = {
         "generated_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
         "policy": p,
@@ -153,8 +160,9 @@ def main() -> int:
         "format_gate": "PASS",
         "proxy_evidence": "artifacts/component_policy_report.json (sweep)",
     }
-    (DOCS_DOWNLOADS / "submission_meta.json").write_text(
-        json.dumps(report, indent=1))
+    if not args.no_publish:
+        (DOCS_DOWNLOADS / "submission_meta.json").write_text(
+            json.dumps(report, indent=1))
     (ARTIFACT_DIR / "submission_meta.json").write_text(
         json.dumps(report, indent=1))
     print(f"catalogue monitor DTI: {catalog_dti:.4f} "

@@ -1,8 +1,8 @@
-"""Line-by-line verification of the official competition rasters.
+"""Checks of mirrored competition rasters against inherited team pins.
 
 Checks, for every raster in $GEMS_DATA_DIR:
   * sha256 matches the pin in knowledge/inherited_evidence/data_bridge_manifest.json
-    (pins measured from the official downloads, 2026-09-17)
+    (inherited pins attributed to downloads on 2026-09-17; sponsor origin not independently authenticated)
   * grid spec matches the competition format: EPSG:32611, 100 m, 3292x3730,
     transform (100, 0, 243350, 0, -100, 4508550)
   * band count / dtype as specified by the problem page
@@ -80,6 +80,10 @@ def main() -> int:
             check_grid(src, path.name, failures)
             print(f"  grid {src.width}x{src.height} {src.crs} res={src.res} "
                   f"bands={src.count} dtype={src.dtypes[0]}")
+
+    if failures:
+        print("IRREGULARITIES:\n - " + "\n - ".join(failures))
+        return 1
 
     with rasterio.open(FEATURES_TIF) as src:
         if src.count != 19:

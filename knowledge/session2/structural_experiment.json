@@ -1,0 +1,147 @@
+{
+  "generated_utc": "2026-09-26T17:54:46.999558+00:00",
+  "protocol": "H3 connected-component ablation v1; seeds fixed before execution",
+  "selection_means": {
+    "isotropic3": 0.010335358922463714,
+    "isotropic15": 0.02475863523785979,
+    "strike15x3": 0.02216439464738852,
+    "strike30x3": 0.027138034737178865
+  },
+  "selected": "strike30x3",
+  "rows": [
+    {
+      "seed": 4242,
+      "split": "selection",
+      "policy": "isotropic3",
+      "TP_w": 359.8854504281479,
+      "FP_w": 117944.9104132831,
+      "FN_w": 11838.114549571852,
+      "n_truth": 12198,
+      "predicted_mass": 118984.99668295681,
+      "dti": 0.010768771734009768
+    },
+    {
+      "seed": 4242,
+      "split": "selection",
+      "policy": "isotropic15",
+      "TP_w": 2844.7976531055565,
+      "FP_w": 516472.1880479036,
+      "FN_w": 9353.202346894443,
+      "n_truth": 12198,
+      "predicted_mass": 527038.8740894124,
+      "dti": 0.025037428774298123
+    },
+    {
+      "seed": 4242,
+      "split": "selection",
+      "policy": "strike15x3",
+      "TP_w": 916.1081060828261,
+      "FP_w": 145476.54716441085,
+      "FN_w": 11281.891893917174,
+      "n_truth": 12198,
+      "predicted_mass": 148187.23544290895,
+      "dti": 0.02346772866989081
+    },
+    {
+      "seed": 4242,
+      "split": "selection",
+      "policy": "strike30x3",
+      "TP_w": 1206.4027414076463,
+      "FP_w": 160061.50299736657,
+      "FN_w": 10991.597258592354,
+      "n_truth": 12198,
+      "predicted_mass": 163533.82186770497,
+      "dti": 0.02871568320391181
+    },
+    {
+      "seed": 4243,
+      "split": "selection",
+      "policy": "isotropic3",
+      "TP_w": 331.01533214209434,
+      "FP_w": 117983.5881911407,
+      "FN_w": 11876.984667857905,
+      "n_truth": 12208,
+      "predicted_mass": 118935.70664446056,
+      "dti": 0.00990194611091766
+    },
+    {
+      "seed": 4243,
+      "split": "selection",
+      "policy": "isotropic15",
+      "TP_w": 2772.912840424282,
+      "FP_w": 514761.66629134887,
+      "FN_w": 9435.087159575718,
+      "n_truth": 12208,
+      "predicted_mass": 525008.841997507,
+      "dti": 0.024479841701421458
+    },
+    {
+      "seed": 4243,
+      "split": "selection",
+      "policy": "strike15x3",
+      "TP_w": 814.9364311543218,
+      "FP_w": 145677.8473389815,
+      "FN_w": 11393.063568845679,
+      "n_truth": 12208,
+      "predicted_mass": 148093.196136071,
+      "dti": 0.020861060624886234
+    },
+    {
+      "seed": 4243,
+      "split": "selection",
+      "policy": "strike30x3",
+      "TP_w": 1076.0787590454638,
+      "FP_w": 160589.27986062306,
+      "FN_w": 11131.921240954536,
+      "n_truth": 12208,
+      "predicted_mass": 163681.2573085828,
+      "dti": 0.02556038627044592
+    },
+    {
+      "seed": 9001,
+      "split": "locked_test",
+      "policy": "isotropic3",
+      "TP_w": 369.1766524630204,
+      "FP_w": 118059.36291918797,
+      "FN_w": 11869.82334753698,
+      "n_truth": 12239,
+      "predicted_mass": 119132.65492840111,
+      "dti": 0.011027800220013408
+    },
+    {
+      "seed": 9001,
+      "split": "locked_test",
+      "policy": "isotropic15",
+      "TP_w": 2861.6834660775075,
+      "FP_w": 516800.47928730655,
+      "FN_w": 9377.316533922492,
+      "n_truth": 12239,
+      "predicted_mass": 527312.5748986444,
+      "dti": 0.025163489785663497
+    },
+    {
+      "seed": 9001,
+      "split": "locked_test",
+      "policy": "strike15x3",
+      "TP_w": 907.6371596303459,
+      "FP_w": 145839.4006422743,
+      "FN_w": 11331.362840369655,
+      "n_truth": 12239,
+      "predicted_mass": 148538.83444168302,
+      "dti": 0.02318914335272291
+    },
+    {
+      "seed": 9001,
+      "split": "locked_test",
+      "policy": "strike30x3",
+      "TP_w": 1190.240301591114,
+      "FP_w": 160507.9139720723,
+      "FN_w": 11048.759698408885,
+      "n_truth": 12239,
+      "predicted_mass": 163946.4989632732,
+      "dti": 0.028251052197262993
+    }
+  ],
+  "labels_sha256": "7ba308ccdc4418b31a178f4f1ef21aaa6e152e4028f2f6f64b01f7eb25ae4093",
+  "caveat": "Component holdout only; no buffered geographic test, no private labels. All valid pixels charged as negatives except hidden truth. Known-fault scoring mask on platform is not reproduced. Not sufficient to promote a submission."
+}

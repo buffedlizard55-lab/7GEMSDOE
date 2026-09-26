@@ -1,3 +1,5 @@
+> **Historical session-1 notes; superseded where inconsistent.** Fresh claim-level evidence and corrections: [session-2 audit](session2/review.md), [science ledger](session2/research.md), [source registry](sources.json), [dated feed](feed.json). Inherited source/provenance claims are not independently authenticated by being stored here.
+
 # Data inventory (every byte sha256-verified)
 
 Verification: `python scripts/verify_data.py` (all PASS, 2026-09-26).

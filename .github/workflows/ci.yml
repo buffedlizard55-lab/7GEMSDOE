@@ -16,6 +16,6 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install numpy scipy rasterio pytest scikit-learn
+          pip install -r requirements.txt
       - name: Metric + format tests (hermetic; no external data needed)
         run: python -m pytest tests/ -q
