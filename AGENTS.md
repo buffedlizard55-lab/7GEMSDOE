@@ -1,7 +1,8 @@
 # Start every session here
 
-1. Read README.md (mission brief), STATUS.md, knowledge/session4/review.md and current
-   machine evidence before changing models or prose.
+1. Read README.md (mission brief), STATUS.md, knowledge/session5/review.md and current
+   machine evidence before changing models or prose. Session-4 H1 decision tree
+   (knowledge/session4/next_session.md) still governs the unscored upload.
 2. Maximize P(Win): prioritize independent discovery signal and valid reproducible
    submissions over cosmetic changes or public-score chasing. Own the outcome:
    verify end-to-end downloads, tests and source provenance; record failures.
@@ -24,3 +25,8 @@
     cannot reach is processed on GitHub Actions and only compact, provenance-logged
     products are committed. Local skill on catalogue faults is not a leaderboard
     estimate. Emit thin lines, never blobs; record every upload's SHA-256 and score.
+
+11. Session 5 additions: never assume remote schemas/filenames — runner jobs fail
+    closed and log observed listings. No new submission file until the H1 upload
+    scores (v2 is frozen policy only). Catalogue-derived layers (slip/dilation
+    tendency, INGENIOUS fault shapefiles) are leakage, never discovery features.

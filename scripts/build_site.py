@@ -42,6 +42,7 @@ def main():
     lidar=load('downloads/lidar_meta.json'); lexp=load('knowledge/session4/lidar_experiment.json')
     lcand=load('knowledge/session4/lidar_candidate.json'); scored=load('knowledge/session4/scored_files_analysis.json')
     lprod=load('external/dem/lidar_scarp_features.json')
+    gaps=load('knowledge/session5/lidar_gaps.json'); fp=load('knowledge/session5/lidar_fp_audit.json')
     lc=lcand['candidates'][0]
     def mult(arm,f,key='pooled_nms'): return f"x{lexp[key][arm][f]['multiple']:.2f}"
     s4rows=[[a,mult(a,'0.005','pooled'),mult(a,'0.01','pooled'),mult(a,'0.02','pooled'),mult(a,'0.005'),mult(a,'0.01'),mult(a,'0.02')] for a in ('bands19','lidar','both')]
@@ -51,6 +52,14 @@ def main():
 {table(['Arm','raw f=0.5%','raw f=1%','raw f=2%','ridge f=0.5%','ridge f=1%','ridge f=2%'],s4rows)}
 <p><strong>Lidar-only generalises best</strong> (4/5 folds and pooled). The 19 supplied bands fall <em>below random</em> across geography; ridge thinning helps every arm. Catalogue traces can sit up to 400 m from lidar-mapped faults ({link('https://pangea.stanford.edu/ERE/db/GeoConf/papers/SGW/2025/Hermant.pdf','Hermant et al. 2025')}, cited by the organisers), so this local test is biased against lidar; only a leaderboard upload measures transfer to new faults.</p>
 <p>{link('knowledge/session4/lidar_experiment.json','Full experiment report')} · {link('knowledge/session4/research.md','Session 4 research & hypotheses')} · {link('knowledge/session4/review.md','Leaderboard forensics')}</p></section>'''
+    gaprows=[[q,v['footprint_px'],v['gap_px'],f"{v['gap_fraction']*100:.1f}%",v['catalogue_px']] for q,v in gaps['quadrants'].items()]
+    v2=fp['v2_policy']
+    session5=f'''<section class="card"><h2>Session 5: gap geography, FP audit, new runner jobs</h2>
+<p>Lidar covers <strong>{gaps['covered_px']:,}</strong> of {gaps['footprint_px']:,} footprint pixels; the gap is <strong>{gaps['gap_fraction']*100:.1f}%</strong> and still holds {gaps['catalogue_px_in_gap']:,} catalogue pixels (20.5% of known faults). The NE quadrant is {gaps['quadrants']['NE']['gap_fraction']*100:.1f}% gap — fill priority #1. The H1 candidate emits 0 px in gaps (verified).</p>
+{table(['Quadrant','Footprint px','Gap px','Gap %','Catalogue px'],gaprows)}
+<p>False-positive audit of the H1 candidate ({fp['emitted_px']:,} emitted px): closed loops are minor ({fp['loop_hole_px']} hole px), but <strong>{fp['emitted_cross_dominant_fraction']*100:.1f}%</strong> of emission is cross-slope dominant (channel-bank-like) and low relief is under-emitted (6.5% of emitted on 32.8% of footprint). A frozen v2 cleanup policy would drop only {v2['would_drop_total_px']:,} px — threshold tweaks are not the lever; channel/shoreline controls are. V2 stays code+policy until v1 scores.</p>
+<p>Runner-ready (dispatch on Actions): {link('https://github.com/buffedlizard55-lab/7GEMSDOE/actions','QFFDB scale-certainty prior (<code>[run-qfaults]</code>)')} for H2 and {link('https://github.com/buffedlizard55-lab/7GEMSDOE/actions','GeoDAWN radiometric grids K/Th/U/TC (<code>[run-rad]</code>)')} for H9 — the survey's own gamma-ray data, absent from the 19-band stack.</p>
+<p>{link('knowledge/session5/lidar_gaps.json','Gap report')} · {link('knowledge/session5/lidar_fp_audit.json','FP audit + frozen v2 policy')} · {link('knowledge/session5/research.md','Session 5 research: 15 sources, overlooked-data audit, H9–H12')} · {link('knowledge/session5/review.md','Three-pass audit')}</p></section>'''
     forensic_rows=[[e(f['file']),e(f['account']),'—' if f['public_score'] is None else f"{f['public_score']:.4f}",f"{f['density']*100:.2f}%",f"{f['dispersion_index']:.2f}",('x%.2f'%f['skill_multiple']) if 'skill_multiple' in f else '—'] for f in scored['files']]
     feed=load('knowledge/feed.json'); sources=load('knowledge/sources.json'); team=load('knowledge/team_results.json')
     exp=load('knowledge/session2/structural_experiment.json'); dem=load('knowledge/session2/dem_pilot.json')
@@ -80,6 +89,7 @@ The supplied account list needs team-registration review. We do not multiply the
 {card(lidar,'Lidar scarp model · ridge-thinned top 2%','Session 4 primary · H1 leaderboard test')}
 <p>{lc['emitted']:,} emitted pixels (binary 1.0; 0.0 elsewhere inside the footprint; NaN outside), all inside lidar coverage; dispersion index {lc['dispersion_index']:.2f} (line-like). Catalogue-based calibration with a 50% transfer discount predicts only ~{lcand['chosen']['expected_dti']:.2f}, below 0.1563; we still recommend it because that calibration is biased against lidar-mapped faults. Visible false-positive classes: closed loops (hills, shorelines) and arcuate range-front edges. Record the score with the SHA-256.</p>
 {session4}
+{session5}
 <h2>Preserved earlier candidates</h2>
 {card(structural,'H3 · Along-strike continuation','Experimental v2 · geographic stress test failed to establish discovery')}
 <p>Extends locally coherent fault traces preferentially along their strike (3 km support) rather than placing a broad halo everywhere (300 m cross-strike support). No deep model or geothermal thermal prior is included.</p>
@@ -156,7 +166,7 @@ OMP_NUM_THREADS=2 .venv/bin/python scripts/train_model.py
 <h3>Source disagreements retained</h3><ul><li>GDR 1391 previously returned “No submission found” and remains unresolved. GDR 1591 was successfully retrieved via the page tool on 2026-09-26 and is the GeoDAWN landing record; this supersedes the earlier failed retrieval. Linked raw files are not yet downloaded or independently verified.</li>
 <li>The user-provided sample raster contains positive fault pixels, despite the problem page describing an all-zero example. Geometry is usable; its values must not be interpreted as predictions.</li>
 <li>Third-party mirror hashes authenticate consistency with the inherited manifest, not the sponsor’s original bytes. Official account-authenticated comparison is outstanding.</li></ul>
-<p>{link('knowledge/sources.json','Auditable source registry')} · {link('knowledge/session2/research.md','Prior research')} · {link('knowledge/session3/research.md','Session 3 source audit')} · {link('knowledge/session4/research.md','Session 4: lidar, leaderboard theory, hypothesis register')}</p>''')
+<p>{link('knowledge/sources.json','Auditable source registry')} · {link('knowledge/session2/research.md','Prior research')} · {link('knowledge/session3/research.md','Session 3 source audit')} · {link('knowledge/session4/research.md','Session 4: lidar, leaderboard theory, hypothesis register')} · {link('knowledge/session5/research.md','Session 5: overlooked data, geothermal science, H9–H12')}</p>''')
     page('data.html','Data provenance',f'''<h2>Data inventory and access</h2>
 {table(['Dataset','Location / verification','Limit'],[
 ['Competition feature stack','~/gems_data/training_features.tif · 19 float32 bands · 418,912,844 bytes','Mirrored from team git bridge after Dropbox TLS failure; sha256 matches inherited pin.'],

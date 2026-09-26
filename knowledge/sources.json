@@ -23,7 +23,7 @@
   },
   {
     "id": "structure",
-    "title": "Faulds & Hinz 2015 \u2014 structural settings",
+    "title": "Faulds & Hinz 2015 — structural settings",
     "url": "https://www.osti.gov/biblio/1724082",
     "excerpt": "normal fault terminations (25%)",
     "claim": "Among nearly 250 categorized geothermal fields, roughly 32% were stepovers, 25% terminations, 22% intersections. These are study-specific geothermal statistics, NOT fault-pixel probabilities.",
@@ -56,7 +56,7 @@
   },
   {
     "id": "geodawn-gdr1591",
-    "title": "GDR 1591 \u2014 official GeoDAWN landing record",
+    "title": "GDR 1591 — official GeoDAWN landing record",
     "url": "https://gdr.openei.org/submissions/1591",
     "excerpt": "Included in the dataset are all flight details, geophysical data, and metadata gathered during the surveys.",
     "claim": "USGS GeoDAWN record links flight details, geophysical data and metadata through DOI 10.5066/P93LGLVQ. GDR displays CC BY 4.0.",
@@ -64,5 +64,49 @@
     "license": "GDR landing page: CC BY 4.0. USGS source separately lists CC0; verify individual asset terms and retain attribution.",
     "reviewed_utc": "2026-09-26",
     "verification": "Page-tool retrieval succeeded this session, superseding previous failed retrieval; automated checks monitor excerpt only"
+  },
+  {
+    "id": "geodawn-release",
+    "title": "USGS GeoDAWN data release (Glen & Earney 2024, DOI 10.5066/P93LGLVQ)",
+    "url": "https://www.sciencebase.gov/catalog/item/657e1d85d34e23d3533209f7",
+    "excerpt": "compressed .zip files containing .csv files of flight line data for magnetic and radiometric surveys, a PDF of the radiometric ternary map, and geoTIFF images of geophysical grids",
+    "claim": "Release holds magnetic AND radiometric grids + line data + ternary map + contractor report. Radiometrics (K/Th/U/total count) are absent from the 19-band training stack.",
+    "use": "H9 radiometric-lineament hypothesis; runner job scripts/geodawn_rad.py (fail-closed, unexecuted)",
+    "license": "USGS data release (public domain); GDR mirror displays CC BY 4.0; verify asset terms + retain attribution",
+    "reviewed_utc": "2026-09-26",
+    "verification": "Search-result excerpt this session; runner must confirm filenames/licence on first fetch"
+  },
+  {
+    "id": "reference-unet",
+    "title": "Organizer reference solution (U-Net + Monte-Carlo CV)",
+    "url": "https://github.com/drivendataorg/gems-prize-reference-solution",
+    "excerpt": "unet-mc-cv-reference-solution.ipynb",
+    "claim": "Reference solution trains a U-Net with Monte-Carlo cross-validation (author Prof. Lipor). The doegemsDrivendata 0.1847 account best is plausibly this baseline (role inference, not verified).",
+    "use": "Floor calibration: naive catalogue-fitting already beats every group file; new faults, not fitting, are the gap",
+    "license": "Repository licence applies; code not vendored here",
+    "reviewed_utc": "2026-09-26",
+    "verification": "Repo page retrieved this session; notebook contents not executed"
+  },
+  {
+    "id": "ingenious-gdr1391",
+    "title": "INGENIOUS Great Basin Regional Dataset Compilation (GDR 1391, doi 10.15121/1881483)",
+    "url": "https://gdr.openei.org/submissions/1391",
+    "excerpt": "Quaternary Faults v2.zip ... supersedes Quaternary Faults v1",
+    "claim": "Holds 2 m temperature probes, wells/springs temp+chemistry, volcanics, paleo-geothermal features, heat flow, MT conductance, slip/dilation tendency, earthquake density, fault shapefiles v1/v2.",
+    "use": "H8 stratification test (independent geothermal observations only); slip/dilation + fault shapefiles EXCLUDED as features (catalogue leakage)",
+    "license": "GDR terms; verify per-asset before ingestion",
+    "reviewed_utc": "2026-09-26",
+    "verification": "Search-result excerpt this session; zips not downloaded (runner job outstanding)"
+  },
+  {
+    "id": "nbmg-opendata",
+    "title": "NBMG Maps & Data / Open Data + geothermal GIS",
+    "url": "https://nbmg.unr.edu/Maps&Data/index.html",
+    "excerpt": "GIS data packages of published maps are generally not available for free",
+    "claim": "Free geospatial datasets via NBMG Open Data; published-map GIS packages generally NOT free; geothermal GIS downloads documented (Lambert projection).",
+    "use": "Candidate well/spring/fault point data via Open Data only; per-asset licence gate before any published-map use",
+    "license": "Mixed: Open Data free; published-map GIS packages generally paid — verify each asset",
+    "reviewed_utc": "2026-09-26",
+    "verification": "Search-result excerpt this session; no files retrieved"
   }
 ]

@@ -1,0 +1,47 @@
+name: QFFDB scale-certainty prior
+# Backlog #4 / H2 enabler. The sandbox cannot reach USGS hosts, so the
+# hosted runner downloads the official Qfaults GIS zip, rasterizes the
+# mapping-scale / certainty prior onto the official grid, and commits the
+# compact uint8 product + manifest back (session branches only).
+# Cost control: runs only on manual dispatch or when the pushing commit
+# message STARTS WITH "[run-qfaults]".
+on:
+  workflow_dispatch:
+  push:
+    branches: ["arena/**"]
+    paths:
+      - ".github/workflows/qfaults.yml"
+      - "scripts/qfaults_prior.py"
+permissions:
+  contents: write
+concurrency:
+  group: qfaults-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  build:
+    if: github.event_name == 'workflow_dispatch' || startsWith(github.event.head_commit.message, '[run-qfaults]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install numpy==2.4.6 scipy==1.17.1 rasterio==1.4.4 fiona==1.10.1
+      - name: Restore competition grid (template raster)
+        run: |
+          bash scripts/download_competition_data.sh
+          python scripts/verify_data.py
+      - name: Build QFFDB prior
+        run: python scripts/qfaults_prior.py
+      - name: Commit compact product to this session branch
+        if: github.ref != 'refs/heads/main'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add external/qfaults
+          git commit -m "Add QFFDB scale-certainty prior (run ${GITHUB_RUN_ID})" || exit 0
+          for i in 1 2 3 4 5; do
+            git pull --rebase origin "${GITHUB_REF_NAME}" && git push origin "HEAD:${GITHUB_REF_NAME}" && break
+            sleep 10
+          done

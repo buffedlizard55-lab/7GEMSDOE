@@ -1,3 +1,21 @@
+# Current status — session 5 (2026-09-26)
+
+- Leaderboard re-checked (page tool): top still DARD 0.3049; group best 0.1563;
+  H1 candidate still NOT YET SCORED. No upload by the agent.
+- Lidar gaps measured (`lidar_gaps.json`): 24.63% of footprint; NE quadrant
+  47.4% gap (fill priority); 12,523 catalogue px (20.5%) in gaps.
+- FP audit (`lidar_fp_audit.json`): loops minor (483 px); 72.1% of emission
+  cross-slope dominant; low relief under-emitted. V2 cleanup frozen as
+  code+policy only (would drop 2.1%) — no file packaged until v1 scores.
+- Runner jobs ready, unexecuted: QFFDB prior (`[run-qfaults]`, H2) and GeoDAWN
+  radiometrics K/Th/U/TC (`[run-rad]`, H9); both fail-closed with hermetic tests.
+- Research: 15 verified sources, overlooked-data audit (10 items), H9–H12,
+  6 strategies incl. verifiability-first final-round play (H12).
+- Site rebuilt with session-5 evidence; **119 tests pass**.
+- Next: `knowledge/session5/next_session.md` (+ session-4 H1 decision tree).
+
+---
+
 # Current status — session 4 (2026-09-26)
 
 - Data placement re-run autonomously: 3/3 rasters PASS (Dropbox TLS failed; team git bridge OK).

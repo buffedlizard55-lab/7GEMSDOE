@@ -1,0 +1,49 @@
+name: GeoDAWN radiometric grids
+# Session 5 / H9 enabler. The sandbox cannot reach ScienceBase, so the
+# hosted runner queries the official GeoDAWN data release
+# (DOI 10.5066/P93LGLVQ, ScienceBase 657e1d85d34e23d3533209f7), downloads
+# the radiometric grid GeoTIFFs (K/Th/U/total count -- NOT in the 19-band
+# training stack), reprojects them onto the official grid, and commits the
+# compact uint8 product + manifest back (session branches only).
+# Cost control: runs only on manual dispatch or when the pushing commit
+# message STARTS WITH "[run-rad]".
+on:
+  workflow_dispatch:
+  push:
+    branches: ["arena/**"]
+    paths:
+      - ".github/workflows/geodawn-rad.yml"
+      - "scripts/geodawn_rad.py"
+permissions:
+  contents: write
+concurrency:
+  group: geodawn-rad-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  build:
+    if: github.event_name == 'workflow_dispatch' || startsWith(github.event.head_commit.message, '[run-rad]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install numpy==2.4.6 scipy==1.17.1 rasterio==1.4.4
+      - name: Restore competition grid (template raster)
+        run: |
+          bash scripts/download_competition_data.sh
+          python scripts/verify_data.py
+      - name: Build radiometric product
+        run: python scripts/geodawn_rad.py
+      - name: Commit compact product to this session branch
+        if: github.ref != 'refs/heads/main'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add external/geodawn_rad
+          git commit -m "Add GeoDAWN radiometric grids (run ${GITHUB_RUN_ID})" || exit 0
+          for i in 1 2 3 4 5; do
+            git pull --rebase origin "${GITHUB_REF_NAME}" && git push origin "HEAD:${GITHUB_REF_NAME}" && break
+            sleep 10
+          done

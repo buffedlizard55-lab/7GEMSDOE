@@ -1,8 +1,11 @@
 # 7GEMSDOE — fault discovery lab
 
 **Read this README at the start of every session**, then `AGENTS.md`, `STATUS.md`,
-[`knowledge/session4/next_session.md`](knowledge/session4/next_session.md) and
-[`knowledge/session4/review.md`](knowledge/session4/review.md).
+[`knowledge/session5/next_session.md`](knowledge/session5/next_session.md) and
+[`knowledge/session5/review.md`](knowledge/session5/review.md).
+(Session 4's [H1 decision tree](knowledge/session4/next_session.md) still governs
+the unscored lidar upload; the standing user brief below is re-read every session
+and nothing in it is treated as completed until evidence says so.)
 
 **Goal:** compete for the top prize in [DOE GEMS / DrivenData #306](https://www.drivendata.org/competitions/306/competition-doe-gems/)
 through scientifically grounded discovery of unmapped **geological faults**.
@@ -10,7 +13,7 @@ Geothermal vents are the user's broader motivation, not the competition's raster
 **We have not demonstrated a score above 0.3049.** Best group public score: 0.1563
 (extradr19; SDCF9 also shows 0.1563 from an unrecorded file). Ranks are dynamic.
 
-## Download first — session 4 (2026-09-26)
+## Download first — session 5 (2026-09-26; candidate unchanged from session 4)
 
 **[GitHub Pages / executive summary](https://buffedlizard55-lab.github.io/7GEMSDOE/)** ·
 [Exact submission instructions](https://buffedlizard55-lab.github.io/7GEMSDOE/how-to-submit.html)
@@ -62,6 +65,37 @@ Reproduce session 4 after the data setup below:
 OMP_NUM_THREADS=2 .venv/bin/python scripts/lidar_model.py        # pre-registered test (~30 min)
 OMP_NUM_THREADS=2 .venv/bin/python scripts/lidar_candidates.py   # rule-based candidate
 .venv/bin/python scripts/build_site.py && .venv/bin/python -m pytest -q
+```
+
+## Session 5 — gaps, FP audit, overlooked data (2026-09-26)
+
+H1 upload still unscored (needs the participant). Session 5 worked the
+score-independent backlog and the standing brief's strategy question:
+
+1. **Gap geography** (`scripts/lidar_gaps.py`): 24.6% of the footprint has
+   no lidar; NE quadrant 47.4% gap is fill priority #1; 20.5% of catalogue
+   faults sit in gaps, capping lidar-only recall at ~75%.
+2. **FP audit** (`scripts/lidar_fp_audit.py`): loops minor (483 px), but
+   72.1% of emission is cross-slope dominant and low relief is
+   under-emitted. V2 cleanup frozen as code+policy only (would drop 2.1%);
+   no file packaged until v1 scores.
+3. **Overlooked official data**: GeoDAWN radiometrics K/Th/U/TC (same
+   survey, absent from the 19-band stack; DOI 10.5066/P93LGLVQ) → H9;
+   QFFDB scale/certainty → H2. Both runner jobs are code-complete,
+   fail-closed and hermetic-tested
+   (dispatch `[run-qfaults]` / `[run-rad]` on Actions).
+4. **Strategy**: 15 verified sources, 10-item overlooked-data audit,
+   H9–H12, and a verifiability-first final-round play (H12) aimed at the
+   $250k expanded-label round rather than dot-optimal private-set DTI.
+
+- [Session 5 research](knowledge/session5/research.md) ·
+  [three-pass audit](knowledge/session5/review.md) ·
+  [next steps](knowledge/session5/next_session.md)
+
+```bash
+.venv/bin/python scripts/lidar_gaps.py     # gap geography (needs data placement)
+.venv/bin/python scripts/lidar_fp_audit.py # FP audit + frozen v2 policy
+.venv/bin/python scripts/build_site.py && .venv/bin/python -m pytest -q  # 119 pass
 ```
 
 ## Current evidence and autonomous workflow
