@@ -1,0 +1,124 @@
+{
+ "status": "review_required",
+ "item": "657e1d85d34e23d3533209f7",
+ "doi": "10.5066/P93LGLVQ",
+ "error": "no radiometric grid matched channels ['K', 'Th', 'U', 'TC']; observed 29 files: ['22103_area1_grids.zip', '22103_area1_tiffs.zip', '22103_area2_grids.zip', '22103_area2_tiffs.zip', '22103_mag_a1_csv.zip', '22103_mag_a1_gdb.zip', '22103_mag_a2_csv.zip', '22103_mag_a2_gdb.zip', '22103_spec_a1_csv.zip', '22103_spec_a1_gdb.zip', '22103_spec_a2_csv.zip', '22103_spec_a2_gdb.zip', '22103_ternary_a1_map.zip', '22103_ternary_a1_pdf.zip', '22103_ternary_a2_map.zip', '22103_ternary_a2_pdf.zip', 'Figure1_index.PNG', 'Figure2_tmi.PNG', 'Figure3_tc.PNG', 'GeoDAWN Metadata FINAL.csv', 'GeoDAWN.xml', 'GeoDAWN_NV_WestCentral_Geophysical_2020_D21_Report.pdf', 'GeoDAWN_ReadMe.pdf', 'GeoDAWN_area1_outline.zip', 'GeoDAWN_area2_outline.zip', 'GeoDAWN_data_extent.zip', 'Index.PNG', 'area1_flight_path.zip', 'area2_flight_path.zip']",
+ "observed_files": [
+  {
+   "name": "22103_mag_a1_csv.zip",
+   "size": 434561618
+  },
+  {
+   "name": "22103_ternary_a1_pdf.zip",
+   "size": 4998474
+  },
+  {
+   "name": "22103_ternary_a2_pdf.zip",
+   "size": 6357793
+  },
+  {
+   "name": "GeoDAWN_data_extent.zip",
+   "size": 2774
+  },
+  {
+   "name": "22103_area1_grids.zip",
+   "size": 44487393
+  },
+  {
+   "name": "22103_area2_grids.zip",
+   "size": 238439415
+  },
+  {
+   "name": "22103_mag_a1_gdb.zip",
+   "size": 367466663
+  },
+  {
+   "name": "22103_spec_a1_gdb.zip",
+   "size": 397005818
+  },
+  {
+   "name": "area1_flight_path.zip",
+   "size": 33672176
+  },
+  {
+   "name": "area2_flight_path.zip",
+   "size": 305715436
+  },
+  {
+   "name": "GeoDAWN_area1_outline.zip",
+   "size": 1190
+  },
+  {
+   "name": "GeoDAWN_area2_outline.zip",
+   "size": 1497
+  },
+  {
+   "name": "Figure1_index.PNG",
+   "size": 2975249
+  },
+  {
+   "name": "Figure2_tmi.PNG",
+   "size": 4268231
+  },
+  {
+   "name": "Figure3_tc.PNG",
+   "size": 4338960
+  },
+  {
+   "name": "GeoDAWN Metadata FINAL.csv",
+   "size": 9515
+  },
+  {
+   "name": "22103_spec_a2_csv.zip",
+   "size": 448087867
+  },
+  {
+   "name": "Index.PNG",
+   "size": 2529945
+  },
+  {
+   "name": "22103_mag_a2_csv.zip",
+   "size": 4015906213
+  },
+  {
+   "name": "22103_mag_a2_gdb.zip",
+   "size": 3287598115
+  },
+  {
+   "name": "22103_area1_tiffs.zip",
+   "size": 45685879
+  },
+  {
+   "name": "22103_area2_tiffs.zip",
+   "size": 241738690
+  },
+  {
+   "name": "22103_ternary_a1_map.zip",
+   "size": 10149448
+  },
+  {
+   "name": "22103_ternary_a2_map.zip",
+   "size": 53865992
+  },
+  {
+   "name": "GeoDAWN_NV_WestCentral_Geophysical_2020_D21_Report.pdf",
+   "size": 7638184
+  },
+  {
+   "name": "GeoDAWN_ReadMe.pdf",
+   "size": 305151
+  },
+  {
+   "name": "22103_spec_a2_gdb.zip",
+   "size": 3176792491
+  },
+  {
+   "name": "GeoDAWN.xml",
+   "size": 31655
+  },
+  {
+   "name": "22103_spec_a1_csv.zip",
+   "size": 51525956
+  }
+ ]
+}
