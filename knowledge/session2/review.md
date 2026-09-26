@@ -43,8 +43,7 @@
 
 ## Pass 3 — final verification
 
-Final test counts, runner results, browser checks, PR and deployment status will be
-appended after execution, not predicted in advance. All remaining untested scientific
+Final execution evidence follows below; statuses are recorded after execution, not predicted in advance. All remaining untested scientific
 strategies remain hypotheses. No score >0.3049, platform acceptance, field discovery,
 or exhaustive “no hallucinations” certification is claimed.
 
@@ -67,3 +66,29 @@ or exhaustive “no hallucinations” certification is claimed.
   runner evidence was recovered via its PR comment, not fabricated from job status.
 - Source monitor on runner found all five cited excerpts. Leaderboard requests returned
   no HTML table; parser adjustment is in progress and last-good snapshots remain flagged.
+
+### Pass 3 completed — 2026-09-26
+
+- Live leaderboard verification succeeded on runner
+  [36261708965](https://github.com/buffedlizard55-lab/7GEMSDOE/actions/runs/36261708965):
+  **106 ranks, three explicitly linked official HTMX pages**, five source excerpts
+  found, native DEM pilot complete and desktop/mobile browser checks PASS. The
+  per-page URLs and response hashes are in `knowledge/feed.json`.
+- Corrected the initial 50-participant assumption: it was pagination, not a full list.
+  Leader remains 0.3049. At 18:12 UTC SDCF9's current account best is 0.1563;
+  its earlier reported 0.1152 file result stays historical/unattributed to the new best.
+- No current public-best row at 0.0343 or 0.0286 was found in this snapshot. This does
+  NOT invalidate earlier individual submissions: account bests can improve and the
+  accounts were not supplied. Keep both records group-reported.
+- **67 local tests pass** (`tests.txt`), covering formula, custom radii, raster corruption,
+  wrong grid/shape/dtype, exact bounds, NaN/Inf/masks, ZIP member bytes, page links,
+  held-label isolation, nodata-safe DEM features, feed failure preservation and pagination.
+- Python compilation, JavaScript syntax check, shell syntax check and served-file
+  HTTP/hash checks pass. Library-level Affine deprecation warnings remain; no test errors.
+- H3 publication now additionally refuses changed label hashes or mismatched label grids.
+- Public score >0.3049, validated new fault/vent discoveries, region-wide DEM inference,
+  GPU modelling, competition upload and authenticated sponsor-byte provenance are **not
+  achieved**. The requirement matrix records these explicitly rather than certifying
+  full scientific completion.
+- PR: https://github.com/buffedlizard55-lab/7GEMSDOE/pull/3 . Merge is performed only
+  after checks; GitHub's PR/Actions records carry the final merge/deployment status.

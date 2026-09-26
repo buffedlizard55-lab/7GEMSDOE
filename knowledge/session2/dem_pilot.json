@@ -1,5 +1,5 @@
 {
-  "attempted_utc": "2026-09-26T18:06:22.132463+00:00",
+  "attempted_utc": "2026-09-26T18:12:47.309934+00:00",
   "url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1m/Projects/NV_WestCentral_EarthMRI_2020_D20/TIFF/USGS_1M_11_x40y416_NV_WestCentral_EarthMRI_2020_D20.tif",
   "caveat": "Small engineering pilot only; slope breaks also occur at roads, drainage, lithologic contacts and landslides. No fault labels or discovery validation.",
   "window_selection": "max distance from overview nodata/edge; native pixels read afterwards",

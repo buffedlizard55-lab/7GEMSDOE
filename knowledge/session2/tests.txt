@@ -1,4 +1,4 @@
-..................................................................       [100%]
+...................................................................      [100%]
 =============================== warnings summary ===============================
 .venv/lib/python3.11/site-packages/rasterio/transform.py:178: 1 warning
 tests/test_validator.py: 48 warnings
@@ -6,4 +6,4 @@ tests/test_validator.py: 48 warnings
     return Affine.translation(west, north) * Affine.scale(xsize, -ysize)
 
 -- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
-66 passed, 49 warnings in 3.86s
+67 passed, 49 warnings in 4.36s

@@ -32,9 +32,10 @@ here; there is no integrated U-Net/GPU pipeline in this repo.
 
 H3 tests along-strike continuation against isotropic halos: locked **component** test
 DTI 0.02825 vs 0.02516, with considerably less prediction mass. This narrow proxy does
-not establish geographic transfer or imply a leaderboard score. H4 is a bounded native
-1 m DEM engineering pilot, not a region-wide trained detector. See `knowledge/session2/`.
+not establish geographic transfer or imply a leaderboard score. H4 successfully processed a bounded native
+1 m DEM crop on a runner (4,194,304 valid pixels), not a region-wide trained detector. See `knowledge/session2/`.
 
+A verified refresh captured 106 ranks across three pages and five official-source excerpts.
 Daily Actions checks the leaderboard and source excerpts, preserves stale last-good
 results on failure, and publishes a public `research-feed` release. The Pages UI loads
 that release with a bundled fallback. It never calls a sandbox localhost. GitHub Pages
@@ -43,7 +44,7 @@ Automatic source checks are not automatic scientific verification.
 
 ```bash
 python3 -m venv .venv
-.venv/bin/pip install -r requirements.txt
+.venv/bin/pip install -r requirements-repro.txt  # measured versions; requirements.txt is portable
 bash scripts/download_competition_data.sh
 .venv/bin/python scripts/prepare_data.py
 OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 .venv/bin/python scripts/train_model.py

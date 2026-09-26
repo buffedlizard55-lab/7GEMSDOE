@@ -1,6 +1,37 @@
 # Current status — session 2 (2026-09-26)
 
-See README.md and knowledge/session2/review.md first. Session-1 claims below are historical, not all freshly verified. New strict format gate, immutable H3 candidate/control, CPU data preparation/training, native-DEM pilot, sourced research, refreshed site and daily feed are implemented. Final verification details follow below after execution.
+Read README.md, AGENTS.md and knowledge/session2/review.md at every new session.
+
+## Delivered and verified
+
+- Data placement + preparation completed, CPU GBT retrained, full inference reproduced
+  the control TIFF **byte-for-byte** (SHA-256 `90fb7dc0fc1f…`). Random-pixel AUC 0.9173
+  is only a monitor. Correct imputation count is 58,171 band-pixels.
+- New H3 tangent-continuation experimental TIFF (`2b06d45c5b57…`) with immutable unique
+  name, Note, ZIP and strict local format gate. Locked component proxy 0.02825 vs
+  0.02516 broad halo; not leaderboard validation or proof of geographic generalization.
+- Native 1m USGS DEM pilot on runner: 4,194,304 valid native pixels, 3,873,024 safe after
+  buffer, EPSG:26911. Not integrated into the submission; reproject before future use.
+- Fixed exact [0,1] gate, bad shape crash, Inf-outside bug, custom metric radius, partial
+  downloader files, relative data path, old holdout sampling leakage and live pagination.
+- Research/source ledger, corrected rules (3/week/entity), evidence-generated seven-page
+  site and daily public-release feed. Official refresh confirmed **106** ranked entries
+  over three pages; all five source excerpts present. Browser suite passed at 1440/390px.
+- **67 tests pass**; reproducible dependency versions in requirements-repro.txt.
+- PR #3: https://github.com/buffedlizard55-lab/7GEMSDOE/pull/3 . Final merge/deployment
+  state is recorded on GitHub, not predeclared here. No competition submission made.
+
+## Still outstanding
+
+No result above 0.3049. No verified new vents/faults. Buffered geographic validation,
+region-wide calibrated DEM expert, independent geophysical features, positive-unlabeled
+learning, U-Net integration, actual upload score attribution and eligibility/account
+review remain. See knowledge/session2/next_session.md and requirements_matrix.md.
+
+The first-session log below is historical and contains corrected assumptions (50 ranks,
+3,073 imputed pixels, GPU readiness and provenance). Session-2 evidence supersedes it.
+
+---
 
 # STATUS log
 
