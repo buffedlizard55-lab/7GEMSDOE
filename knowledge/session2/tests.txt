@@ -1,0 +1,9 @@
+..................................................................       [100%]
+=============================== warnings summary ===============================
+.venv/lib/python3.11/site-packages/rasterio/transform.py:178: 1 warning
+tests/test_validator.py: 48 warnings
+  /home/user/7GEMSDOE/.venv/lib/python3.11/site-packages/rasterio/transform.py:178: PendingDeprecationWarning: Use `@` matmul instead of `*` mul operator for matrix multiplication
+    return Affine.translation(west, north) * Affine.scale(xsize, -ysize)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+66 passed, 49 warnings in 3.86s

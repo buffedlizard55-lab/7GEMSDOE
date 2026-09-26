@@ -3,6 +3,7 @@
 This is an EXPERIMENTAL candidate, not a promoted leaderboard winner.
 """
 import json
+import hashlib
 import numpy as np
 import rasterio
 from paths import ARTIFACT_DIR, LABELS_TIF, TEMPLATE_TIF, REPO_ROOT
@@ -15,9 +16,14 @@ def main():
     report = json.loads(report_path.read_text())
     if report['selected'] != 'strike30x3':
         raise SystemExit('Frozen selection no longer selects strike30x3; review before publishing')
+    if hashlib.sha256(LABELS_TIF.read_bytes()).hexdigest() != report['labels_sha256']:
+        raise SystemExit('Labels changed since frozen experiment; rerun under a new protocol')
     with rasterio.open(LABELS_TIF) as src:
+        label_grid = (src.shape, src.crs, src.transform)
         visible = src.read(1, masked=True).filled(0) > 0
     with rasterio.open(TEMPLATE_TIF) as src:
+        if (src.shape, src.crs, src.transform) != label_grid:
+            raise SystemExit("Labels and template grid differ")
         meta = src.profile.copy()
         valid = np.isfinite(src.read(1))
     pred = prior(visible, structural_geometry(visible), along_radius=30, cross_radius=3)

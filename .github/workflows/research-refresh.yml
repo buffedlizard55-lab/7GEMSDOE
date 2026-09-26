@@ -55,7 +55,7 @@ jobs:
           for name in ['knowledge/feed.json', 'knowledge/session2/dem_pilot.json', 'scratch/browser/report.json']:
               p = Path(name)
               if p.exists():
-                  parts.append('<details><summary>' + name + '</summary>\n\n```json\n' + p.read_text()[-16000:] + '\n```\n</details>')
+                  parts.append('<details><summary>' + name + '</summary>\n\n```json\n' + p.read_text() + '\n```\n</details>')
           Path('/tmp/research-comment.md').write_text('\n\n'.join(parts))
           PYCODE
           number=$(gh pr list --head "$GITHUB_REF_NAME" --json number --jq '.[0].number')

@@ -8,7 +8,7 @@ from __future__ import annotations
 import hashlib
 import json
 import re
-from urllib.parse import urljoin, urlsplit
+from urllib.parse import urljoin, urlsplit, parse_qs
 from datetime import datetime, timezone
 from pathlib import Path
 import requests
@@ -38,7 +38,7 @@ def parse_leaderboard(html):
         link = cells[2].select_one('a[href*="/users/"]')
         name = link.get_text(strip=True) if link else re.split(r'\s+\d+[wdhm]', participant)[0]
         rows.append(dict(rank=int(rank[1]), participant=name, score=score))
-    if not rows or rows[0]['rank'] != 1 or len({r['rank'] for r in rows}) != len(rows):
+    if not rows or len({r['rank'] for r in rows}) != len(rows):
         raise ValueError('no valid unique ranked table; login/error/layout change possible')
     if any(a['score'] < b['score'] for a, b in zip(rows, rows[1:])):
         raise ValueError('leaderboard no longer descending')
@@ -70,6 +70,36 @@ def refresh(previous, getter=requests.get):
             response.raise_for_status()
             rows = parse_leaderboard(response.text)
             result['table_source'] = response.url
+        pages = [dict(url=response.url, sha256=hashlib.sha256(response.content).hexdigest())]
+        # Follow explicit pagination (the previous repository mistook the first
+        # 50-row page for the entire competition). Never guess a page endpoint.
+        current_page = int(parse_qs(urlsplit(response.url).query).get('page',['1'])[0])
+        for _ in range(49):
+            soup = BeautifulSoup(response.text, 'html.parser')
+            candidates = {}
+            for tag in soup.select('[hx-get], [data-hx-get], a[href]'):
+                raw = tag.get('hx-get') or tag.get('data-hx-get') or tag.get('href')
+                endpoint = urljoin(response.url, raw)
+                parsed = urlsplit(endpoint)
+                number = parse_qs(parsed.query).get('page',[''])[0]
+                if (parsed.scheme == 'https' and parsed.netloc == urlsplit(URL).netloc
+                    and '/competition-doe-gems/leaderboard' in parsed.path and number.isdigit()
+                    and int(number) > current_page):
+                    candidates[int(number)] = endpoint
+            if not candidates:
+                break
+            current_page = min(candidates)
+            response = getter(candidates[current_page], timeout=(10,40), headers={'HX-Request':'true'})
+            response.raise_for_status()
+            rows.extend(parse_leaderboard(response.text))
+            pages.append(dict(url=response.url, sha256=hashlib.sha256(response.content).hexdigest()))
+        else:
+            raise ValueError('pagination exceeded safety cap; refusing partial success')
+        if [r['rank'] for r in rows] != list(range(1,len(rows)+1)):
+            raise ValueError('pagination rank gap/duplicate; leaderboard may have changed mid-fetch')
+        if any(a['score'] < b['score'] for a,b in zip(rows,rows[1:])):
+            raise ValueError('scores changed during pagination; retry later')
+        result['pages'] = pages
         result.update(status='ok', verified_utc=now, rows=rows,
                       source=URL, response_sha256=hashlib.sha256(response.content).hexdigest(),
                       method='automated official HTML/HTMX table parse', error=None)

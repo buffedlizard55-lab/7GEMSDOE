@@ -51,3 +51,20 @@ def test_external_htmx_rejected():
     def get(url,**kw): calls.append(url); return Response()
     assert refresh({},get)['status']=='refresh_failed'
     assert len(calls)==1
+
+
+def test_follow_all_explicit_pages():
+    class Response:
+        def __init__(self,text,url): self.text=text; self.content=text.encode(); self.url=url
+        def raise_for_status(self): pass
+    calls=[]
+    def row(rank,score):
+        return f'<table><tr><td>#{rank}</td><td></td><td>x</td><td>{score}</td></tr></table>'
+    def get(url,**kwargs):
+        calls.append(url)
+        text=row(1,'0.3')+'<a href="?page=2">Next</a>' if len(calls)==1 else row(2,'0.2')
+        return Response(text,url)
+    result=refresh({},get)
+    assert result['status']=='ok'
+    assert len(result['pages'])==2
+    assert [r['rank'] for r in result['rows']]==[1,2]

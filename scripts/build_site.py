@@ -80,7 +80,7 @@ No DrivenData login is available for uploading or final selection. GPU training 
     board={r['participant']:r for r in feed['rows']}
     for r in team:
         official=board.get(r['account'])
-        status='Account best confirmed at snapshot; file attribution is group-reported' if official and official['score']==r['reported_score'] else 'Group-reported; account or exact score attribution unverified'
+        status=('Account best confirmed at snapshot; file attribution is group-reported' if official['score']==r['reported_score'] else f"Current account best is {official['score']:.4f}; historical file score remains group-reported") if official else 'Group-reported; account or exact score attribution unverified'
         rows.append([link(r['url'],r['site']),e(r['account'] or 'not supplied'),f"{r['reported_score']:.4f}",e(r['sha_prefix'] or 'not supplied'),e(r['strategy']),status])
     page('results.html','Results audit',f'''<h2>What the previous submissions actually tell us</h2><p>Source sites were read on 2026-09-26. Their current description is not proof that the same artifact was uploaded. Account-best scores and artifact-specific scores are different evidence.</p>
 {table(['Site','Account','Reported score','Reported SHA prefix','Current method description','Verification'],rows)}
