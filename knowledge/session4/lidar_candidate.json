@@ -1,0 +1,120 @@
+{
+ "rules": [
+  "Build lidar-informed submission candidates (binary, thin, format-gated).",
+  "",
+  "Rules written before any leaderboard feedback on these files:",
+  "* model: LightGBM trained on every lidar-covered valid pixel (known faults vs",
+  "  pixels > 2 px from them). Pixels without lidar are not emitted (0.0).",
+  "* arm: the pre-written rule named the ``both`` arm. The pre-registered",
+  "  experiment (knowledge/session4/lidar_experiment.json) then showed ``lidar``",
+  "  beating ``both`` in 4/5 folds and pooled at every density, with the 19 bands",
+  "  below random across geography. DEVIATION (recorded): default arm = ``lidar``.",
+  "* emission: binary 1.0 on the top-k ridge pixels (1 px NMS), 0.0 elsewhere in the",
+  "  footprint, NaN outside; known-fault pixels are 0 (they are masked by the scorer).",
+  "* density: maximise expected DTI(f) = c(f) rho / (0.2 c rho + 0.2 f + 0.8 rho), with",
+  "  rho from the scored-file analysis and c(f) = c_rand(f) * (1 + tau (m(f) - 1)),",
+  "  m(f) the measured held-out ridge-NMS skill multiple on known faults, tau = 0.5",
+  "  (conservative transfer discount).",
+  "* guard: fill fraction within 1 px of known faults must stay <= 0.15 (the worst",
+  "  group upload concentrated 0.32-0.39 there); excess near-known pixels are",
+  "  replaced by the next-best far ridge pixels."
+ ],
+ "arm": "lidar",
+ "rho": 0.003144,
+ "tau": 0.5,
+ "density_table": [
+  {
+   "f": 0.005,
+   "measured_multiple": 2.333,
+   "assumed_multiple": 1.667,
+   "expected_dti": 0.0664
+  },
+  {
+   "f": 0.01,
+   "measured_multiple": 1.812,
+   "assumed_multiple": 1.406,
+   "expected_dti": 0.0837
+  },
+  {
+   "f": 0.02,
+   "measured_multiple": 1.466,
+   "assumed_multiple": 1.233,
+   "expected_dti": 0.0943
+  },
+  {
+   "f": 0.03,
+   "measured_multiple": 1.296,
+   "assumed_multiple": 1.148,
+   "expected_dti": 0.0939
+  }
+ ],
+ "chosen": {
+  "f": 0.02,
+  "measured_multiple": 1.466,
+  "assumed_multiple": 1.233,
+  "expected_dti": 0.0943
+ },
+ "models": {
+  "lidar": {
+   "train_pos": 48376,
+   "train_neg": 180000,
+   "scored_px": 3891322,
+   "features": 33
+  }
+ },
+ "lidar_features": [
+  "ex_max",
+  "ex_mean",
+  "step_max",
+  "lapneg_max",
+  "lappos_max",
+  "downface_max",
+  "upface_max",
+  "cross_max",
+  "relief",
+  "coh100",
+  "valid",
+  "strike_c2",
+  "strike_s2",
+  "ex_max_max3",
+  "ex_max_max7",
+  "ex_max_mean9",
+  "ex_max_anom15",
+  "step_max_max3",
+  "step_max_max7",
+  "step_max_mean9",
+  "step_max_anom15",
+  "lapneg_max_max3",
+  "lapneg_max_max7",
+  "lapneg_max_mean9",
+  "lapneg_max_anom15",
+  "upface_max_max3",
+  "upface_max_max7",
+  "upface_max_mean9",
+  "upface_max_anom15",
+  "downface_max_max3",
+  "downface_max_max7",
+  "downface_max_mean9",
+  "downface_max_anom15"
+ ],
+ "candidates": [
+  {
+   "file": "gems7-lidar-lidar-ridge-fp020-36c3a3f341c8.tif",
+   "sha256": "36c3a3f341c8306dfb5610f61acfec635a7cb8a3ef6ef00380ca083d2f9745fe",
+   "density": 0.02,
+   "emitted": 76859,
+   "emitted_with_lidar": 76859,
+   "near_known_swapped": 0,
+   "fill_by_distance_px": {
+    "1": 0.0661,
+    "1-3": 0.036,
+    "3-10": 0.0197,
+    "10-50": 0.0111,
+    ">50": 0.0106
+   },
+   "dispersion_index": 6.7
+  }
+ ],
+ "published_as": "downloads/gems7-lidarscarp-ridge-top2pct-36c3a3f341c8.tif",
+ "superseded": "dfa04fa218b8: built with known pixels zeroed before NMS (flank-halo artefact); never published"
+}

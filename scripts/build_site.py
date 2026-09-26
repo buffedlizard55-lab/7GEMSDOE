@@ -39,6 +39,19 @@ def card(m,title,label):
 
 def main():
     control=load('downloads/control_meta.json'); structural=load('downloads/structural_meta.json')
+    lidar=load('downloads/lidar_meta.json'); lexp=load('knowledge/session4/lidar_experiment.json')
+    lcand=load('knowledge/session4/lidar_candidate.json'); scored=load('knowledge/session4/scored_files_analysis.json')
+    lprod=load('external/dem/lidar_scarp_features.json')
+    lc=lcand['candidates'][0]
+    def mult(arm,f,key='pooled_nms'): return f"x{lexp[key][arm][f]['multiple']:.2f}"
+    s4rows=[[a,mult(a,'0.005','pooled'),mult(a,'0.01','pooled'),mult(a,'0.02','pooled'),mult(a,'0.005'),mult(a,'0.01'),mult(a,'0.02')] for a in ('bands19','lidar','both')]
+    session4=f'''<section class="card"><h2>Session 4 evidence: region-wide 1 m lidar</h2>
+<p>GitHub Actions processed <strong>{lprod['tile_status'].get('ok',0)} of {lprod['tiles_total']}</strong> official USGS 3DEP 1 m tiles (~167 GB; the 10 failures are edge tiles with &lt;1% valid data) into 12 scarp descriptors on the official 100 m grid. {link(lprod.get('workflow_run','#'),'Runner log')} · {link('external/dem/lidar_scarp_features.json','Product manifest')} · {link('external/dem/lidar_tile_log.json','Per-tile SHA-256 log')}</p>
+<p>Pre-registered test: 5 geographic folds, 1 km buffers, held-out <em>catalogue</em> faults, same learner and samples. Numbers are skill multiples over the exact random baseline at emission density f (1.00 = random).</p>
+{table(['Arm','raw f=0.5%','raw f=1%','raw f=2%','ridge f=0.5%','ridge f=1%','ridge f=2%'],s4rows)}
+<p><strong>Lidar-only generalises best</strong> (4/5 folds and pooled). The 19 supplied bands fall <em>below random</em> across geography; ridge thinning helps every arm. Catalogue traces can sit up to 400 m from lidar-mapped faults ({link('https://pangea.stanford.edu/ERE/db/GeoConf/papers/SGW/2025/Hermant.pdf','Hermant et al. 2025')}, cited by the organisers), so this local test is biased against lidar; only a leaderboard upload measures transfer to new faults.</p>
+<p>{link('knowledge/session4/lidar_experiment.json','Full experiment report')} · {link('knowledge/session4/research.md','Session 4 research & hypotheses')} · {link('knowledge/session4/review.md','Leaderboard forensics')}</p></section>'''
+    forensic_rows=[[e(f['file']),e(f['account']),'—' if f['public_score'] is None else f"{f['public_score']:.4f}",f"{f['density']*100:.2f}%",f"{f['dispersion_index']:.2f}",('x%.2f'%f['skill_multiple']) if 'skill_multiple' in f else '—'] for f in scored['files']]
     feed=load('knowledge/feed.json'); sources=load('knowledge/sources.json'); team=load('knowledge/team_results.json')
     exp=load('knowledge/session2/structural_experiment.json'); dem=load('knowledge/session2/dem_pilot.json')
     spatial=load('knowledge/session3/spatial_experiment.json')
@@ -62,8 +75,12 @@ It barely predicts away from visible catalogue traces. <strong>Do not treat H3 a
     scope='''<p>The task is to map <strong>geological faults</strong> across GeoDAWN—not to classify hot springs or prove geothermal vents. New expert-labeled faults drive initial scoring; expanded expert review determines final scoring. Scientific hypotheses below are not confirmed discoveries.</p>'''
     compliance=f'''<aside class="note"><strong>Rules flag:</strong> §3.4 allows <strong>three feedback submissions per week per participating entity</strong>, not per teammate account. One final submission across both rounds; teammates cannot submit separate finals.
 The supplied account list needs team-registration review. We do not multiply the budget across accounts. {link(RULES,'Official rules §3.4–3.6.2')}.</aside>'''
-    page('index.html','Executive summary',f'''<p class="eyebrow">DOWNLOAD → UPLOAD → PASTE THE NOTE</p><h2>A valid file first. Better discovery next.</h2>
-<p>Two independently named files are ready below. <strong>Neither has a measured competition score.</strong> The H3 file is preserved for reproducibility, not recommended as a validated upgrade; retain the control for comparison. {link('how-to-submit.html','Exact submission instructions →')}</p>
+    page('index.html','Executive summary',f'''<p class="eyebrow">DOWNLOAD → UPLOAD → PASTE THE NOTE</p><h2>Session 4: test region-wide lidar scarp evidence.</h2>
+<p><strong>Recommended next upload</strong> (a decisive leaderboard test, not a proven winner): a thin-line map from a model trained only on 1 m lidar scarp descriptors. Group best is 0.1563; leader 0.3049. {link('how-to-submit.html','Exact submission instructions →')}</p>
+{card(lidar,'Lidar scarp model · ridge-thinned top 2%','Session 4 primary · H1 leaderboard test')}
+<p>{lc['emitted']:,} emitted pixels (binary 1.0; 0.0 elsewhere inside the footprint; NaN outside), all inside lidar coverage; dispersion index {lc['dispersion_index']:.2f} (line-like). Catalogue-based calibration with a 50% transfer discount predicts only ~{lcand['chosen']['expected_dti']:.2f}, below 0.1563; we still recommend it because that calibration is biased against lidar-mapped faults. Visible false-positive classes: closed loops (hills, shorelines) and arcuate range-front edges. Record the score with the SHA-256.</p>
+{session4}
+<h2>Preserved earlier candidates</h2>
 {card(structural,'H3 · Along-strike continuation','Experimental v2 · geographic stress test failed to establish discovery')}
 <p>Extends locally coherent fault traces preferentially along their strike (3 km support) rather than placing a broad halo everywhere (300 m cross-strike support). No deep model or geothermal thermal prior is included.</p>
 {card(control,'Broad halo + blind GBT','Preserved control v1')}
@@ -73,16 +90,16 @@ Selection used seeds 4242/4243; seed 9001 was reserved before execution. This is
 <section class="card"><h3>What is not solved</h3><p>We have not beaten 0.3049, obtained private labels, run a region-wide 1 m DEM detector, or verified an actual new fault in the field.
 No DrivenData login is available for uploading or final selection. GPU training is not implemented in this repo.</p></section></div>''')
     page('how-to-submit.html','How to submit',f'''<h2>Executive submission guide</h2>
-{card(structural,'Download the experimental H3 candidate','Optional comparison, not a proven winner')}
+{card(lidar,'Download the session 4 lidar candidate','Recommended next upload · decisive H1 test')}
 <ol class="steps"><li><strong>Download the .TIF above</strong> (or its ZIP with exactly one GeoTIFF). Do not upload this web page, a PDF, JSON manifest, or the training features.</li>
 <li>{link(B+'submissions/','Open DrivenData → Submissions')} and sign in to the authorized team account. Registration, eligibility certification and rule acceptance belong to the participant.</li>
 <li>Choose <strong>New submission → File to submit</strong> and select the uniquely named .tif from Downloads.</li>
 <li>Copy the short Note above into the optional Note field. It records policy and artifact hash.</li>
 <li>Submit within the entity-wide weekly limit. Confirm the platform accepts the file; a local PASS is not a server acceptance receipt.</li>
 <li>Keep the filename/hash with the actual score. The public feed reports <em>best account scores</em>, not a history of each uploaded file; it cannot automatically attribute scores to artifacts.</li>
-<li>Before the deadline, select <strong>one final submission</strong> for both rounds. Do not choose on a private score you cannot observe.</li></ol>
+<li>Before the deadline, select <strong>one final submission</strong> for both rounds. Do not choose on a private score you cannot observe. Deadline: the <a href="https://www.drivendata.org/competitions/306/competition-doe-gems/">competition page</a> says Dec. 3, 2026, 11:59 p.m. UTC, but <a href="https://docs.nlr.gov/docs/fy26osti/96647.pdf">rules</a> A.1 say 5:00 p.m. ET (22:00 UTC). <strong>Plan to the earlier time: Dec 3, 2026, 22:00 UTC (2:00 p.m. PT).</strong></li></ol>
 {compliance}<h2>If “Predicted values must be in range [0, 1]” appears</h2>
-<p>Possible causes include finite values below 0 or above 1, infinities, NaN inside the required footprint, or uploading a different file. The rejected file was not supplied, so its exact cause is unknown.</p>
+<p><strong>Root cause found in the group record:</strong> a GEMSDOE file with <strong>3,061 NaN pixels inside the template footprint</strong> (and 1,540 finite pixels outside it) was rejected with exactly this message; the same map with those pixels filled (SHA-256 7f00890a…) was accepted and scored 0.1563 ({link('https://github.com/buffedlizard55-lab/GEMSDOE/blob/cceebbdcf9a7d2890bb0665defcb54dfc66ae452/data/evidence/runs/ens12-adopted-floor0.1-w0/sanitize.json','sanitize.json')}). All seven scored group files use <strong>finite values in [0, 1] everywhere inside the footprint and NaN exactly outside</strong>. Every file on this site uses that layout and passes the strict gate. Other causes: values below 0 or above 1, infinities, or uploading a different file (e.g. the training features).</p>
 <pre>.venv/bin/python scripts/validate_submission.py downloaded-file.tif</pre>
 <p>The gate compares exact CRS, shape and transform; enforces single-band float32 and strict [0,1] (no tolerance); rejects internal masks, NaN inside, and anything except NaN outside. NaN nodata is a project publication policy. It fails cleanly for corrupt or wrong-sized files.</p>
 <p>{link(B+'page/967/#submission-format','Official submission requirements')} · {link('index.html','Control download and full summary')}</p>
@@ -101,6 +118,10 @@ No DrivenData login is available for uploading or final selection. GPU training 
 <li>Pindrop nodes − dense = <strong>+0.0041</strong> (3.56% relative to dense). Same reported 155,021-pixel budget and matching SHA prefixes support a placement experiment; no confidence interval or private-set gain is available.</li>
 <li>Catalogue-gap − nodes = <strong>−0.0363</strong>. This specific gap-target strategy underperformed; it does not disprove new-fault discovery.</li>
 <li>0.0343 and 0.0286 are unattributed group results, not independently authenticated experiment outcomes. Do not treat them as proof that all lineament features or tree models fail.</li></ul>
+<h2>Score forensics: what the scored files reveal (session 4)</h2>
+<p>Exact random baseline for the official metric ({link('scripts/random_baseline.py','code')}, verified against Monte-Carlo runs of the metric). Assuming the near-uniform catalogue-gap upload had zero skill, the implied public truth density is {scored['implied_truth_density']*100:.2f}% and random emission peaks near {scored['random_dti_at_implied_density']['0.03']:.3f}. The leader needs about x{scored['leader_0_3049_required_skill_multiple_by_density']['0.02']:.1f} random coverage at 2% density.</p>
+{table(['File (vendored)','Account (team record)','Public score','Density','Dispersion','Skill vs random'],forensic_rows)}
+<p>The two below-random uploads are the most blob-like (dispersion &lt; 3). Line-like fields scored best. {link('knowledge/session4/scored_files_analysis.json','Machine report')} · {link('external/scored/manifest.json','Provenance manifest')}</p>
 {feedbox}<p>{link('knowledge/team_results.json','Machine-readable group log')} · {link('knowledge/session2/review.md','Irregularities and corrected claims')}</p>''')
     exprows=[[e(n),f"{exp['selection_means'][n]:.5f}",f"{held[n]['dti']:.5f}",f"{held[n]['predicted_mass']:,.0f}"] for n in exp['selection_means']]
     page('strategy.html','Hypotheses and experiments',f'''<h2>Distinct strategies, falsifiable tests</h2>{geography}
@@ -135,13 +156,15 @@ OMP_NUM_THREADS=2 .venv/bin/python scripts/train_model.py
 <h3>Source disagreements retained</h3><ul><li>GDR 1391 previously returned “No submission found” and remains unresolved. GDR 1591 was successfully retrieved via the page tool on 2026-09-26 and is the GeoDAWN landing record; this supersedes the earlier failed retrieval. Linked raw files are not yet downloaded or independently verified.</li>
 <li>The user-provided sample raster contains positive fault pixels, despite the problem page describing an all-zero example. Geometry is usable; its values must not be interpreted as predictions.</li>
 <li>Third-party mirror hashes authenticate consistency with the inherited manifest, not the sponsor’s original bytes. Official account-authenticated comparison is outstanding.</li></ul>
-<p>{link('knowledge/sources.json','Auditable source registry')} · {link('knowledge/session2/research.md','Prior research')} · {link('knowledge/session3/research.md','New source audit and falsifiable research plan')}</p>''')
+<p>{link('knowledge/sources.json','Auditable source registry')} · {link('knowledge/session2/research.md','Prior research')} · {link('knowledge/session3/research.md','Session 3 source audit')} · {link('knowledge/session4/research.md','Session 4: lidar, leaderboard theory, hypothesis register')}</p>''')
     page('data.html','Data provenance',f'''<h2>Data inventory and access</h2>
 {table(['Dataset','Location / verification','Limit'],[
 ['Competition feature stack','~/gems_data/training_features.tif · 19 float32 bands · 418,912,844 bytes','Mirrored from team git bridge after Dropbox TLS failure; sha256 matches inherited pin.'],
 ['Supplied fault labels','~/gems_data/existing_faults.tif · 60,988 positive pixels','Incomplete catalogue, not private expert labels.'],
 ['Geometry template','~/gems_data/example_submission.tif · 5,167,373 finite pixels','Same CRS/grid as features. Positive contents conflict with all-zero example prose.'],
 ['Native 1 m DEM pilot',link(load('knowledge/dem_pilot_source.json')['record']['url'],'Official USGS 3DEP tile'),'One bounded window only. Inventory URL inherited from OCR; not official competition CSV.'],
+['Region-wide lidar scarp product',link('external/dem/lidar_scarp_features.json','12 uint8 channels, official grid')+' · '+link('knowledge/dem_tiles.json','716 official tile URLs'),'706 tiles processed on GitHub Actions; inventory is OCR-recovered, not the login-walled CSV; covers 75% of the footprint.'],
+['Scored group files',link('external/scored/manifest.json','8 vendored GeoTIFFs with source commits and SHA-256'),'Scores are group-reported/leaderboard observations; one file-account pairing unverified.'],
 ['Source registry',link('knowledge/sources.json','Claims, excerpts, links and rights'),'Candidate external layers are not license-approved simply by being reachable.'],
 ['Scores',link('knowledge/team_results.json','Group report')+' / '+link('knowledge/feed.json','Public best-score snapshot'),'No private scores, authenticated upload history or automatic score-to-file mapping.']])}
 <p>{link('knowledge/session2/data_verification.txt','Measured hashes, dimensions and counts')} · {link('knowledge/inherited_evidence/data_bridge_manifest.json','Inherited hash manifest')}.</p>

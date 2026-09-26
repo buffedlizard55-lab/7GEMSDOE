@@ -14,7 +14,8 @@ DrivenData competition id 306, sponsored by the U.S. DOE Office of Geothermal.
 | Metric | distance-weighted Tversky index, α=0.2 (FP), β=0.8 (FN), triangular kernel R=300 m (3 px) | problem page, performance metric section |
 | Feature stack | `training_features.tif`, 19 bands float32 | measured (scripts/verify_data.py) |
 | Labels provided | existing USGS Quaternary faults + INGENIOUS, raster `existing_faults.tif` (60,988 positive px / 5,167,373 valid px) | measured |
-| Submission limit | three submissions per week | rules PDF (verbatim quote below) |
+| Submission limit | three submissions per week; rules §3.4: "each participating entity may submit more than one set of predictions … up to three per week"; one final submission per entity (team members may not submit separate finals) | [rules PDF](https://docs.nlr.gov/docs/fy26osti/96647.pdf) §3.2, §3.4 (re-read 2026-09-26) |
+| Deadline | **Dec. 3, 2026, 11:59 p.m. UTC** (competition page "Competition End Date"). Rules A.1 also say "by 5:00 p.m. ET on the prize submission deadline date" = 22:00 UTC (EST, UTC−5). **Plan to the earlier time: final selection done by Dec 3, 2026 22:00 UTC (2:00 p.m. PT).** Rules §1.2 defer to the website for the current timeline | [competition page](https://www.drivendata.org/competitions/306/competition-doe-gems/); [rules PDF](https://docs.nlr.gov/docs/fy26osti/96647.pdf) §1.2, A.1 (checked 2026-09-26) |
 | Reference solution | U-Net + Monte-Carlo CV, Tversky loss | [drivendataorg/gems-prize-reference-solution](https://github.com/drivendataorg/gems-prize-reference-solution) |
 | Forum | [community.drivendata.org/c/gems-prize-challenge/111](https://community.drivendata.org/c/gems-prize-challenge/111) | problem page |
 

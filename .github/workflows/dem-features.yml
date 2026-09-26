@@ -1,0 +1,110 @@
+name: Lidar scarp features
+# Region-scale USGS 3DEP 1 m processing. The sandbox used for development cannot
+# reach USGS hosts, so hosted runners download the official tiles, compute 2 m
+# scarp descriptors and aggregate them onto the official 100 m grid. Only the
+# compact uint8 product + provenance logs are committed back (session branches only).
+# Cost control: the ~40-minute extraction runs only on manual dispatch or when the
+# pushing commit message STARTS WITH the marker "[run-dem]" (a message that merely
+# mentions the marker does not count); path-matching edits alone (e.g. a read-side
+# helper in dem_merge.py) no longer re-download ~167 GB of tiles.
+on:
+  workflow_dispatch:
+    inputs:
+      limit:
+        description: "Max tiles per shard (0 = all)"
+        default: "0"
+  push:
+    branches: ["arena/**"]
+    paths:
+      - ".github/workflows/dem-features.yml"
+      - "knowledge/dem_tiles.json"
+      - "scripts/dem_features.py"
+      - "scripts/dem_merge.py"
+permissions:
+  contents: write
+concurrency:
+  group: dem-features-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  extract:
+    if: github.event_name == 'workflow_dispatch' || startsWith(github.event.head_commit.message, '[run-dem]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 150
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix:
+        job: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install numpy==2.4.6 scipy==1.17.1 rasterio==1.4.4
+      - name: Extract two shards in parallel (40 shards total)
+        env:
+          LIMIT: ${{ github.event.inputs.limit || '0' }}
+        run: |
+          free -g; nproc; df -h /tmp | tail -1
+          a=$(( ${{ matrix.job }} * 2 )); b=$(( a + 1 ))
+          python scripts/dem_features.py --shard $a --nshards 40 --out scratch/dem --workdir /tmp/dem_a --limit "$LIMIT" > log_a.txt 2>&1 &
+          python scripts/dem_features.py --shard $b --nshards 40 --out scratch/dem --workdir /tmp/dem_b --limit "$LIMIT" > log_b.txt 2>&1 &
+          wait
+          tail -n 3 log_a.txt log_b.txt
+          grep -c '"status": "ok"' log_a.txt log_b.txt || true
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dem-shard-${{ matrix.job }}
+          path: |
+            scratch/dem/
+            log_a.txt
+            log_b.txt
+          retention-days: 30
+  merge:
+    needs: extract
+    # merge partial results (failed tiles are logged) but never skipped/cancelled runs
+    if: always() && (needs.extract.result == 'success' || needs.extract.result == 'failure')
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install numpy==2.4.6 scipy==1.17.1 rasterio==1.4.4
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: dem-shard-*
+          path: scratch/shards
+      - name: Mosaic onto the official grid
+        run: |
+          cd scripts
+          python dem_merge.py --inp ../scratch/shards --out ../external/dem --float-out ../scratch/lidar_scarp_features_f32.tif --footprint ../downloads/submission.tif
+          cd ..
+          python - <<'PY'
+          import json, os
+          p = 'external/dem/lidar_scarp_features.json'
+          d = json.load(open(p))
+          d['workflow_run'] = f"{os.environ['GITHUB_SERVER_URL']}/{os.environ['GITHUB_REPOSITORY']}/actions/runs/{os.environ['GITHUB_RUN_ID']}"
+          d['commit'] = os.environ['GITHUB_SHA']
+          json.dump(d, open(p, 'w'), indent=1)
+          PY
+          ls -la external/dem
+      - uses: actions/upload-artifact@v4
+        with:
+          name: lidar-scarp-features-float32
+          path: scratch/lidar_scarp_features_f32.tif
+          retention-days: 30
+      - name: Commit compact product to this session branch
+        if: github.ref != 'refs/heads/main'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add external/dem
+          git commit -m "Add region-scale lidar scarp features (run ${GITHUB_RUN_ID})" || exit 0
+          for i in 1 2 3 4 5; do
+            git pull --rebase origin "${GITHUB_REF_NAME}" && git push origin "HEAD:${GITHUB_REF_NAME}" && break
+            sleep 10
+          done

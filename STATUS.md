@@ -1,3 +1,25 @@
+# Current status — session 4 (2026-09-26)
+
+- Data placement re-run autonomously: 3/3 rasters PASS (Dropbox TLS failed; team git bridge OK).
+- Score forensics: vendored 8 group files with provenance (`external/scored/`); exact
+  random-emission baseline for the metric, verified by Monte-Carlo (`scripts/random_baseline.py`).
+  Best group file ~1.9x random coverage; leader needs ~4-5x; blob-like uploads scored below random.
+- Region-wide 1 m lidar on GitHub Actions: 706/716 official USGS 3DEP tiles (~167 GB) →
+  12-channel uint8 product on the official grid (`external/dem/`, runs 36265492931 → v2
+  36266555805). Fixed tile-seam artefact, curvature elevation bias (LoG kernel-sum
+  error), fan-induced strike bias; regression tests added.
+- Pre-registered 5-fold geographic test: lidar-only ridge skill x2.33/x1.81/x1.47
+  (f=0.5/1/2%) vs 19 bands x1.14/x0.99/x0.87 on held-out catalogue faults. Promotion
+  rule met; lidar arm chosen over the pre-written "both" arm (deviation recorded).
+- New candidate `downloads/gems7-lidarscarp-ridge-top2pct-36c3a3f341c8.tif` (strict gate
+  PASS). Local calibration predicts ~0.09 under a 50% transfer discount — it is a
+  decisive H1 leaderboard test, not a promised gain. Nothing uploaded by the agent.
+- Irregularities flagged: SDCF9 0.1563 from an unrecorded file; five accounts vs the
+  per-entity submission limit; GEMSDOE2 file-score pairing unverified.
+- Next: `knowledge/session4/next_session.md` (decision tree keyed on the upload score).
+
+---
+
 # Current status — session 3 (2026-09-26)
 
 - Restored all three external rasters via pinned team bridge; prepare_data completed.
