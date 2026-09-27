@@ -87,10 +87,20 @@ def main():
                 import numpy as _np
                 with _rio.open(ROOT/'downloads'/payload['output_name']) as src:
                     prof=src.profile.copy(); arr=src.read(1)
-                arr[10,10]=_np.nan
+                # The control must be invalid *inside* the footprint. Pixel (10, 10)
+                # of this raster is already NaN (outside the footprint), so the old
+                # fixed index produced a perfectly valid file and the checker
+                # correctly passed it -- that is why the runner timed out here.
+                finite=_np.flatnonzero(_np.isfinite(arr).ravel())
+                assert finite.size, 'the published raster has no finite pixels'
+                bad=finite[finite.size//2]
+                by,bx=_np.unravel_index(bad, arr.shape)
+                assert not _np.isnan(arr[by,bx])
+                arr[by,bx]=_np.nan
                 prof.update(compress='deflate',predictor=3,nodata=_np.nan)
                 with _rio.open(badfile,'w',**prof) as dst:
                     dst.write(arr,1)
+                assert _np.isfinite(arr).sum()==finite.size-1
                 page.set_input_files('#validate-file', str(badfile))
                 page.wait_for_function("document.getElementById('validate-status').textContent.includes('problem')")
                 report=page.locator('#validate-report').inner_text()

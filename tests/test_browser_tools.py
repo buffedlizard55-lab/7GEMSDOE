@@ -127,3 +127,41 @@ def test_strict_gate_accepts_the_browser_built_file(browser_built):
                           cwd=ROOT, capture_output=True, text=True, timeout=300, env=env)
     assert gate.returncode == 0, gate.stdout + gate.stderr
     assert "PASS" in gate.stdout
+
+VALIDATOR = ROOT / "tests/js/validate_file.mjs"
+
+
+@requires_node
+def test_negative_control_is_rejected_by_the_page_validator(tmp_path):
+    """The browser check must reject a genuinely invalid file, not just accept good ones.
+
+    Regression guard for a real failure: the hosted smoke test used to corrupt
+    pixel (10, 10) of the published raster, which is NaN *outside* the footprint,
+    so the "bad" file was actually valid and the runner's wait for a failure
+    message timed out on every push after 46a2f48.
+    """
+    rasterio = pytest.importorskip("rasterio")
+    with rasterio.open(CANONICAL) as src:
+        prof = src.profile.copy()
+        arr = src.read(1)
+    finite = np.flatnonzero(np.isfinite(arr).ravel())
+    assert finite.size, "the published raster has no finite pixels"
+    by, bx = np.unravel_index(finite[finite.size // 2], arr.shape)
+    arr[by, bx] = np.nan
+    bad = tmp_path / "corrupt-nan-inside.tif"
+    prof.update(compress="deflate", predictor=3, nodata=np.nan)
+    with rasterio.open(bad, "w", **prof) as dst:
+        dst.write(arr, 1)
+
+    def run(candidate: Path) -> dict:
+        proc = subprocess.run([shutil.which("node"), str(VALIDATOR), str(CANONICAL), str(candidate)],
+                              cwd=ROOT, capture_output=True, text=True, timeout=900)
+        assert proc.returncode == 0, proc.stdout + proc.stderr
+        return json.loads(proc.stdout.strip().splitlines()[-1])
+
+    good = run(CANONICAL)
+    assert good["ok"] is True, good["problems"]
+    res = run(bad)
+    assert res["ok"] is False, "the corrupted control was accepted by the page validator"
+    assert res["info"]["inside_footprint_not_finite"] == 1
+    assert any("not finite" in p for p in res["problems"]), res["problems"]
