@@ -14,8 +14,8 @@
   "Lassen",
   "Carson"
  ],
- "gap_cells": 1272913,
- "footprint_cells": 1272913,
+ "gap_cells": 300832,
+ "footprint_cells": 300832,
  "projects": [
   {
    "project": "AL_ADECA_B1_2016",
@@ -16349,7 +16349,7 @@
   "WY_Southwest_2020_D20",
   "WY_YellowstoneNP_2020_D20"
  ],
- "tiles_touching_gap": 428,
- "tiles_touching_gap_not_processed": 185,
- "new_gap_cells_covered": 1343740
+ "tiles_touching_gap": 69,
+ "tiles_touching_gap_not_processed": 46,
+ "new_gap_cells_covered": 224834
 }
