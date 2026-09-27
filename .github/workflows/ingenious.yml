@@ -1,0 +1,60 @@
+name: INGENIOUS fault compilation v1/v2
+# H12 enabler. The official rules say the competition training labels came from the
+# INGENIOUS Great Basin Regional Dataset Compilation (GDR submission 1391,
+# DOI 10.15121/1881483, CC-BY-4.0). That submission hosts two fault compilations --
+# v1 (2022) and v2 (2023-06-27, "supersedes v1"). The sandbox cannot reach
+# gdr.openei.org, so a hosted runner downloads both, rasterizes them on the official
+# 100 m grid, measures which one the shipped labels match, and commits the deltas.
+# Cost control: manual dispatch, or a push whose commit message STARTS WITH
+# "[run-ingenious]"; paths are restricted to this workflow and its script.
+on:
+  workflow_dispatch:
+  push:
+    branches: ["arena/**"]
+    paths:
+      - ".github/workflows/ingenious.yml"
+      - "scripts/ingenious_faults.py"
+permissions:
+  contents: write
+concurrency:
+  group: ingenious-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  build:
+    if: github.event_name == 'workflow_dispatch' || startsWith(github.event.head_commit.message, '[run-ingenious]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install numpy==2.4.6 scipy==1.17.1 rasterio==1.4.4 fiona==1.10.1
+      - name: Restore competition grid (template + labels)
+        run: |
+          bash scripts/download_competition_data.sh
+          python scripts/verify_data.py
+      - name: Build INGENIOUS v1/v2 rasters and deltas
+        run: python scripts/ingenious_faults.py
+      - name: Preserve diagnostics on failure
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ingenious-report-${{ github.run_id }}
+          path: |
+            external/ingenious/ingenious_faults.json
+            external/ingenious/ingenious_faults_u8.tif
+          if-no-files-found: ignore
+          retention-days: 30
+      - name: Commit compact product to this session branch
+        if: github.ref != 'refs/heads/main'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add external/ingenious
+          git diff --cached --quiet && exit 0
+          git commit -m "INGENIOUS v1/v2 fault compilation and deltas (run ${GITHUB_RUN_ID})"
+          for i in 1 2 3 4 5; do
+            git pull --rebase origin "${GITHUB_REF_NAME}" && git push origin "HEAD:${GITHUB_REF_NAME}" && break
+            sleep 10
+          done

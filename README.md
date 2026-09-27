@@ -15,6 +15,50 @@ Geothermal vents are the user's broader motivation, not the competition's raster
 **We have not demonstrated a score above 0.3049.** Best group public score: 0.1563
 (extradr19; SDCF9 also shows 0.1563 from an unrecorded file). Ranks are dynamic.
 
+## Session 8 — verified current state (2026-09-27)
+
+The standing brief above was re-read before any work and re-verified against the
+repository; nothing in it is treated as done without evidence. This session's
+outcome is a **negative but decisive** one: inside the competition footprint the
+shipped training raster already contains the whole published fault record.
+
+`scripts/label_provenance.py` measures it from committed artifacts: 60,988
+shipped label pixels; INGENIOUS v1 and v2 both rasterise to 169,207 trace pixels
+in this grid, of which 60,982 are inside the footprint and only **4** lie farther
+than 1 px from a shipped label; the QFFDB-derived raster agrees with the shipped
+labels on 99.95 % of label pixels. The 108,131-pixel "residual" of the INGENIOUS
+compilation is **100 % outside** the footprint. Consequence: the expert "new
+fault dataset" the prize scores cannot be a copy of any published catalogue, the
+"reuse an official compilation" family of candidates is retired, and emission
+exactly on a shipped label pixel is a guaranteed false positive — which is what
+the frozen H1 policy already assumes. Evidence:
+[knowledge/session8/label_provenance.json](knowledge/session8/label_provenance.json).
+
+The emission-policy experiment (H14) is recorded as a limited negative result:
+at equal pixel budget on the frozen block folds, raw thresholding, 1-px ridge NMS
+and a metric-kernel-matched threshold are within noise of each other, and the
+simple proximity-to-known-fault field sits below the random-emission baseline
+inside its own held-out blocks. Policy is not the lever; the detector's evidence
+and its coverage are.
+
+Coverage improved: runner run 36283041854 folded 420 additional official USGS
+3DEP tiles into the lidar product gap-only (commit `ed3bd5b`), taking cells with
+lidar from 3,894,460 to 5,185,049 (+1,290,589) with **0** cells changed outside
+the previous gap. The H1 candidate (`36c3a3f3…`) is unchanged and remains the
+single recommended next upload under the frozen session-4 decision tree; this
+session added no second candidate, because the H12 shortcut it was meant to test
+is closed by the measurement above.
+
+CI is green again (run 36283730611): the browser-tools test now drives
+`tests/js/roundtrip.mjs` and asserts its current report steps; `pytest tests/ -q`
+is 155 passed with data placed and 154 passed + 1 skipped without. The site's
+index leads with the one-click in-browser generator and the pre-upload checker,
+and now carries the session-8 evidence card plus an official-source table built
+from `knowledge/sources.json`. Deep research into the geothermal-vent science is
+stored as [knowledge/session8/research.md](knowledge/session8/research.md) with
+licences, verbatim claims and a manual click-through checklist. No upload, score
+gain, new fault or vent is claimed.
+
 ## Session 7 — verified current state (2026-09-26)
 
 The validated public feed is timestamped **22:59:17 UTC**, contains 109 ranked

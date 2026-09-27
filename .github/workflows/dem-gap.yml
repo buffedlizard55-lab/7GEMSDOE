@@ -1,0 +1,183 @@
+name: Lidar gap fill
+# Autonomous gap-first lidar completion (session-7 next-step priority #4.1).
+# The development sandbox cannot reach USGS hosts, so hosted runners enumerate the
+# authoritative 3DEP bucket for tiles that intersect cells with no lidar, extract
+# their scarp descriptors, and fold them into the committed product -- gap cells only.
+# Cost control: triggered by manual dispatch or a push whose paths touch this
+# workflow / its two scripts; concurrency is per-ref and never cancels a running job.
+on:
+  workflow_dispatch:
+    inputs:
+      max_tiles:
+        description: "Max new gap tiles to process, highest-gap first (0 = all)"
+        default: "600"
+      extract:
+        description: "Run the download/extract stage"
+        type: choice
+        options: ["yes", "no"]
+        default: "yes"
+  push:
+    branches: ["arena/**"]
+    paths:
+      - ".github/workflows/dem-gap.yml"
+      - "scripts/dem_enumerate.py"
+      - "scripts/dem_merge_gap.py"
+permissions:
+  contents: write
+concurrency:
+  group: dem-gap-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  enumerate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    outputs:
+      tiles: ${{ steps.list.outputs.tiles }}
+      gap_before: ${{ steps.list.outputs.gap_before }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install numpy==2.4.6 rasterio==1.4.4
+      - name: Enumerate official 3DEP tiles intersecting the lidar gap
+        id: list
+        run: |
+          python scripts/dem_enumerate.py --max-records "${{ github.event.inputs.max_tiles || '600' }}"
+          python - <<'PY'
+          import json, os
+          d = json.load(open('knowledge/dem_tiles_gap.json'))
+          new = [r for r in d['records'] if not r.get('already_processed')]
+          print('tiles total', d['n_records'], 'new', len(new), 'gap cells before', d['gap_cells_before'])
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as fh:
+              fh.write(f"tiles={len(new)}\n")
+              fh.write(f"gap_before={d['gap_cells_before']}\n")
+          PY
+      - name: Commit the enumerated list and listing evidence
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add knowledge/dem_tiles_gap.json external/dem/s3_listing_log.json
+          git commit -m "Enumerate 3DEP tiles for the lidar gap (run ${GITHUB_RUN_ID})" || exit 0
+          for i in 1 2 3 4 5; do
+            git pull --rebase origin "${GITHUB_REF_NAME}" && git push origin "HEAD:${GITHUB_REF_NAME}" && break
+            sleep 10
+          done
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dem-tiles-gap
+          path: |
+            knowledge/dem_tiles_gap.json
+            external/dem/s3_listing_log.json
+          retention-days: 30
+  extract:
+    needs: enumerate
+    if: needs.enumerate.outputs.tiles != '0' && (github.event_name != 'workflow_dispatch' || github.event.inputs.extract != 'no')
+    runs-on: ubuntu-latest
+    timeout-minutes: 170
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix:
+        job: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install numpy==2.4.6 scipy==1.17.1 rasterio==1.4.4
+      - uses: actions/download-artifact@v4
+        with:
+          name: dem-tiles-gap
+          path: scratch
+      - name: Extract two shards in parallel (40 shards total)
+        env:
+          LIMIT: "0"
+        run: |
+          set -uo pipefail
+          free -g; nproc; df -h /tmp | tail -1
+          find scratch -maxdepth 3 -type f | head -20
+          TILES=$(find scratch -name dem_tiles_gap.json | head -1)
+          if [ -z "$TILES" ]; then echo "FATAL: dem_tiles_gap.json not found in the downloaded artifact"; exit 1; fi
+          echo "tiles file: $TILES"
+          a=$(( ${{ matrix.job }} * 2 )); b=$(( a + 1 ))
+          python scripts/dem_features.py --tiles "$TILES" --shard $a --nshards 40 --out scratch/gap --workdir /tmp/dem_a --limit "${LIMIT:-0}" > log_a.txt 2>&1 &
+          pa=$!
+          python scripts/dem_features.py --tiles "$TILES" --shard $b --nshards 40 --out scratch/gap --workdir /tmp/dem_b --limit "${LIMIT:-0}" > log_b.txt 2>&1 &
+          pb=$!
+          wait $pa; ra=$?
+          wait $pb; rb=$?
+          tail -n 4 log_a.txt log_b.txt || true
+          echo "ok tiles: $(grep -c '"status": "ok"' log_a.txt log_b.txt || true)"
+          if [ "$ra" -ne 0 ] || [ "$rb" -ne 0 ]; then
+            echo "FATAL: shard process exited ra=$ra rb=$rb"
+            tail -30 log_a.txt; tail -30 log_b.txt
+            exit 1
+          fi
+          if [ "$(find scratch/gap -name '*.npz' | wc -l)" -eq 0 ]; then
+            echo "FATAL: no tile outputs were produced by this shard"
+            exit 1
+          fi
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dem-gap-shard-${{ matrix.job }}
+          path: |
+            scratch/gap/
+            log_a.txt
+            log_b.txt
+          retention-days: 30
+  merge:
+    needs: [enumerate, extract]
+    if: always() && (needs.extract.result == 'success' || needs.extract.result == 'failure')
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install numpy==2.4.6 scipy==1.17.1 rasterio==1.4.4
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: dem-gap-shard-*
+          path: scratch/shards
+      - name: Fold gap tiles into the committed product (gap cells only)
+        run: |
+          python scripts/dem_merge_gap.py --base external/dem/lidar_scarp_features_u8.tif \
+            --shards 'scratch/shards/**/*.npz' --manifest external/dem/lidar_gapfill.json
+          python - <<'PY'
+          import json, os
+          p = 'external/dem/lidar_gapfill.json'
+          d = json.load(open(p))
+          d['workflow_run'] = f"{os.environ['GITHUB_SERVER_URL']}/{os.environ['GITHUB_REPOSITORY']}/actions/runs/{os.environ['GITHUB_RUN_ID']}"
+          d['commit'] = os.environ['GITHUB_SHA']
+          json.dump(d, open(p, 'w'), indent=1)
+          f = 'external/dem/lidar_scarp_features.json'
+          m = json.load(open(f))
+          m['gap_fill'] = {'run': d['workflow_run'], 'cells_with_lidar_before': d['cells_with_lidar_before'],
+                           'cells_with_lidar_after': d['cells_with_lidar_after'],
+                           'sha256_before': d['sha256_before'], 'sha256_after': d['sha256_after'],
+                           'manifest': 'external/dem/lidar_gapfill.json'}
+          json.dump(m, open(f, 'w'), indent=1)
+          PY
+      - name: Verify and commit
+        run: |
+          python - <<'PY'
+          import json
+          d = json.load(open('external/dem/lidar_gapfill.json'))
+          assert d['cells_changed_outside_previous_gap'] == 0, 'gap-only rule violated'
+          assert d['cells_with_lidar_after'] >= d['cells_with_lidar_before']
+          print('gap-fill verified:', d['cells_filled'], 'cells newly covered')
+          PY
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add external/dem
+          git commit -m "Fold new 3DEP tiles into the lidar product, gap cells only (run ${GITHUB_RUN_ID})" || exit 0
+          for i in 1 2 3 4 5; do
+            git pull --rebase origin "${GITHUB_REF_NAME}" && git push origin "HEAD:${GITHUB_REF_NAME}" && break
+            sleep 10
+          done

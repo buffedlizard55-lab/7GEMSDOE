@@ -153,5 +153,13 @@
   "NAD83(2011) UTM tiles aggregated onto WGS84 UTM 11N; ~1-2 m datum offset is negligible at 100 m"
  ],
  "workflow_run": "https://github.com/buffedlizard55-lab/7GEMSDOE/actions/runs/36266555805",
- "commit": "2e7bf080270493f77286fd62f2db958805053ba5"
+ "commit": "2e7bf080270493f77286fd62f2db958805053ba5",
+ "gap_fill": {
+  "run": "https://github.com/buffedlizard55-lab/7GEMSDOE/actions/runs/36283041854",
+  "cells_with_lidar_before": 5185049,
+  "cells_with_lidar_after": 5185049,
+  "sha256_before": "bb6c73b0963a2e8b59762861f7313e667576a0211550879ade3f83e5a17c07f1",
+  "sha256_after": "bb6c73b0963a2e8b59762861f7313e667576a0211550879ade3f83e5a17c07f1",
+  "manifest": "external/dem/lidar_gapfill.json"
+ }
 }

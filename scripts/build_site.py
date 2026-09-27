@@ -15,15 +15,57 @@ def table(head, rows):
 
 NAV=[('index.html','Executive summary'),('how-to-submit.html','Submit'),('results.html','Results'),('strategy.html','Experiments'),('research.html','Research'),('data.html','Data'),('metric.html','Metric')]
 
-def page(filename,title,body):
+def page(filename,title,body,scripts=()):
     nav=''.join(f'<a href="{f}" {"aria-current=page" if f==filename else ""}>{t}</a>' for f,t in NAV)
+    extra=''.join(f'<script src="{s}" defer></script>' for s in scripts)
     (ROOT/filename).write_text(f'''<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>{e(title)} · 7GEMSDOE</title><link rel="stylesheet" href="assets/style.css"><script src="assets/site.js" defer></script></head>
+<title>{e(title)} · 7GEMSDOE</title><link rel="stylesheet" href="assets/style.css"><script src="assets/site.js" defer></script>{extra}</head>
 <body><a class="skip" href="#main">Skip to content</a><header class="site"><div class="wrap"><h1><span class="gem">7GEMS</span>DOE <span class="small">Fault discovery lab</span></h1>
 <nav class="site" aria-label="Main navigation">{nav}</nav><p class="tag">Evidence first. Reproducible experiments. One accountable competition entry.</p></div></header>
 <main id="main">{body}</main><footer class="site">No predicted leaderboard gains. Local measurements, official-source facts and hypotheses are labeled separately.<br>
 {link('https://github.com/buffedlizard55-lab/7GEMSDOE','Code & session README')} · {link('knowledge/session7/review.md','Latest three-pass audit')} · {link(B+'page/967/','Competition contract')}</footer></body></html>''')
+
+
+def browser_tools(man, m, note):
+    """The generate-and-check block: one-click .tif build plus the pre-upload checker.
+
+    The payload is a compact DEFLATE+base64 encoding of the published raster (see
+    scripts/build_browser_payload.py, ~170 KB instead of 49 MB of float32). The
+    browser rebuilds the file locally with assets/geotiff_tools.js, verifies the
+    rebuilt pixels against the manifest SHA-256, and only then saves it. The same
+    file also checks a user-supplied .tif against the competition rules before it
+    is uploaded. Nothing is sent anywhere.
+    """
+    return f"""<section class="hero" id="generate">
+<p class="eyebrow">ONE CLICK · GENERATED IN YOUR BROWSER · NOTHING IS UPLOADED</p>
+<h2 id="generate-title">Generate the exact .tif, then check it before you upload</h2>
+<p><strong>Step 1 — click once.</strong> This page carries a {man['payload_base64_bytes']/1024:.0f} KB payload of the validated
+{man['grid']['width']:,} × {man['grid']['height']:,} submission raster ({man['counts']['one']:,} fault pixels,
+{man['counts']['zero']:,} zero, {man['counts']['nan']:,} NaN outside the footprint). The browser rebuilds the file,
+verifies the rebuilt float32 pixels against SHA-256 <code>{man['pixel_payload_sha256'][:16]}…</code>, and saves it as
+<code>{e(man['output_name'])}</code>. The result is pixel-identical to the published download and passes the strict local gate.</p>
+<button class="btn" id="generate-tif" type="button">Generate &amp; download {e(man['output_name'])}</button>
+<a class="btn secondary" data-verify-download data-sha="{e(m['sha256'])}" href="downloads/{e(m['file'])}" download>Direct download of the same pixels</a>
+<p class="download-status" id="generate-status" role="status" aria-live="polite">Ready — the rebuild, the hash check and the save all happen locally.</p>
+<p class="small" id="generate-sha" role="status"></p>
+<p><strong>Step 2 — copy the Note.</strong> <code class="note-text">{e(note)}</code> <button class="copy-note" type="button">Copy Note</button></p>
+<p><strong>Step 3 — upload</strong> it at the official submission page and paste the Note. Walk-through: {link('how-to-submit.html','executive submission guide')}.
+Rules §3.4 limits the entity to three feedback submissions per week; keep the filename and SHA-256 with the score.</p>
+<details><summary>Why bytes built by this page are safe to submit</summary>
+<p>The grid is copied from the official template (EPSG:{e(str(man['grid']['crs']).split(':')[-1])}, {man['grid']['transform'][0]:.0f} m, origin
+{man['grid']['transform'][2]:.0f}/{man['grid']['transform'][5]:.0f}), the raster is single-band float32, values are 1.0 on the emitted lines and 0.0 elsewhere inside the
+footprint with NaN outside, and the pixels are hashed before download. Two independent checks back this: <code>node tests/js/roundtrip.mjs</code> re-reads the published artifact
+through this page's own reader (including GDAL's floating-point predictor) and {link('https://github.com/buffedlizard55-lab/7GEMSDOE/blob/main/tests/test_browser_tools.py','tests/test_browser_tools.py')}
+re-validates the generated file with rasterio, the same library the platform uses. A local PASS is still not a server acceptance receipt.</p></details></section>
+<section class="card" id="check-file"><h2>Check any .tif before you upload it</h2>
+<p>The 2026 rejection <em>"Predicted values must be in range [0, 1]"</em> came from NaN pixels <em>inside</em> the footprint (and finite pixels outside it).
+This checker applies the same rules in your browser: one band, float32, exact shape/CRS/transform, finite values in [0, 1] inside the template footprint, NaN outside.
+The file never leaves your device.</p>
+<input type="file" id="validate-file" accept=".tif,.tiff,.TIF">
+<p class="download-status" id="validate-status" role="status" aria-live="polite">Choose the .tif you are about to upload.</p>
+<div id="validate-report"></div></section>"""
+
 
 
 def card(m,title,label):
@@ -44,6 +86,7 @@ def main():
     lprod=load('external/dem/lidar_scarp_features.json')
     gaps=load('knowledge/session5/lidar_gaps.json'); fp=load('knowledge/session5/lidar_fp_audit.json')
     feed=load('knowledge/feed.json'); sources=load('knowledge/sources.json'); team=load('knowledge/team_results.json')
+    provenance=load('knowledge/session8/label_provenance.json'); h14=load('knowledge/session8/emission_policy_experiment.json')
     session6_evidence=load('knowledge/session6/local_verification.json')
     h9=load('knowledge/session6/geodawn_experiment.json')
     h9b=load('knowledge/session7/radiometric_lineament_experiment.json')
@@ -56,6 +99,9 @@ def main():
     spatial=load('knowledge/session3/spatial_experiment.json')
     experts=load('knowledge/session3/expert_experiment.json')
     lc=lcand['candidates'][0]
+    payload_man=load('downloads/gems7-lidarscarp-ridge-top2pct-36c3a3f341c8.payload.json')
+    payload_man['output_name']=lidar['file']
+    payload_man['template_path']='downloads/'+lidar['file']
     def mult(arm,f,key='pooled_nms'): return f"x{lexp[key][arm][f]['multiple']:.2f}"
     s4rows=[[a,mult(a,'0.005','pooled'),mult(a,'0.01','pooled'),mult(a,'0.02','pooled'),mult(a,'0.005'),mult(a,'0.01'),mult(a,'0.02')] for a in ('bands19','lidar','both')]
     session4=f'''<section class="card"><h2>Session 4 evidence: region-wide 1 m lidar</h2>
@@ -122,13 +168,37 @@ It barely predicts away from visible catalogue traces. <strong>Do not treat H3 a
     scope='''<p>The task is to map <strong>geological faults</strong> across GeoDAWN—not to classify hot springs or prove geothermal vents. New expert-labeled faults drive initial scoring; expanded expert review determines final scoring. Scientific hypotheses below are not confirmed discoveries.</p>'''
     compliance=f'''<aside class="note"><strong>Rules flag:</strong> §3.4 allows <strong>three feedback submissions per week per participating entity</strong>, not per teammate account. One final submission across both rounds; teammates cannot submit separate finals.
 The supplied account list needs team-registration review. We do not multiply the budget across accounts. {link(RULES,'Official rules §3.4–3.6.2')}.</aside>'''
-    page('index.html','Executive summary',f'''<p class="eyebrow">DOWNLOAD → UPLOAD → PASTE THE NOTE</p><h2>Current H1 test: region-wide lidar scarp evidence.</h2>
+    prov_v2=provenance['sources']['ingenious_v2_trace']; prov_res=provenance['sources']['ingenious_v2_not_in_labels']
+    prov_q=provenance['sources'].get('qfaults_any_band')
+    h14_rows=[[k]+[f"x{v['multiple']:.2f}" for _,v in sorted(h14['pooled'][k].items(), key=lambda kv: float(kv[0]))]
+              for k in ('raw','ridge','matched','matched_raw')]
+    science_ids=('gdr-383','osti-1148722','gdr-616','gdr-1351','gdr-1526','gdr-1501','gdr-1391')
+    science_rows=[[e(s['id']),link(s['url'],s['title']),e(s['claim']),e(s['license'])] for s in sources if s['id'] in science_ids]
+    session8=f'''<section class="card" id="session8"><h2>Session 8 — measured label provenance, the emission question, and the official source table</h2>
+<p><strong>1 · The scored labels cannot be a repackaging of the published record.</strong> Inside the competition footprint the shipped
+{prov_v2['px_in_footprint']:,} INGENIOUS v2 trace pixels contain every one of the {provenance['shipped_labels_px']:,} shipped labels within 1 px, and only
+<strong>{prov_res['px_in_footprint']}</strong> pixels of that official compilation are not already shipped. The QFFDB-derived raster agrees with the shipped labels on
+{prov_q['labels_within_1px']*100:.1f}% of label pixels. Copying any published catalogue into the study area therefore spends submission mass where the truth
+provably is not — this is why the group's most catalogue-concentrated uploads scored <em>below</em> the random-emission baseline. Audit:
+{link('knowledge/session8/label_provenance.json','label_provenance.json')} · tool {link('scripts/label_provenance.py','scripts/label_provenance.py')}.</p>
+<p><strong>2 · Emission policy is a smaller lever than the field itself (H14).</strong> At equal pixel budget on the frozen block folds, a threshold on the
+metric-kernel-smoothed field, the raw threshold and a non-normalised matched filter are within noise of each other, and the deliberately simple proximity-to-known-fault
+field stayed <em>below</em> the random baseline inside its own held-out blocks. Recorded as a negative result with its limitation (the field's maximum sits on the block
+boundary). Report: {link('knowledge/session8/emission_policy_experiment.json','emission_policy_experiment.json')}.</p>
+<p><strong>3 · Official sources for manual review.</strong> Deep-research base: {link('knowledge/session8/geothermal_vent_science.md','geothermal_vent_science.md')} (vent/structural-setting literature, licences, click-through checklist).</p>
+{table(['Source id','Official page','Verified claim','Licence'],science_rows)}
+<p>The recommended next upload is unchanged: the H1 lidar candidate above, one click, hash-checked. This session added no new candidate file because the
+label-provenance result removes the shortcut it was meant to test.</p>'''
+    JS=( 'assets/geotiff_tools.js', 'assets/submission_payload.js', 'assets/submit_ui.js')
+    page('index.html','Executive summary',f'''{browser_tools(payload_man,lidar,lidar['suggested_submission_note'])}
+<p class="eyebrow">DOWNLOAD → UPLOAD → PASTE THE NOTE</p><h2>Current H1 test: region-wide lidar scarp evidence.</h2>
 <p><strong>Recommended next upload</strong> (a decisive leaderboard test, not a proven winner): a thin-line map from a model trained only on 1 m lidar scarp descriptors. Group best is 0.1563; leader 0.3049. {link('how-to-submit.html','Exact submission instructions →')}</p>
 {card(lidar,'Lidar scarp model · ridge-thinned top 2%','Session 4 primary · H1 leaderboard test')}
 <p>{lc['emitted']:,} emitted pixels (binary 1.0; 0.0 elsewhere inside the footprint; NaN outside), all inside lidar coverage; dispersion index {lc['dispersion_index']:.2f} (line-like). Catalogue-based calibration with a 50% transfer discount predicts only ~{lcand['chosen']['expected_dti']:.2f}, below 0.1563; we still recommend it because that calibration is biased against lidar-mapped faults. Visible false-positive classes: closed loops (hills, shorelines) and arcuate range-front edges. Record the score with the SHA-256.</p>
 {session4}
 {session5}
 {session6}
+{session8}
 <h2>Preserved earlier candidates</h2>
 {card(structural,'H3 · Along-strike continuation','Experimental v2 · geographic stress test failed to establish discovery')}
 <p>Extends locally coherent fault traces preferentially along their strike (3 km support) rather than placing a broad halo everywhere (300 m cross-strike support). No deep model or geothermal thermal prior is included.</p>
@@ -137,8 +207,9 @@ The supplied account list needs team-registration review. We do not multiply the
 <p>H3 held-component DTI: <strong>{held['strike30x3']['dti']:.5f}</strong> vs <strong>{held['isotropic15']['dti']:.5f}</strong> broad-halo control ({improvement:.1%} relative).
 Selection used seeds 4242/4243; seed 9001 was reserved before execution. This is a narrow proxy, not an estimated leaderboard score.</p>{link('strategy.html','See all experiments and limitations')}</section>
 <section class="card"><h3>What is not solved</h3><p>We have not beaten 0.3049, obtained private labels, run a region-wide 1 m DEM detector, or verified an actual new fault in the field.
-No DrivenData login is available for uploading or final selection. GPU training is not implemented in this repo.</p></section></div>''')
+No DrivenData login is available for uploading or final selection. GPU training is not implemented in this repo.</p></section></div>''',scripts=JS)
     page('how-to-submit.html','How to submit',f'''<h2>Executive submission guide</h2>
+{browser_tools(payload_man,lidar,lidar['suggested_submission_note'])}
 {card(lidar,'Download the session 4 lidar candidate','Recommended next upload · decisive H1 test')}
 <ol class="steps"><li><strong>Download the .TIF above</strong> (or its ZIP with exactly one GeoTIFF). Do not upload this web page, a PDF, JSON manifest, or the training features.</li>
 <li>{link(B+'submissions/','Open DrivenData → Submissions')} and sign in to the authorized team account. Registration, eligibility certification and rule acceptance belong to the participant.</li>
@@ -152,7 +223,7 @@ No DrivenData login is available for uploading or final selection. GPU training 
 <pre>.venv/bin/python scripts/validate_submission.py downloaded-file.tif</pre>
 <p>The gate compares exact CRS, shape and transform; enforces single-band float32 and strict [0,1] (no tolerance); rejects internal masks, NaN inside, and anything except NaN outside. NaN nodata is a project publication policy. It fails cleanly for corrupt or wrong-sized files.</p>
 <p>{link(B+'page/967/#submission-format','Official submission requirements')} · {link('index.html','Control download and full summary')}</p>
-<h2>Generation vs submission</h2><p>The automated Python pipeline builds the GeoTIFF and packages it with a hash and Note. The static site delivers those validated bytes; it does not train a model in the browser. Downloading requires no setup. Uploading still requires your own authorized DrivenData session; no credentials are requested or stored here.</p>''')
+<h2>Generation vs submission</h2><p>The automated Python pipeline builds the GeoTIFF and packages it with a hash and Note. The submission GeoTIFF can be produced two ways on this site: download the published bytes, or rebuild them from the embedded payload in your browser (the two are pixel-identical, and both are hash-checked before saving). No model is trained in the browser and no file is uploaded anywhere; the site also runs the competition's format rules locally so a file is checked before it reaches the platform. Uploading still requires your own authorized DrivenData session; no credentials are requested or stored here.</p>''',scripts=JS)
     rows=[]
     board={r['participant']:r for r in feed['rows']}
     for r in team:

@@ -1,9 +1,37 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>How to submit · 7GEMSDOE</title><link rel="stylesheet" href="assets/style.css"><script src="assets/site.js" defer></script></head>
+<title>How to submit · 7GEMSDOE</title><link rel="stylesheet" href="assets/style.css"><script src="assets/site.js" defer></script><script src="assets/geotiff_tools.js" defer></script><script src="assets/submission_payload.js" defer></script><script src="assets/submit_ui.js" defer></script></head>
 <body><a class="skip" href="#main">Skip to content</a><header class="site"><div class="wrap"><h1><span class="gem">7GEMS</span>DOE <span class="small">Fault discovery lab</span></h1>
 <nav class="site" aria-label="Main navigation"><a href="index.html" >Executive summary</a><a href="how-to-submit.html" aria-current=page>Submit</a><a href="results.html" >Results</a><a href="strategy.html" >Experiments</a><a href="research.html" >Research</a><a href="data.html" >Data</a><a href="metric.html" >Metric</a></nav><p class="tag">Evidence first. Reproducible experiments. One accountable competition entry.</p></div></header>
 <main id="main"><h2>Executive submission guide</h2>
+<section class="hero" id="generate">
+<p class="eyebrow">ONE CLICK · GENERATED IN YOUR BROWSER · NOTHING IS UPLOADED</p>
+<h2 id="generate-title">Generate the exact .tif, then check it before you upload</h2>
+<p><strong>Step 1 — click once.</strong> This page carries a 168 KB payload of the validated
+3,292 × 3,730 submission raster (76,859 fault pixels,
+5,090,514 zero, 7,111,787 NaN outside the footprint). The browser rebuilds the file,
+verifies the rebuilt float32 pixels against SHA-256 <code>72db5e64db82cb7f…</code>, and saves it as
+<code>gems7-lidarscarp-ridge-top2pct-36c3a3f341c8.tif</code>. The result is pixel-identical to the published download and passes the strict local gate.</p>
+<button class="btn" id="generate-tif" type="button">Generate &amp; download gems7-lidarscarp-ridge-top2pct-36c3a3f341c8.tif</button>
+<a class="btn secondary" data-verify-download data-sha="36c3a3f341c8306dfb5610f61acfec635a7cb8a3ef6ef00380ca083d2f9745fe" href="downloads/gems7-lidarscarp-ridge-top2pct-36c3a3f341c8.tif" download>Direct download of the same pixels</a>
+<p class="download-status" id="generate-status" role="status" aria-live="polite">Ready — the rebuild, the hash check and the save all happen locally.</p>
+<p class="small" id="generate-sha" role="status"></p>
+<p><strong>Step 2 — copy the Note.</strong> <code class="note-text">Lidar scarp model, ridge-thinned top 2% | 36c3a3f341c8</code> <button class="copy-note" type="button">Copy Note</button></p>
+<p><strong>Step 3 — upload</strong> it at the official submission page and paste the Note. Walk-through: <a href="how-to-submit.html">executive submission guide</a>.
+Rules §3.4 limits the entity to three feedback submissions per week; keep the filename and SHA-256 with the score.</p>
+<details><summary>Why bytes built by this page are safe to submit</summary>
+<p>The grid is copied from the official template (EPSG:32611, 100 m, origin
+243350/4508550), the raster is single-band float32, values are 1.0 on the emitted lines and 0.0 elsewhere inside the
+footprint with NaN outside, and the pixels are hashed before download. Two independent checks back this: <code>node tests/js/roundtrip.mjs</code> re-reads the published artifact
+through this page's own reader (including GDAL's floating-point predictor) and <a href="https://github.com/buffedlizard55-lab/7GEMSDOE/blob/main/tests/test_browser_tools.py">tests/test_browser_tools.py</a>
+re-validates the generated file with rasterio, the same library the platform uses. A local PASS is still not a server acceptance receipt.</p></details></section>
+<section class="card" id="check-file"><h2>Check any .tif before you upload it</h2>
+<p>The 2026 rejection <em>"Predicted values must be in range [0, 1]"</em> came from NaN pixels <em>inside</em> the footprint (and finite pixels outside it).
+This checker applies the same rules in your browser: one band, float32, exact shape/CRS/transform, finite values in [0, 1] inside the template footprint, NaN outside.
+The file never leaves your device.</p>
+<input type="file" id="validate-file" accept=".tif,.tiff,.TIF">
+<p class="download-status" id="validate-status" role="status" aria-live="polite">Choose the .tif you are about to upload.</p>
+<div id="validate-report"></div></section>
 <section class="hero"><p class="eyebrow">Recommended next upload · decisive H1 test · LOCAL FORMAT PASS · NOT YET SCORED</p><h2>Download the session 4 lidar candidate</h2>
 <p class="filename">gems7-lidarscarp-ridge-top2pct-36c3a3f341c8.tif</p><a class="btn" data-verify-download data-sha="36c3a3f341c8306dfb5610f61acfec635a7cb8a3ef6ef00380ca083d2f9745fe" href="downloads/gems7-lidarscarp-ridge-top2pct-36c3a3f341c8.tif" download>Download .TIF · 0.55 MB</a>
 <a class="btn secondary" href="downloads/gems7-lidarscarp-ridge-top2pct-36c3a3f341c8.zip" download>Single-file ZIP</a>
@@ -25,5 +53,5 @@ The supplied account list needs team-registration review. We do not multiply the
 <pre>.venv/bin/python scripts/validate_submission.py downloaded-file.tif</pre>
 <p>The gate compares exact CRS, shape and transform; enforces single-band float32 and strict [0,1] (no tolerance); rejects internal masks, NaN inside, and anything except NaN outside. NaN nodata is a project publication policy. It fails cleanly for corrupt or wrong-sized files.</p>
 <p><a href="https://www.drivendata.org/competitions/306/competition-doe-gems/page/967/#submission-format">Official submission requirements</a> · <a href="index.html">Control download and full summary</a></p>
-<h2>Generation vs submission</h2><p>The automated Python pipeline builds the GeoTIFF and packages it with a hash and Note. The static site delivers those validated bytes; it does not train a model in the browser. Downloading requires no setup. Uploading still requires your own authorized DrivenData session; no credentials are requested or stored here.</p></main><footer class="site">No predicted leaderboard gains. Local measurements, official-source facts and hypotheses are labeled separately.<br>
+<h2>Generation vs submission</h2><p>The automated Python pipeline builds the GeoTIFF and packages it with a hash and Note. The submission GeoTIFF can be produced two ways on this site: download the published bytes, or rebuild them from the embedded payload in your browser (the two are pixel-identical, and both are hash-checked before saving). No model is trained in the browser and no file is uploaded anywhere; the site also runs the competition's format rules locally so a file is checked before it reaches the platform. Uploading still requires your own authorized DrivenData session; no credentials are requested or stored here.</p></main><footer class="site">No predicted leaderboard gains. Local measurements, official-source facts and hypotheses are labeled separately.<br>
 <a href="https://github.com/buffedlizard55-lab/7GEMSDOE">Code &amp; session README</a> · <a href="knowledge/session7/review.md">Latest three-pass audit</a> · <a href="https://www.drivendata.org/competitions/306/competition-doe-gems/page/967/">Competition contract</a></footer></body></html>

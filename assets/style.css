@@ -84,3 +84,11 @@ details { margin-top: 16px; } summary { cursor: pointer; font-weight: 600; }
 .skip:focus { top:0; }
 .download-status { font-size: .85rem; color: var(--ink-soft); }
 @media(max-width:600px) { .hero { padding:18px; } .btn { display:block; text-align:center; margin-right:0; } .kv { grid-template-columns: 1fr; } }
+
+/* session 8: one-click generator + pre-upload checker feedback */
+.download-status.good { color: #1c6b3a; font-weight: 600; }
+.download-status.bad { color: #a3231d; font-weight: 600; }
+#validate-file { display: block; margin: 10px 0; font: inherit; }
+#validate-report h3 { margin: 12px 0 6px; }
+#validate-report ul { margin: 0 0 8px 18px; }
+#generate-tif { font-size: 1.02rem; }

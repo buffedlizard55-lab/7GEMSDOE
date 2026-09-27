@@ -1,0 +1,1046 @@
+{
+ "description": "Additional official USGS 3DEP 1 m DEM tiles that intersect cells which have no lidar in external/dem/lidar_scarp_features_u8.tif. Produced by scripts/dem_enumerate.py from the authoritative USGS 3DEP public bucket listing (ListObjectsV2).",
+ "method": "ListObjectsV2 project listing -> tile id -> UTM footprint -> official grid window -> gap intersection",
+ "bucket": "https://prd-tnm.s3.amazonaws.com",
+ "datum_assumption": "tile naming encodes zone only; NAD83 UTM (EPSG:269xx) assumed for the footprint test, the extract stage reprojects with each tile's real CRS",
+ "gap_cells_before": 300832,
+ "n_records": 69,
+ "elapsed_seconds": 49.8,
+ "records": [
+  {
+   "tile": "USGS_1M_11_x29y442_NV_WestCentral_EarthMRI_2020_D20",
+   "filename": "USGS_1M_11_x29y442_NV_WestCentral_EarthMRI_2020_D20.tif",
+   "url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1m/Projects/NV_WestCentral_EarthMRI_2020_D20/TIFF/USGS_1M_11_x29y442_NV_WestCentral_EarthMRI_2020_D20.tif",
+   "bytes": 108006552,
+   "project": "NV_WestCentral_EarthMRI_2020_D20",
+   "window": [
+    882,
+    463,
+    107,
+    107
+   ],
+   "gap_cells": 11265,
+   "already_processed": false
+  },
+  {
+   "tile": "USGS_1M_11_x29y445_NV_WestCentral_EarthMRI_2020_D20",
+   "filename": "USGS_1M_11_x29y445_NV_WestCentral_EarthMRI_2020_D20.tif",
+   "url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1m/Projects/NV_WestCentral_EarthMRI_2020_D20/TIFF/USGS_1M_11_x29y445_NV_WestCentral_EarthMRI_2020_D20.tif",
+   "bytes": 95423456,
+   "project": "NV_WestCentral_EarthMRI_2020_D20",
+   "window": [
+    582,
+    463,
+    107,
+    107
+   ],
+   "gap_cells": 11253,
+   "already_processed": false
+  },
+  {
+   "tile": "USGS_1M_11_x28y447_NV_WestCentral_EarthMRI_2020_D20",
+   "filename": "USGS_1M_11_x28y447_NV_WestCentral_EarthMRI_2020_D20.tif",
+   "url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1m/Projects/NV_WestCentral_EarthMRI_2020_D20/TIFF/USGS_1M_11_x28y447_NV_WestCentral_EarthMRI_2020_D20.tif",
+   "bytes": 61868496,
+   "project": "NV_WestCentral_EarthMRI_2020_D20",
+   "window": [
+    382,
+    363,
+    107,
+    107
+   ],
+   "gap_cells": 11218,
+   "already_processed": false
+  },
+  {
+   "tile": "USGS_1M_11_x28y437_NV_USFSR4_D23",
+   "filename": "USGS_1M_11_x28y437_NV_USFSR4_D23.tif",
+   "url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1m/Projects/NV_USFSR4_D23/TIFF/USGS_1M_11_x28y437_NV_USFSR4_D23.tif",
+   "bytes": 34981774,
+   "project": "NV_USFSR4_D23",
+   "window": [
+    1382,
+    363,
+    107,
+    107
+   ],
+   "gap_cells": 10033,
+   "already_processed": false
+  },
+  {
+   "tile": "USGS_1M_11_x29y443_NV_WestCentral_EarthMRI_2020_D20",
+   "filename": "USGS_1M_11_x29y443_NV_WestCentral_EarthMRI_2020_D20.tif",
+   "url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1m/Projects/NV_WestCentral_EarthMRI_2020_D20/TIFF/USGS_1M_11_x29y443_NV_WestCentral_EarthMRI_2020_D20.tif",
+   "bytes": 266343952,
+   "project": "NV_WestCentral_EarthMRI_2020_D20",
+   "window": [
+    782,
+    463,
+    107,
+    107
+   ],
+   "gap_cells": 9883,
+   "already_processed": false
+  },
+  {
+   "tile": "USGS_1M_11_x29y444_NV_WestCentral_EarthMRI_2020_D20",
+   "filename": "USGS_1M_11_x29y444_NV_WestCentral_EarthMRI_2020_D20.tif",
+   "url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1m/Projects/NV_WestCentral_EarthMRI_2020_D20/TIFF/USGS_1M_11_x29y444_NV_WestCentral_EarthMRI_2020_D20.tif",
+   "bytes": 205525616,
+   "project": "NV_WestCentral_EarthMRI_2020_D20",
+   "window": [
+    682,
+    463,
+    107,
+    107
+   ],
+   "gap_cells": 9701,
+   "already_processed": false
+  },
+  {
+   "tile": "USGS_1M_11_x28y442_NV_WestCentral_EarthMRI_2020_D20",
+   "filename": "USGS_1M_11_x28y442_NV_WestCentral_EarthMRI_2020_D20.tif",
+   "url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1m/Projects/NV_WestCentral_EarthMRI_2020_D20/TIFF/USGS_1M_11_x28y442_NV_WestCentral_EarthMRI_2020_D20.tif",
+   "bytes": 270538312,
+   "project": "NV_WestCentral_EarthMRI_2020_D20",
+   "window": [
+    882,
+    363,
+    107,
+    107
+   ],
+   "gap_cells": 9643,
+   "already_processed": false
+  },
+  {
+   "tile": "USGS_1M_11_x27y443_NV_WestCentral_EarthMRI_2020_D20",
+   "filename": "USGS_1M_11_x27y443_NV_WestCentral_EarthMRI_2020_D20.tif",
+   "url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1m/Projects/NV_WestCentral_EarthMRI_2020_D20/TIFF/USGS_1M_11_x27y443_NV_WestCentral_EarthMRI_2020_D20.tif",
+   "bytes": 376446112,
+   "project": "NV_WestCentral_EarthMRI_2020_D20",
+   "window": [
+    782,
+    263,
+    107,
+    107
+   ],
+   "gap_cells": 9163,
+   "already_processed": false
+  },
+  {
+   "tile": "USGS_1M_11_x29y441_NV_WestCentral_EarthMRI_2020_D20",
+   "filename": "USGS_1M_11_x29y441_NV_WestCentral_EarthMRI_2020_D20.tif",
+   "url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1m/Projects/NV_WestCentral_EarthMRI_2020_D20/TIFF/USGS_1M_11_x29y441_NV_WestCentral_EarthMRI_2020_D20.tif",
+   "bytes": 327162288,
+   "project": "NV_WestCentral_EarthMRI_2020_D20",
+   "window": [
+    982,
+    463,
+    107,
+    107
+   ],
+   "gap_cells": 8643,
+   "already_processed": false
+  },
+  {
+   "tile": "USGS_1M_11_x29y446_NV_WestCentral_EarthMRI_2020_D20",
+   "filename": "USGS_1M_11_x29y446_NV_WestCentral_EarthMRI_2020_D20.tif",
+   "url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1m/Projects/NV_WestCentral_EarthMRI_2020_D20/TIFF/USGS_1M_11_x29y446_NV_WestCentral_EarthMRI_2020_D20.tif",
+   "bytes": 376446112,
+   "project": "NV_WestCentral_EarthMRI_2020_D20",
+   "window": [
+    482,
+    463,
+    107,
+    107
+   ],
+   "gap_cells": 8623,
+   "already_processed": false
+  },
+  {
+   "tile": "USGS_1M_11_x25y442_NV_USFSR4_D23",
+   "filename": "USGS_1M_11_x25y442_NV_USFSR4_D23.tif",
+   "url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1m/Projects/NV_USFSR4_D23/TIFF/USGS_1M_11_x25y442_NV_USFSR4_D23.tif",
+   "bytes": 5039563,
+   "project": "NV_USFSR4_D23",
+   "window": [
+    882,
+    63,
+    107,
+    107
+   ],
+   "gap_cells": 8494,
+   "already_processed": false
+  },
+  {
+   "tile": "USGS_1M_11_x30y440_NV_WestCentral_EarthMRI_2020_D20",
+   "filename": "USGS_1M_11_x30y440_NV_WestCentral_EarthMRI_2020_D20.tif",
+   "url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1m/Projects/NV_WestCentral_EarthMRI_2020_D20/TIFF/USGS_1M_11_x30y440_NV_WestCentral_EarthMRI_2020_D20.tif",
+   "bytes": 565192672,
+   "project": "NV_WestCentral_EarthMRI_2020_D20",
+   "window": [
+    1082,
+    563,
+    107,
+    107
+   ],
+   "gap_cells": 8175,
+   "already_processed": false
+  },
+  {
+   "tile": "USGS_1M_11_x26y442_NV_USFSR4_D23",
+   "filename": "USGS_1M_11_x26y442_NV_USFSR4_D23.tif",
+   "url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1m/Projects/NV_USFSR4_D23/TIFF/USGS_1M_11_x26y442_NV_USFSR4_D23.tif",
+   "bytes": 8451896,
+   "project": "NV_USFSR4_D23",
+   "window": [
+    882,
+    163,
+    107,
+    107
+   ],
+   "gap_cells": 7773,
+   "already_processed": false
+  },
+  {
+   "tile": "USGS_1M_11_x26y446_NV_WestCentral_EarthMRI_2020_D20",
+   "filename": "USGS_1M_11_x26y446_NV_WestCentral_EarthMRI_2020_D20.tif",
+   "url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1m/Projects/NV_WestCentral_EarthMRI_2020_D20/TIFF/USGS_1M_11_x26y446_NV_WestCentral_EarthMRI_2020_D20.tif",
+   "bytes": 318773552,
+   "project": "NV_WestCentral_EarthMRI_2020_D20",
+   "window": [
+    482,
+    163,
+    107,
+    107
+   ],
+   "gap_cells": 7536,
+   "already_processed": false
+  },
+  {
+   "tile": "USGS_1M_11_x27y442_NV_USFSR4_D23",
+   "filename": "USGS_1M_11_x27y442_NV_USFSR4_D23.tif",
+   "url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1m/Projects/NV_USFSR4_D23/TIFF/USGS_1M_11_x27y442_NV_USFSR4_D23.tif",
+   "bytes": 38334749,
+   "project": "NV_USFSR4_D23",
+   "window": [
+    882,
+    263,
+    107,
+    107
+   ],
+   "gap_cells": 7365,
+   "already_processed": false
+  },
+  {
+   "tile": "USGS_1M_11_x27y442_NV_WestCentral_EarthMRI_2020_D20",
+   "filename": "USGS_1M_11_x27y442_NV_WestCentral_EarthMRI_2020_D20.tif",
+   "url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1m/Projects/NV_WestCentral_EarthMRI_2020_D20/TIFF/USGS_1M_11_x27y442_NV_WestCentral_EarthMRI_2020_D20.tif",
+   "bytes": 565192672,
+   "project": "NV_WestCentral_EarthMRI_2020_D20",
+   "window": [
+    882,
+    263,
+    107,
+    107
+   ],
+   "gap_cells": 7365,
+   "already_processed": false
+  },
+  {
+   "tile": "USGS_1M_11_x27y441_NV_USFSR4_D23",
+   "filename": "USGS_1M_11_x27y441_NV_USFSR4_D23.tif",
+   "url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1m/Projects/NV_USFSR4_D23/TIFF/USGS_1M_11_x27y441_NV_USFSR4_D23.tif",
+   "bytes": 64175962,
+   "project": "NV_USFSR4_D23",
+   "window": [
+    982,
+    263,
+    107,
+    107
+   ],
+   "gap_cells": 7053,
+   "already_processed": false
+  },
+  {
+   "tile": "USGS_1M_11_x27y439_NV_USFSR4_D23",
+   "filename": "USGS_1M_11_x27y439_NV_USFSR4_D23.tif",
+   "url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1m/Projects/NV_USFSR4_D23/TIFF/USGS_1M_11_x27y439_NV_USFSR4_D23.tif",
+   "bytes": 100357966,
+   "project": "NV_USFSR4_D23",
+   "window": [
+    1182,
+    263,
+    107,
+    107
+   ],
+   "gap_cells": 7009,
+   "already_processed": false
+  },
+  {
+   "tile": "USGS_1M_11_x27y438_NV_USFSR4_D23",
+   "filename": "USGS_1M_11_x27y438_NV_USFSR4_D23.tif",
+   "url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1m/Projects/NV_USFSR4_D23/TIFF/USGS_1M_11_x27y438_NV_USFSR4_D23.tif",
+   "bytes": 131269375,
+   "project": "NV_USFSR4_D23",
+   "window": [
+    1282,
+    263,
+    107,
+    107
+   ],
+   "gap_cells": 6248,
+   "already_processed": false
+  },
+  {
+   "tile": "USGS_1M_11_x29y439_NV_WestCentral_EarthMRI_2020_D20",
+   "filename": "USGS_1M_11_x29y439_NV_WestCentral_EarthMRI_2020_D20.tif",
+   "url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1m/Projects/NV_WestCentral_EarthMRI_2020_D20/TIFF/USGS_1M_11_x29y439_NV_WestCentral_EarthMRI_2020_D20.tif",
+   "bytes": 136220440,
+   "project": "NV_WestCentral_EarthMRI_2020_D20",
+   "window": [
+    1182,
+    463,
+    107,
+    107
+   ],
+   "gap_cells": 5808,
+   "already_processed": false
+  },
+  {
+   "tile": "USGS_1M_11_x27y437_NV_USFSR4_D23",
+   "filename": "USGS_1M_11_x27y437_NV_USFSR4_D23.tif",
+   "url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1m/Projects/NV_USFSR4_D23/TIFF/USGS_1M_11_x27y437_NV_USFSR4_D23.tif",
+   "bytes": 82866730,
+   "project": "NV_USFSR4_D23",
+   "window": [
+    1382,
+    263,
+    107,
+    107
+   ],
+   "gap_cells": 5241,
+   "already_processed": false
+  },
+  {
+   "tile": "USGS_1M_11_x26y445_NV_WestCentral_EarthMRI_2020_D20",
+   "filename": "USGS_1M_11_x26y445_NV_WestCentral_EarthMRI_2020_D20.tif",
+   "url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1m/Projects/NV_WestCentral_EarthMRI_2020_D20/TIFF/USGS_1M_11_x26y445_NV_WestCentral_EarthMRI_2020_D20.tif",
+   "bytes": 449847552,
+   "project": "NV_WestCentral_EarthMRI_2020_D20",
+   "window": [
+    582,
+    163,
+    107,
+    107
+   ],
+   "gap_cells": 5045,
+   "already_processed": false
+  },
+  {
+   "tile": "USGS_1M_11_x26y447_NV_WestCentral_EarthMRI_2020_D20",
+   "filename": "USGS_1M_11_x26y447_NV_WestCentral_EarthMRI_2020_D20.tif",
+   "url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1m/Projects/NV_WestCentral_EarthMRI_2020_D20/TIFF/USGS_1M_11_x26y447_NV_WestCentral_EarthMRI_2020_D20.tif",
+   "bytes": 174067856,
+   "project": "NV_WestCentral_EarthMRI_2020_D20",
+   "window": [
+    382,
+    163,
+    107,
+    107
+   ],
+   "gap_cells": 5040,
+   "already_processed": false
+  },
+  {
+   "tile": "USGS_1M_11_x30y441_NV_WestCentral_EarthMRI_2020_D20",
+   "filename": "USGS_1M_11_x30y441_NV_WestCentral_EarthMRI_2020_D20.tif",
+   "url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1m/Projects/NV_WestCentral_EarthMRI_2020_D20/TIFF/USGS_1M_11_x30y441_NV_WestCentral_EarthMRI_2020_D20.tif",
+   "bytes": 512763072,
+   "project": "NV_WestCentral_EarthMRI_2020_D20",
+   "window": [
+    982,
+    563,
+    107,
+    107
+   ],
+   "gap_cells": 4956,
+   "already_processed": false
+  },
+  {
+   "tile": "USGS_1M_11_x24y442_NV_WestCentral_EarthMRI_2020_D20",
+   "filename": "USGS_1M_11_x24y442_NV_WestCentral_EarthMRI_2020_D20.tif",
+   "url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1m/Projects/NV_WestCentral_EarthMRI_2020_D20/TIFF/USGS_1M_11_x24y442_NV_WestCentral_EarthMRI_2020_D20.tif",
+   "bytes": 134084812,
+   "project": "NV_WestCentral_EarthMRI_2020_D20",
+   "window": [
+    882,
+    0,
+    107,
+    70
+   ],
+   "gap_cells": 3587,
+   "already_processed": false
+  },
+  {
+   "tile": "USGS_1M_11_x27y448_NV_WestCentral_EarthMRI_2020_D20",
+   "filename": "USGS_1M_11_x27y448_NV_WestCentral_EarthMRI_2020_D20.tif",
+   "url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1m/Projects/NV_WestCentral_EarthMRI_2020_D20/TIFF/USGS_1M_11_x27y448_NV_WestCentral_EarthMRI_2020_D20.tif",
+   "bytes": 491791232,
+   "project": "NV_WestCentral_EarthMRI_2020_D20",
+   "window": [
+    282,
+    263,
+    107,
+    107
+   ],
+   "gap_cells": 3362,
+   "already_processed": false
+  },
+  {
+   "tile": "USGS_1M_11_x27y440_NV_USFSR4_D23",
+   "filename": "USGS_1M_11_x27y440_NV_USFSR4_D23.tif",
+   "url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1m/Projects/NV_USFSR4_D23/TIFF/USGS_1M_11_x27y440_NV_USFSR4_D23.tif",
+   "bytes": 165954626,
+   "project": "NV_USFSR4_D23",
+   "window": [
+    1082,
+    263,
+    107,
+    107
+   ],
+   "gap_cells": 3081,
+   "already_processed": false
+  },
+  {
+   "tile": "USGS_1M_11_x29y440_NV_WestCentral_EarthMRI_2020_D20",
+   "filename": "USGS_1M_11_x29y440_NV_WestCentral_EarthMRI_2020_D20.tif",
+   "url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1m/Projects/NV_WestCentral_EarthMRI_2020_D20/TIFF/USGS_1M_11_x29y440_NV_WestCentral_EarthMRI_2020_D20.tif",
+   "bytes": 565192672,
+   "project": "NV_WestCentral_EarthMRI_2020_D20",
+   "window": [
+    1082,
+    463,
+    107,
+    107
+   ],
+   "gap_cells": 3051,
+   "already_processed": false
+  },
+  {
+   "tile": "USGS_1M_11_x26y444_NV_WestCentral_EarthMRI_2020_D20",
+   "filename": "USGS_1M_11_x26y444_NV_WestCentral_EarthMRI_2020_D20.tif",
+   "url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1m/Projects/NV_WestCentral_EarthMRI_2020_D20/TIFF/USGS_1M_11_x26y444_NV_WestCentral_EarthMRI_2020_D20.tif",
+   "bytes": 565192672,
+   "project": "NV_WestCentral_EarthMRI_2020_D20",
+   "window": [
+    682,
+    163,
+    107,
+    107
+   ],
+   "gap_cells": 2646,
+   "already_processed": false
+  },
+  {
+   "tile": "USGS_1M_11_x29y447_NV_WestCentral_EarthMRI_2020_D20",
+   "filename": "USGS_1M_11_x29y447_NV_WestCentral_EarthMRI_2020_D20.tif",
+   "url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1m/Projects/NV_WestCentral_EarthMRI_2020_D20/TIFF/USGS_1M_11_x29y447_NV_WestCentral_EarthMRI_2020_D20.tif",
+   "bytes": 565192672,
+   "project": "NV_WestCentral_EarthMRI_2020_D20",
+   "window": [
+    382,
+    463,
+    107,
+    107
+   ],
+   "gap_cells": 2629,
+   "already_processed": false
+  },
+  {
+   "tile": "USGS_1M_11_x30y439_NV_WestCentral_EarthMRI_2020_D20",
+   "filename": "USGS_1M_11_x30y439_NV_WestCentral_EarthMRI_2020_D20.tif",
+   "url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1m/Projects/NV_WestCentral_EarthMRI_2020_D20/TIFF/USGS_1M_11_x30y439_NV_WestCentral_EarthMRI_2020_D20.tif",
+   "bytes": 565192672,
+   "project": "NV_WestCentral_EarthMRI_2020_D20",
+   "window": [
+    1182,
+    563,
+    107,
+    107
+   ],
+   "gap_cells": 2312,
+   "already_processed": false
+  },
+  {
+   "tile": "USGS_1M_11_x28y448_NV_WestCentral_EarthMRI_2020_D20",
+   "filename": "USGS_1M_11_x28y448_NV_WestCentral_EarthMRI_2020_D20.tif",
+   "url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1m/Projects/NV_WestCentral_EarthMRI_2020_D20/TIFF/USGS_1M_11_x28y448_NV_WestCentral_EarthMRI_2020_D20.tif",
+   "bytes": 565192672,
+   "project": "NV_WestCentral_EarthMRI_2020_D20",
+   "window": [
+    282,
+    363,
+    107,
+    107
+   ],
+   "gap_cells": 1884,
+   "already_processed": false
+  },
+  {
+   "tile": "USGS_1M_11_x25y441_NV_USFSR4_D23",
+   "filename": "USGS_1M_11_x25y441_NV_USFSR4_D23.tif",
+   "url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1m/Projects/NV_USFSR4_D23/TIFF/USGS_1M_11_x25y441_NV_USFSR4_D23.tif",
+   "bytes": 223342398,
+   "project": "NV_USFSR4_D23",
+   "window": [
+    982,
+    63,
+    107,
+    107
+   ],
+   "gap_cells": 1680,
+   "already_processed": false
+  },
+  {
+   "tile": "USGS_1M_10_x76y441_NV_USFSR4_D23",
+   "filename": "USGS_1M_10_x76y441_NV_USFSR4_D23.tif",
+   "url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1m/Projects/NV_USFSR4_D23/TIFF/USGS_1M_10_x76y441_NV_USFSR4_D23.tif",
+   "bytes": 200115102,
+   "project": "NV_USFSR4_D23",
+   "window": [
+    984,
+    19,
+    114,
+    114
+   ],
+   "gap_cells": 1308,
+   "already_processed": false
+  },
+  {
+   "tile": "USGS_1M_11_x30y442_NV_WestCentral_EarthMRI_2020_D20",
+   "filename": "USGS_1M_11_x30y442_NV_WestCentral_EarthMRI_2020_D20.tif",
+   "url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1m/Projects/NV_WestCentral_EarthMRI_2020_D20/TIFF/USGS_1M_11_x30y442_NV_WestCentral_EarthMRI_2020_D20.tif",
+   "bytes": 565192672,
+   "project": "NV_WestCentral_EarthMRI_2020_D20",
+   "window": [
+    882,
+    563,
+    107,
+    107
+   ],
+   "gap_cells": 1281,
+   "already_processed": false
+  },
+  {
+   "tile": "USGS_1M_11_x30y443_NV_WestCentral_EarthMRI_2020_D20",
+   "filename": "USGS_1M_11_x30y443_NV_WestCentral_EarthMRI_2020_D20.tif",
+   "url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1m/Projects/NV_WestCentral_EarthMRI_2020_D20/TIFF/USGS_1M_11_x30y443_NV_WestCentral_EarthMRI_2020_D20.tif",
+   "bytes": 565192672,
+   "project": "NV_WestCentral_EarthMRI_2020_D20",
+   "window": [
+    782,
+    563,
+    107,
+    107
+   ],
+   "gap_cells": 1224,
+   "already_processed": false
+  },
+  {
+   "tile": "USGS_1M_11_x30y445_NV_WestCentral_EarthMRI_2020_D20",
+   "filename": "USGS_1M_11_x30y445_NV_WestCentral_EarthMRI_2020_D20.tif",
+   "url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1m/Projects/NV_WestCentral_EarthMRI_2020_D20/TIFF/USGS_1M_11_x30y445_NV_WestCentral_EarthMRI_2020_D20.tif",
+   "bytes": 565192672,
+   "project": "NV_WestCentral_EarthMRI_2020_D20",
+   "window": [
+    582,
+    563,
+    107,
+    107
+   ],
+   "gap_cells": 1191,
+   "already_processed": false
+  },
+  {
+   "tile": "USGS_1M_11_x26y441_NV_USFSR4_D23",
+   "filename": "USGS_1M_11_x26y441_NV_USFSR4_D23.tif",
+   "url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1m/Projects/NV_USFSR4_D23/TIFF/USGS_1M_11_x26y441_NV_USFSR4_D23.tif",
+   "bytes": 241294080,
+   "project": "NV_USFSR4_D23",
+   "window": [
+    982,
+    163,
+    107,
+    107
+   ],
+   "gap_cells": 1169,
+   "already_processed": false
+  },
+  {
+   "tile": "USGS_1M_11_x28y441_NV_WestCentral_EarthMRI_2020_D20",
+   "filename": "USGS_1M_11_x28y441_NV_WestCentral_EarthMRI_2020_D20.tif",
+   "url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1m/Projects/NV_WestCentral_EarthMRI_2020_D20/TIFF/USGS_1M_11_x28y441_NV_WestCentral_EarthMRI_2020_D20.tif",
+   "bytes": 565192672,
+   "project": "NV_WestCentral_EarthMRI_2020_D20",
+   "window": [
+    982,
+    363,
+    107,
+    107
+   ],
+   "gap_cells": 1074,
+   "already_processed": false
+  },
+  {
+   "tile": "USGS_1M_11_x28y436_NV_USFSR4_D23",
+   "filename": "USGS_1M_11_x28y436_NV_USFSR4_D23.tif",
+   "url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1m/Projects/NV_USFSR4_D23/TIFF/USGS_1M_11_x28y436_NV_USFSR4_D23.tif",
+   "bytes": 173259544,
+   "project": "NV_USFSR4_D23",
+   "window": [
+    1482,
+    363,
+    107,
+    107
+   ],
+   "gap_cells": 681,
+   "already_processed": false
+  },
+  {
+   "tile": "USGS_1M_11_x26y448_NV_WestCentral_EarthMRI_2020_D20",
+   "filename": "USGS_1M_11_x26y448_NV_WestCentral_EarthMRI_2020_D20.tif",
+   "url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1m/Projects/NV_WestCentral_EarthMRI_2020_D20/TIFF/USGS_1M_11_x26y448_NV_WestCentral_EarthMRI_2020_D20.tif",
+   "bytes": 565192672,
+   "project": "NV_WestCentral_EarthMRI_2020_D20",
+   "window": [
+    282,
+    163,
+    107,
+    107
+   ],
+   "gap_cells": 70,
+   "already_processed": false
+  },
+  {
+   "tile": "USGS_1M_11_x24y441_NV_USFSR4_D23",
+   "filename": "USGS_1M_11_x24y441_NV_USFSR4_D23.tif",
+   "url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1m/Projects/NV_USFSR4_D23/TIFF/USGS_1M_11_x24y441_NV_USFSR4_D23.tif",
+   "bytes": 94665952,
+   "project": "NV_USFSR4_D23",
+   "window": [
+    982,
+    0,
+    107,
+    70
+   ],
+   "gap_cells": 51,
+   "already_processed": false
+  },
+  {
+   "tile": "USGS_1M_11_x45y416_NV_Southern_D23",
+   "filename": "USGS_1M_11_x45y416_NV_Southern_D23.tif",
+   "url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1m/Projects/NV_Southern_D23/TIFF/USGS_1M_11_x45y416_NV_Southern_D23.tif",
+   "bytes": 106663602,
+   "project": "NV_Southern_D23",
+   "window": [
+    3482,
+    2063,
+    107,
+    107
+   ],
+   "gap_cells": 5,
+   "already_processed": false
+  },
+  {
+   "tile": "USGS_1M_11_x45y417_NV_WestCentral_EarthMRI_2020_D20",
+   "filename": "USGS_1M_11_x45y417_NV_WestCentral_EarthMRI_2020_D20.tif",
+   "url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1m/Projects/NV_WestCentral_EarthMRI_2020_D20/TIFF/USGS_1M_11_x45y417_NV_WestCentral_EarthMRI_2020_D20.tif",
+   "bytes": 274114393,
+   "project": "NV_WestCentral_EarthMRI_2020_D20",
+   "window": [
+    3382,
+    2063,
+    107,
+    107
+   ],
+   "gap_cells": 5,
+   "already_processed": false
+  },
+  {
+   "tile": "USGS_1M_11_x46y416_NV_Southern_D23",
+   "filename": "USGS_1M_11_x46y416_NV_Southern_D23.tif",
+   "url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1m/Projects/NV_Southern_D23/TIFF/USGS_1M_11_x46y416_NV_Southern_D23.tif",
+   "bytes": 254866076,
+   "project": "NV_Southern_D23",
+   "window": [
+    3482,
+    2163,
+    107,
+    107
+   ],
+   "gap_cells": 5,
+   "already_processed": false
+  },
+  {
+   "tile": "USGS_1M_11_x46y417_NV_Southern_D23",
+   "filename": "USGS_1M_11_x46y417_NV_Southern_D23.tif",
+   "url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1m/Projects/NV_Southern_D23/TIFF/USGS_1M_11_x46y417_NV_Southern_D23.tif",
+   "bytes": 150980113,
+   "project": "NV_Southern_D23",
+   "window": [
+    3382,
+    2163,
+    107,
+    107
+   ],
+   "gap_cells": 5,
+   "already_processed": false
+  },
+  {
+   "tile": "USGS_1M_11_x28y439_NV_WestCentral_EarthMRI_2020_D20",
+   "filename": "USGS_1M_11_x28y439_NV_WestCentral_EarthMRI_2020_D20.tif",
+   "url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1m/Projects/NV_WestCentral_EarthMRI_2020_D20/TIFF/USGS_1M_11_x28y439_NV_WestCentral_EarthMRI_2020_D20.tif",
+   "bytes": 29746910,
+   "project": "NV_WestCentral_EarthMRI_2020_D20",
+   "window": [
+    1182,
+    363,
+    107,
+    107
+   ],
+   "gap_cells": 10014,
+   "already_processed": true
+  },
+  {
+   "tile": "USGS_1M_10_x76y442_NV_WestCentral_EarthMRI_2020_D20",
+   "filename": "USGS_1M_10_x76y442_NV_WestCentral_EarthMRI_2020_D20.tif",
+   "url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1m/Projects/NV_WestCentral_EarthMRI_2020_D20/TIFF/USGS_1M_10_x76y442_NV_WestCentral_EarthMRI_2020_D20.tif",
+   "bytes": 46035070,
+   "project": "NV_WestCentral_EarthMRI_2020_D20",
+   "window": [
+    884,
+    26,
+    114,
+    114
+   ],
+   "gap_cells": 9157,
+   "already_processed": true
+  },
+  {
+   "tile": "USGS_1M_11_x25y442_NV_WestCentral_EarthMRI_2020_D20",
+   "filename": "USGS_1M_11_x25y442_NV_WestCentral_EarthMRI_2020_D20.tif",
+   "url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1m/Projects/NV_WestCentral_EarthMRI_2020_D20/TIFF/USGS_1M_11_x25y442_NV_WestCentral_EarthMRI_2020_D20.tif",
+   "bytes": 64202546,
+   "project": "NV_WestCentral_EarthMRI_2020_D20",
+   "window": [
+    882,
+    63,
+    107,
+    107
+   ],
+   "gap_cells": 8494,
+   "already_processed": true
+  },
+  {
+   "tile": "USGS_1M_11_x26y442_NV_WestCentral_EarthMRI_2020_D20",
+   "filename": "USGS_1M_11_x26y442_NV_WestCentral_EarthMRI_2020_D20.tif",
+   "url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1m/Projects/NV_WestCentral_EarthMRI_2020_D20/TIFF/USGS_1M_11_x26y442_NV_WestCentral_EarthMRI_2020_D20.tif",
+   "bytes": 75404961,
+   "project": "NV_WestCentral_EarthMRI_2020_D20",
+   "window": [
+    882,
+    163,
+    107,
+    107
+   ],
+   "gap_cells": 7773,
+   "already_processed": true
+  },
+  {
+   "tile": "USGS_1M_11_x27y441_NV_WestCentral_EarthMRI_2020_D20",
+   "filename": "USGS_1M_11_x27y441_NV_WestCentral_EarthMRI_2020_D20.tif",
+   "url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1m/Projects/NV_WestCentral_EarthMRI_2020_D20/TIFF/USGS_1M_11_x27y441_NV_WestCentral_EarthMRI_2020_D20.tif",
+   "bytes": 31284695,
+   "project": "NV_WestCentral_EarthMRI_2020_D20",
+   "window": [
+    982,
+    263,
+    107,
+    107
+   ],
+   "gap_cells": 7053,
+   "already_processed": true
+  },
+  {
+   "tile": "USGS_1M_11_x27y439_NV_WestCentral_EarthMRI_2020_D20",
+   "filename": "USGS_1M_11_x27y439_NV_WestCentral_EarthMRI_2020_D20.tif",
+   "url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1m/Projects/NV_WestCentral_EarthMRI_2020_D20/TIFF/USGS_1M_11_x27y439_NV_WestCentral_EarthMRI_2020_D20.tif",
+   "bytes": 5974984,
+   "project": "NV_WestCentral_EarthMRI_2020_D20",
+   "window": [
+    1182,
+    263,
+    107,
+    107
+   ],
+   "gap_cells": 7009,
+   "already_processed": true
+  },
+  {
+   "tile": "USGS_1M_11_x29y438_NV_WestCentral_EarthMRI_2020_D20",
+   "filename": "USGS_1M_11_x29y438_NV_WestCentral_EarthMRI_2020_D20.tif",
+   "url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1m/Projects/NV_WestCentral_EarthMRI_2020_D20/TIFF/USGS_1M_11_x29y438_NV_WestCentral_EarthMRI_2020_D20.tif",
+   "bytes": 125426662,
+   "project": "NV_WestCentral_EarthMRI_2020_D20",
+   "window": [
+    1282,
+    463,
+    107,
+    107
+   ],
+   "gap_cells": 6405,
+   "already_processed": true
+  },
+  {
+   "tile": "USGS_1M_11_x29y437_NV_WestCentral_EarthMRI_2020_D20",
+   "filename": "USGS_1M_11_x29y437_NV_WestCentral_EarthMRI_2020_D20.tif",
+   "url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1m/Projects/NV_WestCentral_EarthMRI_2020_D20/TIFF/USGS_1M_11_x29y437_NV_WestCentral_EarthMRI_2020_D20.tif",
+   "bytes": 125749752,
+   "project": "NV_WestCentral_EarthMRI_2020_D20",
+   "window": [
+    1382,
+    463,
+    107,
+    107
+   ],
+   "gap_cells": 6118,
+   "already_processed": true
+  },
+  {
+   "tile": "USGS_1M_11_x24y442_CA_SierraNevada_B22",
+   "filename": "USGS_1M_11_x24y442_CA_SierraNevada_B22.tif",
+   "url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1m/Projects/CA_SierraNevada_B22/TIFF/USGS_1M_11_x24y442_CA_SierraNevada_B22.tif",
+   "bytes": 137528564,
+   "project": "CA_SierraNevada_B22",
+   "window": [
+    882,
+    0,
+    107,
+    70
+   ],
+   "gap_cells": 3587,
+   "already_processed": true
+  },
+  {
+   "tile": "USGS_1M_11_x27y440_NV_WestCentral_EarthMRI_2020_D20",
+   "filename": "USGS_1M_11_x27y440_NV_WestCentral_EarthMRI_2020_D20.tif",
+   "url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1m/Projects/NV_WestCentral_EarthMRI_2020_D20/TIFF/USGS_1M_11_x27y440_NV_WestCentral_EarthMRI_2020_D20.tif",
+   "bytes": 31203197,
+   "project": "NV_WestCentral_EarthMRI_2020_D20",
+   "window": [
+    1082,
+    263,
+    107,
+    107
+   ],
+   "gap_cells": 3081,
+   "already_processed": true
+  },
+  {
+   "tile": "USGS_1M_10_x75y442_CA_SierraNevada_B22",
+   "filename": "USGS_1M_10_x75y442_CA_SierraNevada_B22.tif",
+   "url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1m/Projects/CA_SierraNevada_B22/TIFF/USGS_1M_10_x75y442_CA_SierraNevada_B22.tif",
+   "bytes": 229819853,
+   "project": "CA_SierraNevada_B22",
+   "window": [
+    878,
+    0,
+    113,
+    40
+   ],
+   "gap_cells": 1416,
+   "already_processed": true
+  },
+  {
+   "tile": "USGS_1M_10_x75y442_NV_WestCentral_EarthMRI_2020_D20",
+   "filename": "USGS_1M_10_x75y442_NV_WestCentral_EarthMRI_2020_D20.tif",
+   "url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1m/Projects/NV_WestCentral_EarthMRI_2020_D20/TIFF/USGS_1M_10_x75y442_NV_WestCentral_EarthMRI_2020_D20.tif",
+   "bytes": 208488258,
+   "project": "NV_WestCentral_EarthMRI_2020_D20",
+   "window": [
+    878,
+    0,
+    113,
+    40
+   ],
+   "gap_cells": 1416,
+   "already_processed": true
+  },
+  {
+   "tile": "USGS_1M_11_x29y436_NV_WestCentral_EarthMRI_2020_D20",
+   "filename": "USGS_1M_11_x29y436_NV_WestCentral_EarthMRI_2020_D20.tif",
+   "url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1m/Projects/NV_WestCentral_EarthMRI_2020_D20/TIFF/USGS_1M_11_x29y436_NV_WestCentral_EarthMRI_2020_D20.tif",
+   "bytes": 244744398,
+   "project": "NV_WestCentral_EarthMRI_2020_D20",
+   "window": [
+    1482,
+    463,
+    107,
+    107
+   ],
+   "gap_cells": 929,
+   "already_processed": true
+  },
+  {
+   "tile": "USGS_1M_11_x28y436_NV_WestCentral_EarthMRI_2020_D20",
+   "filename": "USGS_1M_11_x28y436_NV_WestCentral_EarthMRI_2020_D20.tif",
+   "url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1m/Projects/NV_WestCentral_EarthMRI_2020_D20/TIFF/USGS_1M_11_x28y436_NV_WestCentral_EarthMRI_2020_D20.tif",
+   "bytes": 83249912,
+   "project": "NV_WestCentral_EarthMRI_2020_D20",
+   "window": [
+    1482,
+    363,
+    107,
+    107
+   ],
+   "gap_cells": 681,
+   "already_processed": true
+  },
+  {
+   "tile": "USGS_1M_11_x26y443_NV_WestCentral_EarthMRI_2020_D20",
+   "filename": "USGS_1M_11_x26y443_NV_WestCentral_EarthMRI_2020_D20.tif",
+   "url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1m/Projects/NV_WestCentral_EarthMRI_2020_D20/TIFF/USGS_1M_11_x26y443_NV_WestCentral_EarthMRI_2020_D20.tif",
+   "bytes": 273678592,
+   "project": "NV_WestCentral_EarthMRI_2020_D20",
+   "window": [
+    782,
+    163,
+    107,
+    107
+   ],
+   "gap_cells": 279,
+   "already_processed": true
+  },
+  {
+   "tile": "USGS_1M_11_x30y446_NV_WestCentral_EarthMRI_2020_D20",
+   "filename": "USGS_1M_11_x30y446_NV_WestCentral_EarthMRI_2020_D20.tif",
+   "url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1m/Projects/NV_WestCentral_EarthMRI_2020_D20/TIFF/USGS_1M_11_x30y446_NV_WestCentral_EarthMRI_2020_D20.tif",
+   "bytes": 249666443,
+   "project": "NV_WestCentral_EarthMRI_2020_D20",
+   "window": [
+    482,
+    563,
+    107,
+    107
+   ],
+   "gap_cells": 189,
+   "already_processed": true
+  },
+  {
+   "tile": "USGS_1M_11_x30y444_NV_WestCentral_EarthMRI_2020_D20",
+   "filename": "USGS_1M_11_x30y444_NV_WestCentral_EarthMRI_2020_D20.tif",
+   "url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1m/Projects/NV_WestCentral_EarthMRI_2020_D20/TIFF/USGS_1M_11_x30y444_NV_WestCentral_EarthMRI_2020_D20.tif",
+   "bytes": 278278872,
+   "project": "NV_WestCentral_EarthMRI_2020_D20",
+   "window": [
+    682,
+    563,
+    107,
+    107
+   ],
+   "gap_cells": 99,
+   "already_processed": true
+  },
+  {
+   "tile": "USGS_1M_11_x24y441_CA_SierraNevada_B22",
+   "filename": "USGS_1M_11_x24y441_CA_SierraNevada_B22.tif",
+   "url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1m/Projects/CA_SierraNevada_B22/TIFF/USGS_1M_11_x24y441_CA_SierraNevada_B22.tif",
+   "bytes": 136292580,
+   "project": "CA_SierraNevada_B22",
+   "window": [
+    982,
+    0,
+    107,
+    70
+   ],
+   "gap_cells": 51,
+   "already_processed": true
+  },
+  {
+   "tile": "USGS_1M_11_x24y441_NV_WestCentral_EarthMRI_2020_D20",
+   "filename": "USGS_1M_11_x24y441_NV_WestCentral_EarthMRI_2020_D20.tif",
+   "url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1m/Projects/NV_WestCentral_EarthMRI_2020_D20/TIFF/USGS_1M_11_x24y441_NV_WestCentral_EarthMRI_2020_D20.tif",
+   "bytes": 86882690,
+   "project": "NV_WestCentral_EarthMRI_2020_D20",
+   "window": [
+    982,
+    0,
+    107,
+    70
+   ],
+   "gap_cells": 51,
+   "already_processed": true
+  },
+  {
+   "tile": "USGS_1M_11_x28y440_NV_WestCentral_EarthMRI_2020_D20",
+   "filename": "USGS_1M_11_x28y440_NV_WestCentral_EarthMRI_2020_D20.tif",
+   "url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1m/Projects/NV_WestCentral_EarthMRI_2020_D20/TIFF/USGS_1M_11_x28y440_NV_WestCentral_EarthMRI_2020_D20.tif",
+   "bytes": 273036104,
+   "project": "NV_WestCentral_EarthMRI_2020_D20",
+   "window": [
+    1082,
+    363,
+    107,
+    107
+   ],
+   "gap_cells": 9,
+   "already_processed": true
+  },
+  {
+   "tile": "USGS_1M_11_x45y416_NV_WestCentral_EarthMRI_2020_D20",
+   "filename": "USGS_1M_11_x45y416_NV_WestCentral_EarthMRI_2020_D20.tif",
+   "url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1m/Projects/NV_WestCentral_EarthMRI_2020_D20/TIFF/USGS_1M_11_x45y416_NV_WestCentral_EarthMRI_2020_D20.tif",
+   "bytes": 179908046,
+   "project": "NV_WestCentral_EarthMRI_2020_D20",
+   "window": [
+    3482,
+    2063,
+    107,
+    107
+   ],
+   "gap_cells": 5,
+   "already_processed": true
+  },
+  {
+   "tile": "USGS_1M_11_x46y416_NV_WestCentral_EarthMRI_2020_D20",
+   "filename": "USGS_1M_11_x46y416_NV_WestCentral_EarthMRI_2020_D20.tif",
+   "url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1m/Projects/NV_WestCentral_EarthMRI_2020_D20/TIFF/USGS_1M_11_x46y416_NV_WestCentral_EarthMRI_2020_D20.tif",
+   "bytes": 4338939,
+   "project": "NV_WestCentral_EarthMRI_2020_D20",
+   "window": [
+    3482,
+    2163,
+    107,
+    107
+   ],
+   "gap_cells": 5,
+   "already_processed": true
+  },
+  {
+   "tile": "USGS_1M_11_x46y417_NV_WestCentral_EarthMRI_2020_D20",
+   "filename": "USGS_1M_11_x46y417_NV_WestCentral_EarthMRI_2020_D20.tif",
+   "url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1m/Projects/NV_WestCentral_EarthMRI_2020_D20/TIFF/USGS_1M_11_x46y417_NV_WestCentral_EarthMRI_2020_D20.tif",
+   "bytes": 137538836,
+   "project": "NV_WestCentral_EarthMRI_2020_D20",
+   "window": [
+    3382,
+    2163,
+    107,
+    107
+   ],
+   "gap_cells": 5,
+   "already_processed": true
+  }
+ ]
+}

@@ -1,0 +1,174 @@
+{
+ "question": "does the supplied (INGENIOUS) catalogue order the eight known public scores?",
+ "n_files": 7,
+ "files": [
+  {
+   "file": "gemsdoe1-ens12-7f00890a.tif",
+   "account": "GEMSDOE1 / extradr19",
+   "public_score": 0.1563,
+   "density": 0.033474,
+   "emitted": 172974,
+   "dti_catalogue": 0.229799,
+   "tp_w": 19131.4,
+   "fp_w": 153180.3,
+   "fn_w": 41856.6,
+   "catalogue_coverage": 0.3137,
+   "median_distance_to_catalogue": 13.0,
+   "share_within_1px": 0.1072,
+   "share_within_3px": 0.2157
+  },
+  {
+   "file": "gemsdoe2-dual-union-f68e590f.tif",
+   "account": "GEMSDOE2 / smashi34",
+   "public_score": 0.156,
+   "density": 0.035539,
+   "emitted": 183642,
+   "dti_catalogue": 0.238185,
+   "tp_w": 20239.3,
+   "fp_w": 160673.5,
+   "fn_w": 40748.7,
+   "catalogue_coverage": 0.3319,
+   "median_distance_to_catalogue": 12.37,
+   "share_within_1px": 0.1184,
+   "share_within_3px": 0.2317
+  },
+  {
+   "file": "gemsdoe3-pindrop-nodes-f347b70daa.tif",
+   "account": "GEMSDOE3 / smrtdoog5",
+   "public_score": 0.1193,
+   "density": 0.03,
+   "emitted": 155021,
+   "dti_catalogue": 0.206779,
+   "tp_w": 16945.8,
+   "fp_w": 148857.7,
+   "fn_w": 44042.2,
+   "catalogue_coverage": 0.2779,
+   "median_distance_to_catalogue": 23.54,
+   "share_within_1px": 0.04,
+   "share_within_3px": 0.0883
+  },
+  {
+   "file": "gemsdoe3-pindrop-ridge-4e03fc9705.tif",
+   "account": "GEMSDOE3 / SDCF9",
+   "public_score": 0.1152,
+   "density": 0.03,
+   "emitted": 155021,
+   "dti_catalogue": 0.195672,
+   "tp_w": 15688.4,
+   "fp_w": 141246.4,
+   "fn_w": 45299.6,
+   "catalogue_coverage": 0.2572,
+   "median_distance_to_catalogue": 14.0,
+   "share_within_1px": 0.0861,
+   "share_within_3px": 0.1952
+  },
+  {
+   "file": "gemsdoe3-pindrop-discovery-37f9d5b855.tif",
+   "account": "GEMSDOE3 / wbg1",
+   "public_score": 0.083,
+   "density": 0.03,
+   "emitted": 155021,
+   "dti_catalogue": 0.177807,
+   "tp_w": 14509.8,
+   "fp_w": 149558.4,
+   "fn_w": 46478.2,
+   "catalogue_coverage": 0.2379,
+   "median_distance_to_catalogue": 23.26,
+   "share_within_1px": 0.0319,
+   "share_within_3px": 0.0846
+  },
+  {
+   "file": "gemsdoe4-combined-237f0063.tif",
+   "account": "GEMSDOE4 / account not recorded",
+   "public_score": 0.0343,
+   "density": 0.051138,
+   "emitted": 264247,
+   "dti_catalogue": 0.111393,
+   "tp_w": 11141.4,
+   "fp_w": 244997.8,
+   "fn_w": 49846.6,
+   "catalogue_coverage": 0.1827,
+   "median_distance_to_catalogue": 16.28,
+   "share_within_1px": 0.0663,
+   "share_within_3px": 0.1474
+  },
+  {
+   "file": "gems6-hgb88-topk03-33cec71ff0.tif",
+   "account": "6GEMSDOE / account not recorded",
+   "public_score": 0.0286,
+   "density": 0.03,
+   "emitted": 155021,
+   "dti_catalogue": 0.427204,
+   "tp_w": 31215.2,
+   "fp_w": 90176.0,
+   "fn_w": 29772.8,
+   "catalogue_coverage": 0.5118,
+   "median_distance_to_catalogue": 2.0,
+   "share_within_1px": 0.4072,
+   "share_within_3px": 0.7308
+  },
+  {
+   "file": "gemsdoe3-sgmc-gap-7251c22bb4.tif",
+   "account": "never uploaded",
+   "public_score": null,
+   "density": 0.011933,
+   "emitted": 61664,
+   "dti_catalogue": 0.0,
+   "tp_w": 0.0,
+   "fp_w": 61664.0,
+   "fn_w": 60988.0,
+   "catalogue_coverage": 0.0,
+   "median_distance_to_catalogue": 23.19,
+   "share_within_1px": 0.0,
+   "share_within_3px": 0.0
+  }
+ ],
+ "spearman_dti_vs_public": 0.2143,
+ "spearman_coverage_vs_public": 0.2143,
+ "spearman_density_vs_public": 0.0714,
+ "pearson_dti_vs_public": -0.1927,
+ "mean_public_over_local": 0.4775,
+ "mean_local_over_public": 3.8223,
+ "rank_table": [
+  [
+   "gemsdoe1-ens12-7f00890a.tif",
+   0.1563,
+   0.229799
+  ],
+  [
+   "gemsdoe2-dual-union-f68e590f.tif",
+   0.156,
+   0.238185
+  ],
+  [
+   "gemsdoe3-pindrop-nodes-f347b70daa.tif",
+   0.1193,
+   0.206779
+  ],
+  [
+   "gemsdoe3-pindrop-ridge-4e03fc9705.tif",
+   0.1152,
+   0.195672
+  ],
+  [
+   "gemsdoe3-pindrop-discovery-37f9d5b855.tif",
+   0.083,
+   0.177807
+  ],
+  [
+   "gemsdoe4-combined-237f0063.tif",
+   0.0343,
+   0.111393
+  ],
+  [
+   "gems6-hgb88-topk03-33cec71ff0.tif",
+   0.0286,
+   0.427204
+  ]
+ ],
+ "caveats": [
+  "Public scores are group-reported / leaderboard observations, one account pairing is unverified.",
+  "The scored truth is the organizers' *newly created* fault labels; the catalogue is a different set.",
+  "n is small (7 scored files); treat correlation coefficients as descriptions, not statistics."
+ ]
+}
