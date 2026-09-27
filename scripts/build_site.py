@@ -15,15 +15,51 @@ def table(head, rows):
 
 NAV=[('index.html','Executive summary'),('how-to-submit.html','Submit'),('results.html','Results'),('strategy.html','Experiments'),('research.html','Research'),('data.html','Data'),('metric.html','Metric')]
 
-def page(filename,title,body):
+def page(filename,title,body,scripts=()):
     nav=''.join(f'<a href="{f}" {"aria-current=page" if f==filename else ""}>{t}</a>' for f,t in NAV)
+    extra=''.join(f'<script src="{s}" defer></script>' for s in scripts)
     (ROOT/filename).write_text(f'''<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>{e(title)} · 7GEMSDOE</title><link rel="stylesheet" href="assets/style.css"><script src="assets/site.js" defer></script></head>
+<title>{e(title)} · 7GEMSDOE</title><link rel="stylesheet" href="assets/style.css"><script src="assets/site.js" defer></script>{extra}</head>
 <body><a class="skip" href="#main">Skip to content</a><header class="site"><div class="wrap"><h1><span class="gem">7GEMS</span>DOE <span class="small">Fault discovery lab</span></h1>
 <nav class="site" aria-label="Main navigation">{nav}</nav><p class="tag">Evidence first. Reproducible experiments. One accountable competition entry.</p></div></header>
 <main id="main">{body}</main><footer class="site">No predicted leaderboard gains. Local measurements, official-source facts and hypotheses are labeled separately.<br>
 {link('https://github.com/buffedlizard55-lab/7GEMSDOE','Code & session README')} · {link('knowledge/session7/review.md','Latest three-pass audit')} · {link(B+'page/967/','Competition contract')}</footer></body></html>''')
+
+
+def generator(man,m,title,label,note):
+    """One-click, in-browser generation of the submission GeoTIFF plus a pre-upload check.
+
+    The payload is a compact run-length encoding of the published raster (see
+    scripts/build_browser_payload.py). Rebuilding happens locally in the visitor's
+    browser; the pixels are verified against the published SHA-256 before the file
+    is offered. This is the "generate the .tif here" path: no Python, no install.
+    """
+    kb = man['payload_base64_bytes']/1024
+    return f"""<section class="hero" id="generate"><p class="eyebrow">{e(label)}</p><h2>{e(title)}</h2>
+<p><strong>Step 1 — generate the file.</strong> This page holds a {kb:.0f} KB compact payload of the validated
+{man['grid']['width']:,} × {man['grid']['height']:,} raster. Clicking rebuilds the full float32 GeoTIFF <em>in your browser</em>,
+verifies the rebuilt pixels against the published SHA-256 ({man['pixel_payload_sha256'][:12]}…), and saves it as
+<code>{e(man['output_name'])}</code>. Nothing is uploaded and no model runs here; the page only re-encodes bytes it already has.</p>
+<button class="btn" id="generate-tif" type="button">Step 1 · Generate &amp; download {e(man['output_name'])}</button>
+<a class="btn secondary" data-verify-download data-sha="{e(m['sha256'])}" href="downloads/{e(m['file'])}" download>Or download the same pixels directly</a>
+<p class="download-status" id="generate-status" role="status" aria-live="polite">Ready. Rebuild, hash check and save happen locally.</p>
+<p class="small" id="generate-sha" role="status"></p>
+<p><strong>Step 2 — copy the Note.</strong></p><code class="note-text">{e(note)}</code> <button class="copy-note" type="button">Copy Note</button>
+<p><strong>Step 3 — upload</strong> at the official submission page and paste the Note. Full walk-through: {link('how-to-submit.html','executive submission guide')}. Weekly limit: three feedback submissions per participating entity (rules §3.4).</p>
+<details><summary>Why bytes built by this page are safe to submit</summary>
+<p>The raster geometry (CRS EPSG:{e(man['grid']['crs'].split(':')[-1])}, {man['grid']['transform'][0]:.0f} m pixels, origin
+{man['grid']['transform'][2]:.0f}/{man['grid']['transform'][5]:.0f}) is copied from the official template raster, the pixel array is byte-identical to the
+published artifact, values are 1.0 on the emitted lines and 0.0 elsewhere inside the footprint with NaN outside, and the file is single-band float32.
+<code>scripts/validate_submission.py</code> accepts the direct download and <code>tests/test_browser_tools.py</code> proves this page's encoder reproduces the same pixels
+(see {link('research.html','verification notes')}). A local PASS is still not a server acceptance receipt: confirm the platform shows a score.</details>
+</section>
+<section class="card" id="check"><h2>Step 0 — check any .tif before you upload it</h2>
+<p>The 2026 group failure <em>"Predicted values must be in range [0, 1]"</em> came from NaN pixels inside the footprint. This checker runs the same rules in your browser:
+single band, float32, exact grid/CRS/transform, finite values in [0, 1] everywhere inside the template footprint, NaN outside. The file never leaves your device.</p>
+<input type="file" id="validate-file" accept=".tif,.tiff,.TIF">
+<p class="download-status" id="validate-status" role="status" aria-live="polite">Choose the .tif you are about to upload.</p>
+<div id="validate-report"></div></section>"""
 
 
 def card(m,title,label):
@@ -56,6 +92,9 @@ def main():
     spatial=load('knowledge/session3/spatial_experiment.json')
     experts=load('knowledge/session3/expert_experiment.json')
     lc=lcand['candidates'][0]
+    payload_man=load('downloads/gems7-lidarscarp-ridge-top2pct-36c3a3f341c8.payload.json')
+    payload_man['output_name']=lidar['file']
+    payload_man['template_path']='downloads/'+lidar['file']
     def mult(arm,f,key='pooled_nms'): return f"x{lexp[key][arm][f]['multiple']:.2f}"
     s4rows=[[a,mult(a,'0.005','pooled'),mult(a,'0.01','pooled'),mult(a,'0.02','pooled'),mult(a,'0.005'),mult(a,'0.01'),mult(a,'0.02')] for a in ('bands19','lidar','both')]
     session4=f'''<section class="card"><h2>Session 4 evidence: region-wide 1 m lidar</h2>
@@ -122,7 +161,9 @@ It barely predicts away from visible catalogue traces. <strong>Do not treat H3 a
     scope='''<p>The task is to map <strong>geological faults</strong> across GeoDAWN—not to classify hot springs or prove geothermal vents. New expert-labeled faults drive initial scoring; expanded expert review determines final scoring. Scientific hypotheses below are not confirmed discoveries.</p>'''
     compliance=f'''<aside class="note"><strong>Rules flag:</strong> §3.4 allows <strong>three feedback submissions per week per participating entity</strong>, not per teammate account. One final submission across both rounds; teammates cannot submit separate finals.
 The supplied account list needs team-registration review. We do not multiply the budget across accounts. {link(RULES,'Official rules §3.4–3.6.2')}.</aside>'''
-    page('index.html','Executive summary',f'''<p class="eyebrow">DOWNLOAD → UPLOAD → PASTE THE NOTE</p><h2>Current H1 test: region-wide lidar scarp evidence.</h2>
+    JS=( 'assets/geotiff_tools.js', 'assets/submission_payload.js', 'assets/submit_ui.js')
+    page('index.html','Executive summary',f'''{generator(payload_man,lidar,'Generate the exact .tif, here, in one click','ONE CLICK · RUNS IN YOUR BROWSER · NOTHING IS UPLOADED · NO INSTALL',lidar['suggested_submission_note'])}
+<p class="eyebrow">DOWNLOAD → UPLOAD → PASTE THE NOTE</p><h2>Current H1 test: region-wide lidar scarp evidence.</h2>
 <p><strong>Recommended next upload</strong> (a decisive leaderboard test, not a proven winner): a thin-line map from a model trained only on 1 m lidar scarp descriptors. Group best is 0.1563; leader 0.3049. {link('how-to-submit.html','Exact submission instructions →')}</p>
 {card(lidar,'Lidar scarp model · ridge-thinned top 2%','Session 4 primary · H1 leaderboard test')}
 <p>{lc['emitted']:,} emitted pixels (binary 1.0; 0.0 elsewhere inside the footprint; NaN outside), all inside lidar coverage; dispersion index {lc['dispersion_index']:.2f} (line-like). Catalogue-based calibration with a 50% transfer discount predicts only ~{lcand['chosen']['expected_dti']:.2f}, below 0.1563; we still recommend it because that calibration is biased against lidar-mapped faults. Visible false-positive classes: closed loops (hills, shorelines) and arcuate range-front edges. Record the score with the SHA-256.</p>
@@ -137,8 +178,9 @@ The supplied account list needs team-registration review. We do not multiply the
 <p>H3 held-component DTI: <strong>{held['strike30x3']['dti']:.5f}</strong> vs <strong>{held['isotropic15']['dti']:.5f}</strong> broad-halo control ({improvement:.1%} relative).
 Selection used seeds 4242/4243; seed 9001 was reserved before execution. This is a narrow proxy, not an estimated leaderboard score.</p>{link('strategy.html','See all experiments and limitations')}</section>
 <section class="card"><h3>What is not solved</h3><p>We have not beaten 0.3049, obtained private labels, run a region-wide 1 m DEM detector, or verified an actual new fault in the field.
-No DrivenData login is available for uploading or final selection. GPU training is not implemented in this repo.</p></section></div>''')
+No DrivenData login is available for uploading or final selection. GPU training is not implemented in this repo.</p></section></div>''',scripts=JS)
     page('how-to-submit.html','How to submit',f'''<h2>Executive submission guide</h2>
+{generator(payload_man,lidar,'Generate the .tif and check it, right here','ONE CLICK · BROWSER-BUILT · VERIFIED PIXELS',lidar['suggested_submission_note'])}
 {card(lidar,'Download the session 4 lidar candidate','Recommended next upload · decisive H1 test')}
 <ol class="steps"><li><strong>Download the .TIF above</strong> (or its ZIP with exactly one GeoTIFF). Do not upload this web page, a PDF, JSON manifest, or the training features.</li>
 <li>{link(B+'submissions/','Open DrivenData → Submissions')} and sign in to the authorized team account. Registration, eligibility certification and rule acceptance belong to the participant.</li>
@@ -152,7 +194,7 @@ No DrivenData login is available for uploading or final selection. GPU training 
 <pre>.venv/bin/python scripts/validate_submission.py downloaded-file.tif</pre>
 <p>The gate compares exact CRS, shape and transform; enforces single-band float32 and strict [0,1] (no tolerance); rejects internal masks, NaN inside, and anything except NaN outside. NaN nodata is a project publication policy. It fails cleanly for corrupt or wrong-sized files.</p>
 <p>{link(B+'page/967/#submission-format','Official submission requirements')} · {link('index.html','Control download and full summary')}</p>
-<h2>Generation vs submission</h2><p>The automated Python pipeline builds the GeoTIFF and packages it with a hash and Note. The static site delivers those validated bytes; it does not train a model in the browser. Downloading requires no setup. Uploading still requires your own authorized DrivenData session; no credentials are requested or stored here.</p>''')
+<h2>Generation vs submission</h2><p>The automated Python pipeline builds the GeoTIFF and packages it with a hash and Note. The submission GeoTIFF can be produced two ways on this site: download the published bytes, or rebuild them from the embedded payload in your browser (the two are pixel-identical, and both are hash-checked before saving). No model is trained in the browser and no file is uploaded anywhere; the site also runs the competition's format rules locally so a file is checked before it reaches the platform. Uploading still requires your own authorized DrivenData session; no credentials are requested or stored here.</p>''',scripts=JS)
     rows=[]
     board={r['participant']:r for r in feed['rows']}
     for r in team:
