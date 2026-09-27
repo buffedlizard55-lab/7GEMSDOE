@@ -23,6 +23,7 @@ import json
 import sys
 from pathlib import Path
 
+import os
 import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -35,6 +36,18 @@ def sha256(path: str | Path) -> str:
         for chunk in iter(lambda: fh.read(1 << 22), b""):
             h.update(chunk)
     return h.hexdigest()
+
+
+def publish_or_raise(reread, out, tmp_path, out_path) -> None:
+    """Replace the published product only when the written bytes read back.
+
+    A failed fold must never leave a half-written or corrupt artifact in place:
+    the base file stays untouched and the temporary sibling is removed.
+    """
+    if not np.array_equal(reread, out):
+        Path(tmp_path).unlink(missing_ok=True)
+        raise SystemExit("written product does not read back identically; base left untouched")
+    os.replace(tmp_path, out_path)
 
 
 def merge_gap(base_path: str, shard_glob: str, out_path: str, manifest_path: str | None = None,
@@ -65,22 +78,35 @@ def merge_gap(base_path: str, shard_glob: str, out_path: str, manifest_path: str
         change = gap_cell & (new[n] > 0)
         out[i][change] = new[n][change]
         filled[n] = int(change.sum())
-    # The whole point: nothing outside the previous gap may move.
+    # The whole point: nothing outside the previous gap may move. This is checked
+    # BEFORE anything is written: run 36282096826's manifest was produced by a
+    # script that wrote first and verified later, so a violation could have
+    # corrupted the published product on its way to a non-zero exit.
     outside = ~gap_cell
     moved = int((out[:, outside] != old[:, outside]).sum())
+    if moved != 0:
+        raise SystemExit(f"SAFETY: {moved} cells would change outside the previous gap; nothing written")
 
+    # Hash the base BEFORE writing: --out defaults to --base (in-place fold), and
+    # hashing afterwards made sha256_before == sha256_after in run 36282096826 --
+    # an internally inconsistent manifest that could not prove the "nothing outside
+    # the gap moved" claim (irregularity recorded in STATUS.md, session 8).
+    old_sha = sha256(base_path)
     if profile.get("driver") and Path(out_path).parent:
         Path(out_path).parent.mkdir(parents=True, exist_ok=True)
-    with rasterio.open(out_path, "w", **profile) as dst:
+    # Write to a temporary sibling and only replace the base after the read-back
+    # check, so a failed fold can never leave a half-written product behind.
+    tmp_path = f"{out_path}.tmp{os.getpid()}"
+    with rasterio.open(tmp_path, "w", **profile) as dst:
         dst.write(out)
         for i, n in enumerate(DM.BANDS):
             dst.set_band_description(i + 1, n)
 
-    with rasterio.open(out_path) as s:
+    with rasterio.open(tmp_path) as s:
         reread = s.read()
-    assert np.array_equal(reread, out), "written product does not read back identically"
+    publish_or_raise(reread, out, tmp_path, out_path)
 
-    old_sha, new_sha = sha256(base_path), sha256(out_path)
+    new_sha = sha256(out_path)
     before = int((old[DM.BANDS.index("valid")] > 0).sum())
     after = int((out[DM.BANDS.index("valid")] > 0).sum())
     man = {

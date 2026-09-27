@@ -1,25 +1,26 @@
-"""Turn a validated submission GeoTIFF into a compact payload the website can
-re-generate in the browser.
+"""Emit the compact in-browser payload for the published submission raster.
 
-Why: the brief says the site itself must be able to produce the .tif that gets
-uploaded. A static page cannot run GDAL, but it can rebuild the exact pixels from
-a compact run-length payload and *prove* the rebuild with a SHA-256 over the raw
-little-endian float32 array, which is independent of the compressor. If the hash
-matches, the browser-made file is semantically the same raster as the built,
-format-gated artifact.
+The site lets a visitor *generate the exact .tif* without running Python.  The
+raster is 12.28 M float32 pixels (~49 MB) but it is binary + NaN, so it compresses
+to a couple of hundred kilobytes; the page ships that compressed payload and the
+browser re-encodes it into a submission-legal GeoTIFF (assets/geotiff_tools.js).
 
-Payload format (little-endian, documented so it can be audited by hand)::
+Every generated file is verified twice: the browser hashes the rebuilt float32
+payload (little-endian, SHA-256) and compares it against the value in the
+manifest, and the repository's Node test (tests/test_browser_tools.py) re-builds
+the same file and re-reads it with rasterio/GDAL.
 
-    magic       5 bytes  b"G7PL1"
-    rows        uint32
-    cols        uint32
-    per row:    uint32 n_runs, then n_runs * (varint run_length, uint8 code)
-                codes: 0 -> 0.0, 1 -> 1.0, 2 -> NaN   (runs must sum to cols)
+Usage
+-----
+    .venv/bin/python scripts/build_browser_payload.py \
+        --tif downloads/gems7-lidarscarp-ridge-top2pct-36c3a3f341c8.tif \
+        --js assets/submission_payload.js \
+        --manifest downloads/gems7-lidarscarp-ridge-top2pct-36c3a3f341c8.payload.json
 
-Outputs
--------
-* ``assets/submission_payload.js``  (payload + hashes + provenance for the page)
-* ``downloads/<name>.payload.json`` (machine-readable manifest, no pixel data)
+Coding rule (single band, float32):
+    0.0  -> code 0      1.0 -> code 1      NaN -> code 2
+Any other finite value is an error: the published candidates are binary + NaN by
+policy, and a silent rounding would make the payload and the artifact disagree.
 """
 from __future__ import annotations
 
@@ -27,89 +28,100 @@ import argparse
 import base64
 import hashlib
 import json
-import struct
+import zlib
+from datetime import datetime, timezone
 from pathlib import Path
 
 import numpy as np
 
 ROOT = Path(__file__).resolve().parents[1]
+DEFAULT_NOTE = "Lidar scarp model, ridge-thinned top 2% | 36c3a3f341c8"
 
 
-def encode_rle(codes: np.ndarray) -> bytes:
-    rows, cols = codes.shape
-    out = bytearray(b"G7PL1")
-    out += struct.pack("<II", rows, cols)
-    for r in range(rows):
-        row = codes[r]
-        # run-length boundaries
-        change = np.flatnonzero(np.diff(row)) + 1
-        starts = np.concatenate(([0], change))
-        ends = np.concatenate((change, [cols]))
-        out += struct.pack("<I", len(starts))
-        for s, e in zip(starts, ends):
-            n = int(e - s)
-            while True:                      # LEB128 varint
-                b = n & 0x7F
-                n >>= 7
-                out.append(b | (0x80 if n else 0x00))
-                if not n:
-                    break
-            out.append(int(row[s]))
-    return bytes(out)
+def encode_codes(values: np.ndarray) -> np.ndarray:
+    """float32 raster -> uint8 codes, refusing anything that is not 0/1/NaN."""
+    v = np.asarray(values, np.float32)
+    finite = np.isfinite(v)
+    bad = finite & (v != 0.0) & (v != 1.0)
+    if bad.any():
+        sample = np.unique(v[bad])[:5]
+        raise SystemExit(f"{int(bad.sum())} pixels are neither 0.0, 1.0 nor NaN (e.g. {sample}); "
+                         "refusing to build a lossy payload")
+    codes = np.zeros(v.shape, np.uint8)
+    codes[finite & (v == 1.0)] = 1
+    codes[~finite] = 2
+    return codes
 
 
-def main(argv=None) -> int:
+def payload_bytes(values: np.ndarray) -> bytes:
+    """Canonical little-endian float32 bytes: the identity checked by both sides."""
+    return np.asarray(values, dtype="<f4").tobytes()
+
+
+def main(argv=None) -> dict:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--tif", default="downloads/gems7-lidarscarp-ridge-top2pct-36c3a3f341c8.tif")
-    ap.add_argument("--note", default="Lidar scarp model, ridge-thinned top 2% | 36c3a3f341c8")
-    ap.add_argument("--out-js", default="assets/submission_payload.js")
-    ap.add_argument("--out-json", default=None)
+    ap.add_argument("--tif", default=str(ROOT / "downloads/gems7-lidarscarp-ridge-top2pct-36c3a3f341c8.tif"))
+    ap.add_argument("--js", default=str(ROOT / "assets/submission_payload.js"))
+    ap.add_argument("--manifest", default=None)
+    ap.add_argument("--note", default=DEFAULT_NOTE)
+    ap.add_argument("--output-name", default=None)
     args = ap.parse_args(argv)
 
     import rasterio
+    tif = Path(args.tif)
+    with rasterio.open(tif) as src:
+        values = src.read(1).astype(np.float32)
+        grid = {"width": src.width, "height": src.height, "crs": str(src.crs),
+                "transform": list(src.transform)[:6], "dtype": "float32"}
+    codes = encode_codes(values)
+    raw = codes.tobytes()
+    blob = zlib.compress(raw, 9)
+    b64 = base64.b64encode(blob).decode("ascii")
 
-    tif = ROOT / args.tif
-    with rasterio.open(tif) as s:
-        arr = s.read(1)
-        grid = {"width": s.width, "height": s.height, "crs": str(s.crs),
-                "transform": list(tuple(s.transform)[:6]), "dtype": s.dtypes[0]}
-    codes = np.zeros(arr.shape, dtype=np.uint8)
-    finite = np.isfinite(arr)
-    codes[finite & (arr == 0)] = 0
-    codes[finite & (arr != 0)] = 1
-    codes[~finite] = 2
-    payload = encode_rle(codes)
-    pixels = np.where(np.isfinite(arr), arr, np.float32(np.nan)).astype("<f4").tobytes()
     man = {
         "purpose": ("compact payload the public site rebuilds into the exact float32 submission raster; "
                     "pixels are verified by SHA-256 over the raw little-endian float32 array"),
-        "format": "see scripts/build_browser_payload.py docstring (G7PL1 run-length)",
-        "source_artifact": args.tif,
+        "format": "G7PL1: zlib(deflate, level 9) of an H*W uint8 code array, base64-encoded",
+        "code_map": {"0": "0.0", "1": "1.0", "2": "NaN"},
+        "source_artifact": tif.name,
         "source_artifact_sha256": hashlib.sha256(tif.read_bytes()).hexdigest(),
-        "pixel_payload_sha256": hashlib.sha256(pixels).hexdigest(),
-        "pixel_payload_bytes": len(pixels),
-        "payload_bytes": len(payload),
-        "payload_base64_bytes": len(base64.b64encode(payload)),
+        "pixel_payload_sha256": hashlib.sha256(payload_bytes(values)).hexdigest(),
+        "pixel_payload_bytes": len(raw),
+        "payload_bytes": len(blob),
+        "payload_base64_bytes": len(b64),
         "grid": grid,
-        "value_codes": {"0": 0.0, "1": 1.0, "2": "NaN"},
         "counts": {"zero": int((codes == 0).sum()), "one": int((codes == 1).sum()),
                    "nan": int((codes == 2).sum())},
         "suggested_submission_note": args.note,
+        "output_name": args.output_name or tif.name,
+        "template_path": f"downloads/{tif.name}",
+        "generated_utc": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+        "reconstruction_rule": ("codes -> float32 with 0.0/1.0/NaN, then written as a single-strip, "
+                               "deflate-compressed, single-band float32 GeoTIFF whose georeferencing "
+                               "tags are copied byte-for-byte from the template raster"),
     }
-    js = ("// Generated by scripts/build_browser_payload.py -- do not edit.\n"
-          "window.GEMS_SUBMISSION_PAYLOAD = " + json.dumps({
-              "manifest": man,
-              "base64": base64.b64encode(payload).decode("ascii"),
-          }) + ";\n")
-    out_js = ROOT / args.out_js
-    out_js.parent.mkdir(parents=True, exist_ok=True)
-    out_js.write_text(js)
-    out_json = Path(args.out_json) if args.out_json else (ROOT / "downloads" / (tif.stem + ".payload.json"))
-    out_json.write_text(json.dumps(man, indent=1))
-    print(json.dumps({k: man[k] for k in ("pixel_payload_sha256", "payload_bytes", "payload_base64_bytes",
-                                          "counts", "source_artifact_sha256")}))
-    return 0
+    if set(np.unique(codes)) - {0, 1, 2}:
+        raise SystemExit("unexpected codes")
+
+    js = Path(args.js)
+    js.parent.mkdir(parents=True, exist_ok=True)
+    js.write_text(
+        "/* Generated by scripts/build_browser_payload.py -- do not edit by hand.\n"
+        f" * Source: downloads/{man['output_name']} (sha256 {man['source_artifact_sha256'][:16]}…)\n"
+        f" * Pixel payload sha256: {man['pixel_payload_sha256']}\n"
+        " * The browser rebuilds the float32 raster from this payload and verifies that hash\n"
+        " * before it offers the file for download. */\n"
+        "window.GEMS_SUBMISSION_PAYLOAD = "
+        + json.dumps({"format": "G7PL1", "encoding": "zlib+base64", "manifest": man,
+                      "base64": b64}, separators=(",", ":"))
+        + ";\n")
+    man_path = Path(args.manifest) if args.manifest else tif.with_suffix(".payload.json")
+    man_path.write_text(json.dumps(man, indent=1))
+    print(json.dumps({k: man[k] for k in ("source_artifact", "pixel_payload_bytes", "payload_bytes",
+                                          "payload_base64_bytes", "counts", "pixel_payload_sha256")}, indent=1))
+    print(f"wrote {js} ({js.stat().st_size:,} bytes) and {man_path}")
+    return man
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    main()

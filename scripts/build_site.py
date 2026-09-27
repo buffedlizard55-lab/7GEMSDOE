@@ -27,15 +27,46 @@ def page(filename,title,body,scripts=()):
 {link('https://github.com/buffedlizard55-lab/7GEMSDOE','Code & session README')} · {link('knowledge/session7/review.md','Latest three-pass audit')} · {link(B+'page/967/','Competition contract')}</footer></body></html>''')
 
 
-def generator(man,m,title,label,note):
-    """One-click, in-browser generation of the submission GeoTIFF plus a pre-upload check.
+def browser_tools(man, m, note):
+    """The generate-and-check block: one-click .tif build plus the pre-upload checker.
 
-    The payload is a compact run-length encoding of the published raster (see
-    scripts/build_browser_payload.py). Rebuilding happens locally in the visitor's
-    browser; the pixels are verified against the published SHA-256 before the file
-    is offered. This is the "generate the .tif here" path: no Python, no install.
+    The payload is a compact DEFLATE+base64 encoding of the published raster (see
+    scripts/build_browser_payload.py, ~170 KB instead of 49 MB of float32). The
+    browser rebuilds the file locally with assets/geotiff_tools.js, verifies the
+    rebuilt pixels against the manifest SHA-256, and only then saves it. The same
+    file also checks a user-supplied .tif against the competition rules before it
+    is uploaded. Nothing is sent anywhere.
     """
-    kb = man['payload_base64_bytes']/1024
+    return f"""<section class="hero" id="generate">
+<p class="eyebrow">ONE CLICK · GENERATED IN YOUR BROWSER · NOTHING IS UPLOADED</p>
+<h2 id="generate-title">Generate the exact .tif, then check it before you upload</h2>
+<p><strong>Step 1 — click once.</strong> This page carries a {man['payload_base64_bytes']/1024:.0f} KB payload of the validated
+{man['grid']['width']:,} × {man['grid']['height']:,} submission raster ({man['counts']['one']:,} fault pixels,
+{man['counts']['zero']:,} zero, {man['counts']['nan']:,} NaN outside the footprint). The browser rebuilds the file,
+verifies the rebuilt float32 pixels against SHA-256 <code>{man['pixel_payload_sha256'][:16]}…</code>, and saves it as
+<code>{e(man['output_name'])}</code>. The result is pixel-identical to the published download and passes the strict local gate.</p>
+<button class="btn" id="generate-tif" type="button">Generate &amp; download {e(man['output_name'])}</button>
+<a class="btn secondary" data-verify-download data-sha="{e(m['sha256'])}" href="downloads/{e(m['file'])}" download>Direct download of the same pixels</a>
+<p class="download-status" id="generate-status" role="status" aria-live="polite">Ready — the rebuild, the hash check and the save all happen locally.</p>
+<p class="small" id="generate-sha" role="status"></p>
+<p><strong>Step 2 — copy the Note.</strong> <code class="note-text">{e(note)}</code> <button class="copy-note" type="button">Copy Note</button></p>
+<p><strong>Step 3 — upload</strong> it at the official submission page and paste the Note. Walk-through: {link('how-to-submit.html','executive submission guide')}.
+Rules §3.4 limits the entity to three feedback submissions per week; keep the filename and SHA-256 with the score.</p>
+<details><summary>Why bytes built by this page are safe to submit</summary>
+<p>The grid is copied from the official template (EPSG:{e(str(man['grid']['crs']).split(':')[-1])}, {man['grid']['transform'][0]:.0f} m, origin
+{man['grid']['transform'][2]:.0f}/{man['grid']['transform'][5]:.0f}), the raster is single-band float32, values are 1.0 on the emitted lines and 0.0 elsewhere inside the
+footprint with NaN outside, and the pixels are hashed before download. Two independent checks back this: <code>node tests/js/roundtrip.mjs</code> re-reads the published artifact
+through this page's own reader (including GDAL's floating-point predictor) and {link('https://github.com/buffedlizard55-lab/7GEMSDOE/blob/main/tests/test_browser_tools.py','tests/test_browser_tools.py')}
+re-validates the generated file with rasterio, the same library the platform uses. A local PASS is still not a server acceptance receipt.</p></details></section>
+<section class="card" id="check-file"><h2>Check any .tif before you upload it</h2>
+<p>The 2026 rejection <em>"Predicted values must be in range [0, 1]"</em> came from NaN pixels <em>inside</em> the footprint (and finite pixels outside it).
+This checker applies the same rules in your browser: one band, float32, exact shape/CRS/transform, finite values in [0, 1] inside the template footprint, NaN outside.
+The file never leaves your device.</p>
+<input type="file" id="validate-file" accept=".tif,.tiff,.TIF">
+<p class="download-status" id="validate-status" role="status" aria-live="polite">Choose the .tif you are about to upload.</p>
+<div id="validate-report"></div></section>"""
+
+
     return f"""<section class="hero" id="generate"><p class="eyebrow">{e(label)}</p><h2>{e(title)}</h2>
 <p><strong>Step 1 — generate the file.</strong> This page holds a {kb:.0f} KB compact payload of the validated
 {man['grid']['width']:,} × {man['grid']['height']:,} raster. Clicking rebuilds the full float32 GeoTIFF <em>in your browser</em>,
@@ -162,7 +193,7 @@ It barely predicts away from visible catalogue traces. <strong>Do not treat H3 a
     compliance=f'''<aside class="note"><strong>Rules flag:</strong> §3.4 allows <strong>three feedback submissions per week per participating entity</strong>, not per teammate account. One final submission across both rounds; teammates cannot submit separate finals.
 The supplied account list needs team-registration review. We do not multiply the budget across accounts. {link(RULES,'Official rules §3.4–3.6.2')}.</aside>'''
     JS=( 'assets/geotiff_tools.js', 'assets/submission_payload.js', 'assets/submit_ui.js')
-    page('index.html','Executive summary',f'''{generator(payload_man,lidar,'Generate the exact .tif, here, in one click','ONE CLICK · RUNS IN YOUR BROWSER · NOTHING IS UPLOADED · NO INSTALL',lidar['suggested_submission_note'])}
+    page('index.html','Executive summary',f'''{browser_tools(payload_man,lidar,lidar['suggested_submission_note'])}
 <p class="eyebrow">DOWNLOAD → UPLOAD → PASTE THE NOTE</p><h2>Current H1 test: region-wide lidar scarp evidence.</h2>
 <p><strong>Recommended next upload</strong> (a decisive leaderboard test, not a proven winner): a thin-line map from a model trained only on 1 m lidar scarp descriptors. Group best is 0.1563; leader 0.3049. {link('how-to-submit.html','Exact submission instructions →')}</p>
 {card(lidar,'Lidar scarp model · ridge-thinned top 2%','Session 4 primary · H1 leaderboard test')}
@@ -180,7 +211,7 @@ Selection used seeds 4242/4243; seed 9001 was reserved before execution. This is
 <section class="card"><h3>What is not solved</h3><p>We have not beaten 0.3049, obtained private labels, run a region-wide 1 m DEM detector, or verified an actual new fault in the field.
 No DrivenData login is available for uploading or final selection. GPU training is not implemented in this repo.</p></section></div>''',scripts=JS)
     page('how-to-submit.html','How to submit',f'''<h2>Executive submission guide</h2>
-{generator(payload_man,lidar,'Generate the .tif and check it, right here','ONE CLICK · BROWSER-BUILT · VERIFIED PIXELS',lidar['suggested_submission_note'])}
+{browser_tools(payload_man,lidar,lidar['suggested_submission_note'])}
 {card(lidar,'Download the session 4 lidar candidate','Recommended next upload · decisive H1 test')}
 <ol class="steps"><li><strong>Download the .TIF above</strong> (or its ZIP with exactly one GeoTIFF). Do not upload this web page, a PDF, JSON manifest, or the training features.</li>
 <li>{link(B+'submissions/','Open DrivenData → Submissions')} and sign in to the authorized team account. Registration, eligibility certification and rule acceptance belong to the participant.</li>

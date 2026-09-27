@@ -39,7 +39,7 @@ def main():
                 page.route('https://api.github.com/**', lambda route: route.fulfill(json={'body':json.dumps(feed)}))
                 page.goto('http://127.0.0.1:8765',wait_until='networkidle')
                 # the page now opens with the generate-and-download block (session 8)
-                assert page.locator('h2').first.inner_text()=='Generate the exact .tif, here, in one click'
+                assert page.locator('h2').first.inner_text()=='Generate the exact .tif, then check it before you upload'
                 assert page.locator('#generate-tif').is_visible()
                 assert page.locator('#validate-file').is_visible()
                 assert page.evaluate('document.documentElement.scrollWidth <= innerWidth + 1')
@@ -62,7 +62,7 @@ def main():
                 gen_bytes=Path(gen.path()).read_bytes()
                 assert gen_bytes[:4]==b'II*\x00', gen_bytes[:4]
                 assert gen.suggested_filename==payload['output_name']
-                page.wait_for_function("document.getElementById('generate-status').textContent.includes('Same pixels as the published artifact')")
+                page.wait_for_function("document.getElementById('generate-status').textContent.includes('same pixels as the published artifact')")
                 import base64 as _b64
                 verified=page.evaluate("""async (b64) => {
                     const bin = atob(b64); const u8 = new Uint8Array(bin.length);
@@ -94,7 +94,7 @@ def main():
                 page.set_input_files('#validate-file', str(badfile))
                 page.wait_for_function("document.getElementById('validate-status').textContent.includes('problem')")
                 report=page.locator('#validate-report').inner_text()
-                assert 'FAIL' in report and 'not finite' in report or 'NaN' in report, report
+                assert 'FAIL' in report and ('not finite' in report or 'NaN' in report), report
 
                 for name in ['how-to-submit','results','strategy','research','data','metric']:
                     response=page.goto(f'http://127.0.0.1:8765/{name}.html',wait_until='networkidle')

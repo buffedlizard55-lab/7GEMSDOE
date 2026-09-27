@@ -1,12 +1,17 @@
 {
  "purpose": "compact payload the public site rebuilds into the exact float32 submission raster; pixels are verified by SHA-256 over the raw little-endian float32 array",
- "format": "see scripts/build_browser_payload.py docstring (G7PL1 run-length)",
- "source_artifact": "downloads/gems7-lidarscarp-ridge-top2pct-36c3a3f341c8.tif",
+ "format": "G7PL1: zlib(deflate, level 9) of an H*W uint8 code array, base64-encoded",
+ "code_map": {
+  "0": "0.0",
+  "1": "1.0",
+  "2": "NaN"
+ },
+ "source_artifact": "gems7-lidarscarp-ridge-top2pct-36c3a3f341c8.tif",
  "source_artifact_sha256": "36c3a3f341c8306dfb5610f61acfec635a7cb8a3ef6ef00380ca083d2f9745fe",
  "pixel_payload_sha256": "72db5e64db82cb7ffb59bcb45fc7665136a10905ea04c2618fb398e753ea1b1c",
- "pixel_payload_bytes": 49116640,
- "payload_bytes": 291796,
- "payload_base64_bytes": 389064,
+ "pixel_payload_bytes": 12279160,
+ "payload_bytes": 129314,
+ "payload_base64_bytes": 172420,
  "grid": {
   "width": 3292,
   "height": 3730,
@@ -21,15 +26,14 @@
   ],
   "dtype": "float32"
  },
- "value_codes": {
-  "0": 0.0,
-  "1": 1.0,
-  "2": "NaN"
- },
  "counts": {
   "zero": 5090514,
   "one": 76859,
   "nan": 7111787
  },
- "suggested_submission_note": "Lidar scarp model, ridge-thinned top 2% | 36c3a3f341c8"
+ "suggested_submission_note": "Lidar scarp model, ridge-thinned top 2% | 36c3a3f341c8",
+ "output_name": "gems7-lidarscarp-ridge-top2pct-36c3a3f341c8.tif",
+ "template_path": "downloads/gems7-lidarscarp-ridge-top2pct-36c3a3f341c8.tif",
+ "generated_utc": "2026-09-27T00:33:49+00:00",
+ "reconstruction_rule": "codes -> float32 with 0.0/1.0/NaN, then written as a single-strip, deflate-compressed, single-band float32 GeoTIFF whose georeferencing tags are copied byte-for-byte from the template raster"
 }

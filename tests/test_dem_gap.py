@@ -151,3 +151,41 @@ def test_gap_mask_is_footprint_minus_valid(tmp_path):
     assert gap.shape == (8, 8)
     assert gap.sum() == 2 * 8  # columns 2-3 are inside the footprint and have no lidar
     assert not gap[:, 6:].any()  # outside the footprint
+
+
+def test_merge_gap_hashes_prove_the_gap_only_fold(tmp_path, monkeypatch):
+    """Regression for run 36282096826: sha256_before was hashed after the in-place
+    write, so the manifest claimed identical before/after bytes for a fold that
+    changed 1.29 M cells. The hash must now be taken from the pre-write file."""
+    import hashlib
+
+    base = tmp_path / "base.tif"
+    _write_base(base)
+    pre = hashlib.sha256(base.read_bytes()).hexdigest()
+    monkeypatch.setattr(DG.DM, "mosaic", lambda files: _fake_mosaic(0.4))
+    np.savez_compressed(tmp_path / "shard.npz", window=np.array([0, 0, 64, 64]),
+                        **{n: np.ones((64, 64), np.float32) for n, _, _ in DF.CHANNELS})
+    man = DG.merge_gap(str(base), str(tmp_path / "*.npz"), str(base), str(tmp_path / "man.json"))
+    assert man["sha256_before"] == pre
+    assert man["sha256_after"] != man["sha256_before"]
+    assert man["sha256_after"] == hashlib.sha256(base.read_bytes()).hexdigest()
+    assert man["cells_changed_outside_previous_gap"] == 0
+    assert not list(tmp_path.glob("*.tmp*")), "temporary product must not be left behind"
+
+
+def test_merge_gap_leaves_base_untouched_when_readback_fails(tmp_path):
+    """The base product must survive a write that cannot be read back."""
+    base = tmp_path / "base.tif"
+    _write_base(base)
+    good = base.read_bytes()
+    tmp_product = tmp_path / "base.tif.tmp999"
+    tmp_product.write_bytes(b"partial bytes that failed the read-back check")
+    with pytest.raises(SystemExit):
+        DG.publish_or_raise(reread=np.ones((2, 2)), out=np.zeros((2, 2)),
+                            tmp_path=str(tmp_product), out_path=str(base))
+    assert base.read_bytes() == good, "failed fold must not corrupt the published product"
+    assert not tmp_product.exists(), "temporary product must be removed"
+    tmp_product.write_bytes(b"partial bytes that failed the read-back check")
+    DG.publish_or_raise(reread=np.ones((2, 2)), out=np.ones((2, 2)),
+                        tmp_path=str(tmp_product), out_path=str(base))
+    assert base.read_bytes().startswith(b"partial"), "a verified product is published"

@@ -4,27 +4,31 @@
 <body><a class="skip" href="#main">Skip to content</a><header class="site"><div class="wrap"><h1><span class="gem">7GEMS</span>DOE <span class="small">Fault discovery lab</span></h1>
 <nav class="site" aria-label="Main navigation"><a href="index.html" >Executive summary</a><a href="how-to-submit.html" aria-current=page>Submit</a><a href="results.html" >Results</a><a href="strategy.html" >Experiments</a><a href="research.html" >Research</a><a href="data.html" >Data</a><a href="metric.html" >Metric</a></nav><p class="tag">Evidence first. Reproducible experiments. One accountable competition entry.</p></div></header>
 <main id="main"><h2>Executive submission guide</h2>
-<section class="hero" id="generate"><p class="eyebrow">ONE CLICK · BROWSER-BUILT · VERIFIED PIXELS</p><h2>Generate the .tif and check it, right here</h2>
-<p><strong>Step 1 — generate the file.</strong> This page holds a 380 KB compact payload of the validated
-3,292 × 3,730 raster. Clicking rebuilds the full float32 GeoTIFF <em>in your browser</em>,
-verifies the rebuilt pixels against the published SHA-256 (72db5e64db82…), and saves it as
-<code>gems7-lidarscarp-ridge-top2pct-36c3a3f341c8.tif</code>. Nothing is uploaded and no model runs here; the page only re-encodes bytes it already has.</p>
-<button class="btn" id="generate-tif" type="button">Step 1 · Generate &amp; download gems7-lidarscarp-ridge-top2pct-36c3a3f341c8.tif</button>
-<a class="btn secondary" data-verify-download data-sha="36c3a3f341c8306dfb5610f61acfec635a7cb8a3ef6ef00380ca083d2f9745fe" href="downloads/gems7-lidarscarp-ridge-top2pct-36c3a3f341c8.tif" download>Or download the same pixels directly</a>
-<p class="download-status" id="generate-status" role="status" aria-live="polite">Ready. Rebuild, hash check and save happen locally.</p>
+<section class="hero" id="generate">
+<p class="eyebrow">ONE CLICK · GENERATED IN YOUR BROWSER · NOTHING IS UPLOADED</p>
+<h2 id="generate-title">Generate the exact .tif, then check it before you upload</h2>
+<p><strong>Step 1 — click once.</strong> This page carries a 168 KB payload of the validated
+3,292 × 3,730 submission raster (76,859 fault pixels,
+5,090,514 zero, 7,111,787 NaN outside the footprint). The browser rebuilds the file,
+verifies the rebuilt float32 pixels against SHA-256 <code>72db5e64db82cb7f…</code>, and saves it as
+<code>gems7-lidarscarp-ridge-top2pct-36c3a3f341c8.tif</code>. The result is pixel-identical to the published download and passes the strict local gate.</p>
+<button class="btn" id="generate-tif" type="button">Generate &amp; download gems7-lidarscarp-ridge-top2pct-36c3a3f341c8.tif</button>
+<a class="btn secondary" data-verify-download data-sha="36c3a3f341c8306dfb5610f61acfec635a7cb8a3ef6ef00380ca083d2f9745fe" href="downloads/gems7-lidarscarp-ridge-top2pct-36c3a3f341c8.tif" download>Direct download of the same pixels</a>
+<p class="download-status" id="generate-status" role="status" aria-live="polite">Ready — the rebuild, the hash check and the save all happen locally.</p>
 <p class="small" id="generate-sha" role="status"></p>
-<p><strong>Step 2 — copy the Note.</strong></p><code class="note-text">Lidar scarp model, ridge-thinned top 2% | 36c3a3f341c8</code> <button class="copy-note" type="button">Copy Note</button>
-<p><strong>Step 3 — upload</strong> at the official submission page and paste the Note. Full walk-through: <a href="how-to-submit.html">executive submission guide</a>. Weekly limit: three feedback submissions per participating entity (rules §3.4).</p>
+<p><strong>Step 2 — copy the Note.</strong> <code class="note-text">Lidar scarp model, ridge-thinned top 2% | 36c3a3f341c8</code> <button class="copy-note" type="button">Copy Note</button></p>
+<p><strong>Step 3 — upload</strong> it at the official submission page and paste the Note. Walk-through: <a href="how-to-submit.html">executive submission guide</a>.
+Rules §3.4 limits the entity to three feedback submissions per week; keep the filename and SHA-256 with the score.</p>
 <details><summary>Why bytes built by this page are safe to submit</summary>
-<p>The raster geometry (CRS EPSG:32611, 100 m pixels, origin
-243350/4508550) is copied from the official template raster, the pixel array is byte-identical to the
-published artifact, values are 1.0 on the emitted lines and 0.0 elsewhere inside the footprint with NaN outside, and the file is single-band float32.
-<code>scripts/validate_submission.py</code> accepts the direct download and <code>tests/test_browser_tools.py</code> proves this page's encoder reproduces the same pixels
-(see <a href="research.html">verification notes</a>). A local PASS is still not a server acceptance receipt: confirm the platform shows a score.</details>
-</section>
-<section class="card" id="check"><h2>Step 0 — check any .tif before you upload it</h2>
-<p>The 2026 group failure <em>"Predicted values must be in range [0, 1]"</em> came from NaN pixels inside the footprint. This checker runs the same rules in your browser:
-single band, float32, exact grid/CRS/transform, finite values in [0, 1] everywhere inside the template footprint, NaN outside. The file never leaves your device.</p>
+<p>The grid is copied from the official template (EPSG:32611, 100 m, origin
+243350/4508550), the raster is single-band float32, values are 1.0 on the emitted lines and 0.0 elsewhere inside the
+footprint with NaN outside, and the pixels are hashed before download. Two independent checks back this: <code>node tests/js/roundtrip.mjs</code> re-reads the published artifact
+through this page's own reader (including GDAL's floating-point predictor) and <a href="https://github.com/buffedlizard55-lab/7GEMSDOE/blob/main/tests/test_browser_tools.py">tests/test_browser_tools.py</a>
+re-validates the generated file with rasterio, the same library the platform uses. A local PASS is still not a server acceptance receipt.</p></details></section>
+<section class="card" id="check-file"><h2>Check any .tif before you upload it</h2>
+<p>The 2026 rejection <em>"Predicted values must be in range [0, 1]"</em> came from NaN pixels <em>inside</em> the footprint (and finite pixels outside it).
+This checker applies the same rules in your browser: one band, float32, exact shape/CRS/transform, finite values in [0, 1] inside the template footprint, NaN outside.
+The file never leaves your device.</p>
 <input type="file" id="validate-file" accept=".tif,.tiff,.TIF">
 <p class="download-status" id="validate-status" role="status" aria-live="polite">Choose the .tif you are about to upload.</p>
 <div id="validate-report"></div></section>
