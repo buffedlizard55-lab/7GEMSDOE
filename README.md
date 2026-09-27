@@ -1,8 +1,8 @@
 # 7GEMSDOE — fault discovery lab
 
 **Read this README at the start of every session**, then `AGENTS.md`, `STATUS.md`,
-[`knowledge/session6/next_session.md`](knowledge/session6/next_session.md) and
-[`knowledge/session6/review.md`](knowledge/session6/review.md).
+[`knowledge/session7/next_session.md`](knowledge/session7/next_session.md) and
+[`knowledge/session7/review.md`](knowledge/session7/review.md).
 (Session 4's [H1 decision tree](knowledge/session4/next_session.md) still governs
 the unscored lidar upload; the standing user brief below is re-read every session
 and nothing in it is treated as completed until evidence says so. The user's
@@ -14,6 +14,32 @@ through scientifically grounded discovery of unmapped **geological faults**.
 Geothermal vents are the user's broader motivation, not the competition's raster target.
 **We have not demonstrated a score above 0.3049.** Best group public score: 0.1563
 (extradr19; SDCF9 also shows 0.1563 from an unrecorded file). Ranks are dynamic.
+
+## Session 7 — verified current state (2026-09-26)
+
+The validated public feed is timestamped **22:59:17 UTC**, contains 109 ranked
+entries, and still shows DARD at **0.3049**; group best remains **0.1563**.
+H1 (`gems7-lidarscarp-ridge-top2pct-36c3a3f341c8.tif`) is still unscored and
+remains the only recommended next upload under the frozen decision tree.
+
+This session finished the score-independent H9 backlog rather than spending a
+feedback submission. A fixed, mask-safe 30-feature radiometric lineament arm
+lost to the stronger comparator in **0/5 folds** at 1% and 2% density. Inspection
+of official, checksum-verified GeoDAWN archives revealed omitted contractor
+Th/K, U/K, U/Th and TMI-upward-continued grids; an Actions runner built their
+exact-grid product with full hashes. The physical-ratio arm then won only
+**1/5 folds** against the stronger comparator at both target densities and also
+failed. Upward-continued TMI is 0.9933-correlated with supplied TMI after compact
+encoding. H9 is stopped as a primary arm; no candidate was packaged. See the
+[session 7 research decision](knowledge/session7/research.md),
+[three-pass review](knowledge/session7/review.md), and
+[next-session plan](knowledge/session7/next_session.md).
+
+All three competition rasters were again placed autonomously through the
+hash-pinned public team bridge after Dropbox TLS failed; `verify_data.py`
+passed. The extension runner, latest branch CI and research refresh passed. No
+leaderboard improvement, competition upload, new geological fault or geothermal
+vent is claimed.
 
 ## Session 6 — verified current state (2026-09-26)
 
@@ -43,7 +69,7 @@ do not publish the main-only release. Full results, limitations and next steps a
 [`knowledge/session6/review.md`](knowledge/session6/review.md) and
 [`knowledge/session6/next_session.md`](knowledge/session6/next_session.md).
 
-## Download first — session 6 (2026-09-26; H1 candidate unchanged)
+## Download first — session 7 (2026-09-26; H1 candidate unchanged)
 
 **[GitHub Pages / executive summary](https://buffedlizard55-lab.github.io/7GEMSDOE/)** ·
 [Exact submission instructions](https://buffedlizard55-lab.github.io/7GEMSDOE/how-to-submit.html)
@@ -165,15 +191,20 @@ OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 .venv/bin/python scripts/train_model.py
 .venv/bin/python scripts/build_submission.py
 # Optional H9 raw-radiometric geographic screen (~10 min on 2 CPU threads):
 .venv/bin/python scripts/radiometric_experiment.py
+# Frozen H9b/H9c diagnostics (negative results; ~12/~19 min here):
+.venv/bin/python scripts/radiometric_lineament_experiment.py
+.venv/bin/python scripts/geodawn_extension_experiment.py
 ```
 
-The H9 runner report uses the pinned LightGBM version in `requirements-repro.txt`.
-It compares raw GeoDAWN channels; it does not yet test derived lineament edges or
-isolate all acquisition blocks, and it emits no submission.
+The H9 reports use the pinned LightGBM version in `requirements-repro.txt`.
+Session 7 tested fixed lineament edges and separately tested official contractor
+ratio grids; both failed their frozen rules. Acquisition blocks were not isolated,
+but H9 is stopped rather than promoted, and every H9 script emits no submission.
 
 Detailed prior [requirements matrix](knowledge/session2/requirements_matrix.md),
 [session 3 review](knowledge/session3/review.md); the current plan is
-[session 4 next steps](knowledge/session4/next_session.md).
+[session 7 next steps](knowledge/session7/next_session.md), with the frozen H1
+score branches still defined in [session 4](knowledge/session4/next_session.md).
 
 ## Limits and next-session priorities
 

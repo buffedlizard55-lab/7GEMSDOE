@@ -23,7 +23,7 @@ def page(filename,title,body):
 <body><a class="skip" href="#main">Skip to content</a><header class="site"><div class="wrap"><h1><span class="gem">7GEMS</span>DOE <span class="small">Fault discovery lab</span></h1>
 <nav class="site" aria-label="Main navigation">{nav}</nav><p class="tag">Evidence first. Reproducible experiments. One accountable competition entry.</p></div></header>
 <main id="main">{body}</main><footer class="site">No predicted leaderboard gains. Local measurements, official-source facts and hypotheses are labeled separately.<br>
-{link('https://github.com/buffedlizard55-lab/7GEMSDOE','Code & session README')} · {link('knowledge/session2/review.md','Three-pass audit')} · {link(B+'page/967/','Competition contract')}</footer></body></html>''')
+{link('https://github.com/buffedlizard55-lab/7GEMSDOE','Code & session README')} · {link('knowledge/session7/review.md','Latest three-pass audit')} · {link(B+'page/967/','Competition contract')}</footer></body></html>''')
 
 
 def card(m,title,label):
@@ -46,7 +46,11 @@ def main():
     feed=load('knowledge/feed.json'); sources=load('knowledge/sources.json'); team=load('knowledge/team_results.json')
     session6_evidence=load('knowledge/session6/local_verification.json')
     h9=load('knowledge/session6/geodawn_experiment.json')
+    h9b=load('knowledge/session7/radiometric_lineament_experiment.json')
+    h9c=load('knowledge/session7/geodawn_extension_experiment.json')
     rad_product=load('external/geodawn_rad/geodawn_rad.json')
+    ext_product=load('external/geodawn_extensions/geodawn_extensions.json')
+    ext_overlap=load('knowledge/session7/extension_overlap.json')
     qfault_product=load('external/qfaults/qfaults_prior.json')
     exp=load('knowledge/session2/structural_experiment.json'); dem=load('knowledge/session2/dem_pilot.json')
     spatial=load('knowledge/session3/spatial_experiment.json')
@@ -65,25 +69,39 @@ def main():
     h9rows=[[a, f"x{h9['pooled'][a]['0.01']['multiple']:.3f}",
              f"x{h9['pooled'][a]['0.02']['multiple']:.3f}"]
             for a in ('bands19','rad','lidar','all')]
-    session5=f'''<section class="card"><h2>Session 5–6: new evidence and external-data tests</h2>
+    h9brows=[[a, f"x{h9b['pooled'][a]['0.01']['multiple']:.3f}",
+              f"x{h9b['pooled'][a]['0.02']['multiple']:.3f}",
+              f"x{h9b['pooled_nms'][a]['0.01']['multiple']:.3f}",
+              f"x{h9b['pooled_nms'][a]['0.02']['multiple']:.3f}"]
+             for a in ('bands19','rad_raw','rad_lineament')]
+    h9crows=[[a, f"x{h9c['pooled'][a]['0.01']['multiple']:.3f}",
+              f"x{h9c['pooled'][a]['0.02']['multiple']:.3f}"]
+             for a in ('bands19','rad_raw','ratios3','up150','extensions4')]
+    session5=f'''<section class="card"><h2>Session 5–7: new evidence and external-data tests</h2>
 <p>Lidar covers <strong>{gaps['covered_px']:,}</strong> of {gaps['footprint_px']:,} footprint pixels; the gap is <strong>{gaps['gap_fraction']*100:.1f}%</strong> and still holds {gaps['catalogue_px_in_gap']:,} catalogue pixels (20.5% of known faults). The NE quadrant is {gaps['quadrants']['NE']['gap_fraction']*100:.1f}% gap — fill priority #1. The H1 candidate emits 0 px in gaps (verified).</p>
 {table(['Quadrant','Footprint px','Gap px','Gap %','Catalogue px'],gaprows)}
 <p>False-positive audit of the H1 candidate ({fp['emitted_px']:,} emitted px): closed loops are minor ({fp['loop_hole_px']} hole px), but <strong>{fp['emitted_cross_dominant_fraction']*100:.1f}%</strong> of emission is cross-slope dominant (channel-bank-like) and low relief is under-emitted. The frozen v2 cleanup policy remains unpromoted until H1 scores.</p>
 <p>Runner products now exist: {link('external/qfaults/qfaults_prior_u8.tif','QFFDB 3-band diagnostic')} ({qfault_product['n_features']:,} observed features; <strong>catalogue leakage risk</strong>) and {link('external/geodawn_rad/geodawn_rad_u8.tif','GeoDAWN K/Th/U/TC grid')} (four-band uint8, exact competition grid). See the {link('external/qfaults/qfaults_prior.json','QFFDB manifest')} and {link('external/geodawn_rad/geodawn_rad.json','GeoDAWN manifest')} for hashes and source details.</p>
 <h3>H9 first screen — raw radiometric channels; no promotion</h3>
 {table(['Arm','Pooled skill at 1%','Pooled skill at 2%'],h9rows)}
-<p>Rad beats bands19 in {h9['rad_beats_bands19_folds']['0.01']}/5 folds at 1% and {h9['rad_beats_bands19_folds']['0.02']}/5 at 2%; the frozen rule requires ≥4/5 at both and <strong>fails</strong>. This is catalogue-based geographic localization, not leaderboard performance; radiometric lineament features and acquisition-block holdouts remain untested. No new submission is recommended.</p>
-<p>{link('knowledge/session6/geodawn_experiment.json','Full H9 report')} · {link('knowledge/session5/lidar_gaps.json','Gap report')} · {link('knowledge/session5/lidar_fp_audit.json','FP audit')} · {link('knowledge/session5/research.md','Session 5 sources and hypotheses')} · {link('knowledge/session6/review.md','Session 6 three-pass follow-up')}</p></section>'''
+<p>Rad beats bands19 in {h9['rad_beats_bands19_folds']['0.01']}/5 folds at 1% and {h9['rad_beats_bands19_folds']['0.02']}/5 at 2%; the frozen rule requires ≥4/5 at both and <strong>fails</strong>. The small edge was support-sensitive: it disappears when the lidar-coverage restriction is removed below.</p>
+<h3>H9b — fixed mask-safe lineaments; rejected</h3>
+{table(['Arm','Raw 1%','Raw 2%','Ridge 1%','Ridge 2%'],h9brows)}
+<p>The 30 pre-registered 100/300 m gradient, curvature, orientation and contrast features beat the stronger comparator in <strong>0/5 folds</strong> at every density. They reduce top-f coverage even where AUC rises. H9b fails; no scale sweep or candidate was made.</p>
+<h3>H9c — official contractor ratios; rejected</h3>
+{table(['Arm','Pooled 1%','Pooled 2%'],h9crows)}
+<p>The previously omitted official Th/K, U/K and U/Th grids beat the stronger comparator in only {h9c['ratios_beats_stronger_comparator_folds']['0.01']}/5 folds at 1% and {h9c['ratios_beats_stronger_comparator_folds']['0.02']}/5 at 2%; the frozen rule <strong>fails</strong>. Upward-continued TMI is nearly redundant with supplied band 14 (rank correlation {ext_overlap['pearson_rank_correlation']:.4f}). Stop tuning radiometrics; preserve them only as future corroboration.</p>
+<p>{link('knowledge/session7/radiometric_lineament_experiment.json','H9b report')} · {link('knowledge/session7/geodawn_extension_experiment.json','H9c report')} · {link('external/geodawn_extensions/geodawn_extensions.json','Official extension manifest')} · {link('knowledge/session7/research.md','Session 7 research and decision')} · {link('knowledge/session5/lidar_gaps.json','Gap report')} · {link('knowledge/session5/lidar_fp_audit.json','FP audit')}</p></section>'''
     replay=session6_evidence['control_reproduction']
     train=session6_evidence['retraining']
     feed_snapshot={'automated_snapshot_utc': feed['verified_utc'],
                    'ranked_entries': len(feed['rows']),
                    'leader': feed['rows'][0]}
-    session6=f'''<section class="card"><h2>Session 6: reproducible pipeline, current score and H9 result</h2>
+    session6=f'''<section class="card"><h2>Session 6–7: reproducible pipeline, current score and H9 decision</h2>
 <p>The latest verified public feed ({e(feed_snapshot['automated_snapshot_utc'])}) has {feed_snapshot['ranked_entries']} ranks; leader {e(feed_snapshot['leader']['participant'])} is <strong>{feed_snapshot['leader']['score']:.4f}</strong>. The team's best known public result remains 0.1563. See {link('knowledge/feed.json','machine-readable current snapshot')}.</p>
 <p>CPU replay reproduced the preserved control byte-identically (SHA-256 <code>{replay['reproduced_sha256'][:12]}</code>); format gate PASS, and no file was published. H1 remains unscored. New QFFDB/GeoDAWN products are data inputs—not submission files.</p>
-<p>H9 raw radiometric channels narrowly exceed bands19 in pooled catalogue skill at 1% and 2%, but fail the pre-registered fold rule; no leaderboard gain or new geological discovery is claimed. H9 lineament edges and acquisition-block tests remain open. The GDR 1391 excerpt remains flagged for review and team file-to-score mismatches remain unresolved.</p>
-<p>{link('knowledge/session6/geodawn_experiment.json','H9 measured report')} · {link('knowledge/session6/review.md','Three-pass review')} · {link('knowledge/session6/local_verification.json','Local hashes and run evidence')} · {link('knowledge/session6/next_session.md','Next steps and limitations')}</p></section>'''
+<p>H9 raw channels failed their fold rule; lineament derivatives then lost to the stronger comparator in 0/5 folds, and official contractor radioelement ratios won only 1/5 at 1%/2%. These are catalogue diagnostics, not hidden-truth scores. H9 is stopped rather than post-hoc tuned. No leaderboard gain or geological discovery is claimed. GDR 1391 and team file-to-score mismatches remain flagged.</p>
+<p>{link('knowledge/session7/research.md','Session 7 research')} · {link('knowledge/session7/review.md','Latest three-pass review')} · {link('knowledge/session6/local_verification.json','Pipeline replay hashes')} · {link('knowledge/session7/next_session.md','Next steps and limitations')}</p></section>'''
     forensic_rows=[[e(f['file']),e(f['account']),'—' if f['public_score'] is None else f"{f['public_score']:.4f}",f"{f['density']*100:.2f}%",f"{f['dispersion_index']:.2f}",('x%.2f'%f['skill_multiple']) if 'skill_multiple' in f else '—'] for f in scored['files']]
     geography=f'''<section class="card"><h2>New evidence: independent geography changes the decision</h2>
 <p>Four geographic quadrants, 1 km exclusion buffer and whole crossing-trace removal. H3 pooled diagnostic DTI: <strong>{spatial['aggregates']['strike30x3']['pooled_dti']:.6f}</strong>.
@@ -164,10 +182,11 @@ No DrivenData login is available for uploading or final selection. GPU training 
 <aside class="note">Not geographic generalization: components can be spatial neighbors; random component splits are biased toward recovery near mapped faults. The full footprint is charged for false positives, including visible catalogue traces. The platform’s hidden evaluation mask is unavailable here. H3 alone cannot find isolated structures far from every mapped fault. A clean buffered geographic holdout is still required.</aside>
 <h3>H4 · Native-resolution scarps — bounded engineering pilot</h3><p>Latest stored pilot: <strong>{e(dem['status'])}</strong>, {e(dem['attempted_utc'])}. {link('knowledge/session2/dem_pilot.json','Evidence')}.
 Reads a 2048 × 2048 native 1 m window from USGS 3DEP, derives break-in-slope, and discards a 40 m nodata/edge buffer. Not calibrated, not a fault map, not yet fused into the submission.</p>
-<h3>H9 · GeoDAWN radiometrics — initial raw-channel screen</h3>
-<p>Official USGS K/Th/U/TC grids are absent from the supplied 19-band stack; they were retrieved separately from ScienceBase and aligned to the template. On common support and the H4 five-fold geographic protocol, raw-channel skill was {h9['pooled']['rad']['0.01']['multiple']:.3f}× random vs bands19 {h9['pooled']['bands19']['0.01']['multiple']:.3f}× at 1%, and {h9['pooled']['rad']['0.02']['multiple']:.3f}× vs {h9['pooled']['bands19']['0.02']['multiple']:.3f}× at 2%. It beat bands19 in {h9['rad_beats_bands19_folds']['0.01']}/5 and {h9['rad_beats_bands19_folds']['0.02']}/5 folds respectively; the pre-registered promotion rule <strong>fails</strong>. This diagnostic used raw channels, not the planned lineament-edge features; acquisition-block holdouts remain. Catalogue truth is not hidden-test truth or a leaderboard estimate. {link('knowledge/session6/geodawn_experiment.json','Full report')} · {link('external/geodawn_rad/geodawn_rad.json','Input manifest')}.</p>
+<h3>H9 · GeoDAWN radiometrics — closed after three weak/negative screens</h3>
+<p>Official USGS K/Th/U/TC grids are absent from the supplied 19-band stack. The first lidar-restricted raw screen narrowly edged bands19 but failed its fold rule. On the wider radiometric support, bands19 scored {h9b['pooled']['bands19']['0.01']['multiple']:.3f}×/{h9b['pooled']['bands19']['0.02']['multiple']:.3f}× random at 1%/2%, raw radiometrics {h9b['pooled']['rad_raw']['0.01']['multiple']:.3f}×/{h9b['pooled']['rad_raw']['0.02']['multiple']:.3f}×, and the fixed lineament representation {h9b['pooled']['rad_lineament']['0.01']['multiple']:.3f}×/{h9b['pooled']['rad_lineament']['0.02']['multiple']:.3f}×. Lineaments won 0/5 folds. The separately retrieved official Th/K, U/K and U/Th ratio grids scored {h9c['pooled']['ratios3']['0.01']['multiple']:.3f}×/{h9c['pooled']['ratios3']['0.02']['multiple']:.3f}× and won only 1/5 folds against the stronger comparator at each target density. Both frozen rules fail. Catalogue truth is not hidden-test truth; nevertheless, more post-hoc radiometric tuning is stopped. {link('knowledge/session7/research.md','Full decision')} · {link('external/geodawn_extensions/geodawn_extensions.json','Ratio product provenance')}.</p>
 <h3>Next experiments (pre-register before training)</h3>
 {table(['ID / hypothesis','Data & scientific reason','Disproof / controls'],[
+['H10 · Interaction-zone connectors','Short secondary strands across step-overs, terminations and intersections; Great Basin structural literature says these zones commonly host geothermal systems.','Pre-register geometry; whole-system/geographic holdout; matched random tangents. Reject if gain is proximity leakage or confined to visible catalogue lines.'],
 ['H4b · Surface vs buried experts','Native 1 m DEM scarps plus magnetic/gravity contrasts; separate surface-expression and basin-fill arms.','Buffered entire-tile holdout; compare raw DEM vs curvature/scarp channels. Reject if benefit vanishes after road/drainage and nodata-edge controls.'],
 ['H5 · Cross-sensor structural agreement','Magnetic and gravity edges with matching orientation + mapped geology; use heat flow/conductivity only as context.','Keep a single-sensor control and shuffled-orientation null. Drop if validation gain comes only from known catalogue proximity.'],
 ['H6 · Acquisition-aware model','GeoDAWN line spacing differs by area; hold out whole flight blocks, add altitude/coverage quality flags.','Check periodic striping aligned with east-west flight lines. Compare normalization fit only on training blocks. Do not assume every flight-parallel feature is noise.'],
@@ -185,11 +204,11 @@ OMP_NUM_THREADS=2 .venv/bin/python scripts/train_model.py
 <p>These are retrieved official pages, not an exhaustive literature review. The claims below were checked against the linked text. Automatic checks detect excerpt disappearance; they do not certify scientific truth. Public accessibility does not by itself establish a reusable dataset license.</p>
 {table(['ID','Source','Verified source claim','Proposed use (hypothesis)','Rights / ingestion gate','Reviewed'],source_rows)}
 <h3>Contrarian but testable</h3><p>Do not equate hot-spring density with fault probability. Faulds & Hinz report blind systems and complex structural settings; the USGS Gabbs Valley case required multiple independent types of evidence. This supports testing structure and cross-sensor agreement, not painting every nearby pixel as a fault.</p>
-<p>Do not equate smooth airborne grids with uniform information content. GeoDAWN’s two acquisition specifications and four blocks suggest that sensor geometry may confound a model. An acquisition-aware holdout is a more demanding scientific test than random pixels.</p>
+<p>Do not equate smooth airborne grids with uniform information content. GeoDAWN’s two acquisition specifications and four blocks can confound a model. H9b lineaments and H9c official ratios both failed frozen geographic rules, while upward-continued TMI was 0.9933-correlated with supplied TMI after compact encoding. Radiometrics are stopped as a primary arm; block holdout is required only if independent evidence reopens them.</p>
 <h3>Source disagreements retained</h3><ul><li>GDR 1391 previously returned “No submission found” and remains unresolved. GDR 1591 was successfully retrieved via the page tool on 2026-09-26 and is the GeoDAWN landing record; this supersedes the earlier failed retrieval. The two radiometric TIFF archives were downloaded and matched to ScienceBase MD5/size; other linked files and per-asset reuse terms remain unverified.</li>
 <li>The user-provided sample raster contains positive fault pixels, despite the problem page describing an all-zero example. Geometry is usable; its values must not be interpreted as predictions.</li>
 <li>Third-party mirror hashes authenticate consistency with the inherited manifest, not the sponsor’s original bytes. Official account-authenticated comparison is outstanding.</li></ul>
-<p>{link('knowledge/sources.json','Auditable source registry')} · {link('knowledge/session2/research.md','Prior research')} · {link('knowledge/session3/research.md','Session 3 source audit')} · {link('knowledge/session4/research.md','Session 4: lidar, leaderboard theory, hypothesis register')} · {link('knowledge/session5/research.md','Session 5: overlooked data, geothermal science, H9–H12')}</p>''')
+<p>{link('knowledge/sources.json','Auditable source registry')} · {link('knowledge/session2/research.md','Prior research')} · {link('knowledge/session3/research.md','Session 3 source audit')} · {link('knowledge/session4/research.md','Session 4: lidar, leaderboard theory, hypothesis register')} · {link('knowledge/session5/research.md','Session 5: overlooked data, geothermal science, H9–H12')} · {link('knowledge/session7/research.md','Session 7: radiometric falsification and pivot')}</p>''')
     page('data.html','Data provenance',f'''<h2>Data inventory and access</h2>
 {table(['Dataset','Location / verification','Limit'],[
 ['Competition feature stack','~/gems_data/training_features.tif · 19 float32 bands · 418,912,844 bytes','Mirrored from team git bridge after Dropbox TLS failure; sha256 matches inherited pin.'],
@@ -197,7 +216,8 @@ OMP_NUM_THREADS=2 .venv/bin/python scripts/train_model.py
 ['Geometry template','~/gems_data/example_submission.tif · 5,167,373 finite pixels','Same CRS/grid as features. Positive contents conflict with all-zero example prose.'],
 ['Native 1 m DEM pilot',link(load('knowledge/dem_pilot_source.json')['record']['url'],'Official USGS 3DEP tile'),'One bounded window only. Inventory URL inherited from OCR; not official competition CSV.'],
 ['Region-wide lidar scarp product',link('external/dem/lidar_scarp_features.json','12 uint8 channels, official grid')+' · '+link('knowledge/dem_tiles.json','716 official tile URLs'),'706 tiles processed on GitHub Actions; inventory is OCR-recovered, not the login-walled CSV; covers 75% of the footprint.'],
-['GeoDAWN radiometric product',link('external/geodawn_rad/geodawn_rad_u8.tif','Download four-band K/Th/U/TC')+' · '+link('external/geodawn_rad/geodawn_rad.json','hash/grid manifest'),'ScienceBase Area 1/2 TIFF archives size+MD5 checked; exact competition grid; uint8 feature data, not a submission; per-asset redistribution terms still require review.'],
+['GeoDAWN radiometric product',link('external/geodawn_rad/geodawn_rad_u8.tif','Download four-band K/Th/U/TC')+' · '+link('external/geodawn_rad/geodawn_rad.json','hash/grid manifest'),'ScienceBase Area 1/2 TIFF archives size+MD5 checked; exact competition grid; uint8 feature data, not a submission; H9b did not promote.'],
+['GeoDAWN omitted official grids',link('external/geodawn_extensions/geodawn_extensions_u8.tif','Download Th/K, U/K, U/Th, up150')+' · '+link('external/geodawn_extensions/geodawn_extensions.json','hash/member manifest'),f"Exact official archive members; product {ext_product['product_sha256'][:12]}…; ratios failed H9c and up150 is nearly duplicate supplied TMI; not a submission."],
 ['QFFDB scale/certainty prior',link('external/qfaults/qfaults_prior_u8.tif','Download 3-band diagnostic')+' · '+link('external/qfaults/qfaults_prior.json','schema/product manifest'),'Known-fault catalogue; direct model use risks label leakage. Diagnostic only until spatial/source-independence checks pass.'],
 ['Scored group files',link('external/scored/manifest.json','8 vendored GeoTIFFs with source commits and SHA-256'),'Scores are group-reported/leaderboard observations; one file-account pairing unverified.'],
 ['Source registry',link('knowledge/sources.json','Claims, excerpts, links and rights'),'Candidate external layers are not license-approved simply by being reachable.'],
