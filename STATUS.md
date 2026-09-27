@@ -18,6 +18,8 @@
   candidate. Preserve these layers only as possible corroboration. Next is H1
   score attribution, then its frozen branch; score-independent priority is H10
   interaction-zone protocol and independent lidar gap filling.
+- PR #9 checks passed: 140-test CI plus real-browser integration at 1440/390 px
+  (research run 36281074347); PR #9 merged to main as `800fa747e77b…`.
 - No upload, score gain, new fault or geothermal vent is claimed. Research,
   evidence, three-pass audit and limitations: `knowledge/session7/`.
 
