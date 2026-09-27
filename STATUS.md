@@ -1,3 +1,47 @@
+# Current status — session 8 (2026-09-27)
+
+- Environment + data: `scripts/download_competition_data.sh` placed all three
+  competition rasters through the inherited hash-pinned bridge (Dropbox TLS is
+  still blocked); `scripts/verify_data.py` 3/3 PASS; `scripts/prepare_data.py`
+  wrote `norm_stats.json` and `features_cache.npz` (443.2 MB). `pytest tests/ -q`
+  → **155 passed** with data, 154 passed + 1 skipped without.
+- CI was red on every push since `46a2f48`: `tests/test_browser_tools.py` still
+  drove the retired RLE-era harness. The wrapper now runs `tests/js/roundtrip.mjs`
+  once per module and asserts the current report steps. ci run 36283730611 and
+  the Research refresh are green again.
+- **Label provenance (new, decisive).** Inside the competition footprint the
+  shipped training raster exhausts the published record: 60,988 shipped label
+  pixels; INGENIOUS v1 **and** v2 rasterise to 169,207 trace pixels, of which
+  60,982 lie inside the footprint and only **4** are farther than 1 px from a
+  shipped label; the QFFDB-derived raster agrees on 99.95 %. The grid-wide
+  108,131-pixel "residual" is 100 % outside the footprint. The scored expert
+  faults are therefore genuinely novel, and every candidate built by copying a
+  published catalogue is retired before it costs a feedback slot.
+  `scripts/label_provenance.py` → `knowledge/session8/label_provenance.json`.
+- Emission-policy experiment H14: at equal pixel budget on the frozen block
+  folds, raw threshold, 1-px ridge NMS and metric-kernel-matched threshold are
+  within noise, and the deliberately simple proximity-to-known-fault field sits
+  *below* the random baseline inside its own held-out blocks. Recorded as a
+  limited negative result with that limitation stated; the first run's ridge arm
+  was degenerate (negative score field, `ridge_nms` thresholds `s > 0`) and the
+  fix is in the committed script.
+- Independent coverage: runner 36283041854 folded 420 new official 3DEP tiles
+  into the lidar product gap-only (`ed3bd5b`): cells with lidar 3,894,460 →
+  5,185,049 (+1,290,589), 0 cells changed outside the previous gap, product
+  SHA-256 `bb6c73b0…`. Known irregularity: `external/dem/lidar_gapfill.json`
+  still carries the `sha256_before == sha256_after` pair produced by the old
+  in-place write; the fail-closed guard added in `7ce897b` prevents a repeat.
+- Site: `index.html` leads with the one-click in-browser generator and a
+  pre-upload checker for the reported "[0, 1]" rejection, carries the session-8
+  evidence card and an official-source table; the daily feed job publishes the
+  machine-readable snapshot to the `research-feed` release.
+- No new candidate file, no upload, no score gain, no new fault and no
+  geothermal vent is claimed. H1 (`36c3a3f3…`) remains the recommended next
+  upload under the frozen session-4 decision tree. Research, evidence and the
+  three-pass review live in `knowledge/session8/`.
+
+---
+
 # Current status — session 7 (2026-09-26)
 
 - Refreshed the bundled validated release feed: 109 ranks at 22:59:17 UTC;
