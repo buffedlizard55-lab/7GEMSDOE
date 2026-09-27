@@ -113,6 +113,15 @@ def main(argv=None) -> dict:
         "densities": DENSITIES,
         "folds": {},
         "pre_registration_note": __doc__.strip().splitlines()[:12],
+        "known_limitations": [
+            "The field is a proximity prior (1/(1+distance to the nearest TRAINING-fold fault)) "
+            "restricted to each held-out block, so its maximum sits along the block boundary, "
+            "which is the least likely place for a held-out fault inside that block. The measured "
+            "multiples below 1 are therefore a property of this deliberately simple field and of "
+            "the block design, not a general statement about proximity features.",
+            "The experiment compares emission POLICIES at equal pixel budget on one field; it does "
+            "not compare fields. Policy is not the lever that the leaderboard responds to.",
+        ],
     }
     for k in range(5):
         test = universe & (folds == k)
@@ -123,12 +132,16 @@ def main(argv=None) -> dict:
         if truth_train.sum() == 0 or truth_test.sum() == 0:
             continue
         dist = distance_transform_edt(~truth_train).astype(np.float32)
-        score = np.where(test, -dist, 0.0).astype(np.float32)
-        matched = np.where(test, matched_filter(-dist, test & universe, args.radius), 0.0).astype(np.float32)
+        # Positive, monotone-decreasing proximity field: `ridge_nms` requires a
+        # positive score (it thresholds s > 0), and the kernel-matched arm needs
+        # a field whose convolution is meaningful.
+        pos = 1.0 / (1.0 + dist)
+        score = np.where(test, pos, 0.0).astype(np.float32)
+        matched = np.where(test, matched_filter(pos, test & universe, args.radius), 0.0).astype(np.float32)
         # a raw-score field smoothed with the same kernel but NOT renormalised,
         # to separate "the kernel" from "the edge renormalisation"
         from scipy.ndimage import convolve
-        matched_raw = np.where(test, convolve(np.where(test, -dist, 0.0), metric_kernel(args.radius),
+        matched_raw = np.where(test, convolve(np.where(test, pos, 0.0), metric_kernel(args.radius),
                                               mode="constant", cval=0.0), 0.0).astype(np.float32)
         ridge = EM.ridge_nms(np.where(test, score, 0), test)
         fold = {"test_px": int(test.sum()), "truth_test_px": int(truth_test.sum()),

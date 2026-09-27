@@ -1,0 +1,34 @@
+{
+ "question": "does the shipped training raster exhaust the published fault record inside the competition footprint?",
+ "labels_tif": "/home/user/gems_data/existing_faults.tif",
+ "shipped_labels_px": 60988,
+ "footprint_px": 5167373,
+ "sources": {
+  "ingenious_v1_trace": {
+   "px_grid": 169207,
+   "px_in_footprint": 60982,
+   "px_in_footprint_far_from_labels": 4,
+   "labels_within_1px": 1.0
+  },
+  "ingenious_v2_trace": {
+   "px_grid": 169207,
+   "px_in_footprint": 60982,
+   "px_in_footprint_far_from_labels": 4,
+   "labels_within_1px": 1.0
+  },
+  "ingenious_v2_not_in_labels": {
+   "px_grid": 108131,
+   "px_in_footprint": 4,
+   "px_in_footprint_far_from_labels": 4,
+   "labels_within_1px": 0.0
+  },
+  "qfaults_any_band": {
+   "px_grid": 169115,
+   "px_in_footprint": 60939,
+   "labels_within_1px": 0.9995
+  }
+ },
+ "packaged": false,
+ "conclusion": "the compilation adds 4 pixels inside the footprint that the shipped labels do not already mark; the grid-wide residual of 108131 pixels is 100.00% outside the scored region",
+ "effect": "no 'published faults we overlooked' candidate can be packaged"
+}

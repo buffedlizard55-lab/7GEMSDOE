@@ -67,31 +67,6 @@ The file never leaves your device.</p>
 <div id="validate-report"></div></section>"""
 
 
-    return f"""<section class="hero" id="generate"><p class="eyebrow">{e(label)}</p><h2>{e(title)}</h2>
-<p><strong>Step 1 — generate the file.</strong> This page holds a {kb:.0f} KB compact payload of the validated
-{man['grid']['width']:,} × {man['grid']['height']:,} raster. Clicking rebuilds the full float32 GeoTIFF <em>in your browser</em>,
-verifies the rebuilt pixels against the published SHA-256 ({man['pixel_payload_sha256'][:12]}…), and saves it as
-<code>{e(man['output_name'])}</code>. Nothing is uploaded and no model runs here; the page only re-encodes bytes it already has.</p>
-<button class="btn" id="generate-tif" type="button">Step 1 · Generate &amp; download {e(man['output_name'])}</button>
-<a class="btn secondary" data-verify-download data-sha="{e(m['sha256'])}" href="downloads/{e(m['file'])}" download>Or download the same pixels directly</a>
-<p class="download-status" id="generate-status" role="status" aria-live="polite">Ready. Rebuild, hash check and save happen locally.</p>
-<p class="small" id="generate-sha" role="status"></p>
-<p><strong>Step 2 — copy the Note.</strong></p><code class="note-text">{e(note)}</code> <button class="copy-note" type="button">Copy Note</button>
-<p><strong>Step 3 — upload</strong> at the official submission page and paste the Note. Full walk-through: {link('how-to-submit.html','executive submission guide')}. Weekly limit: three feedback submissions per participating entity (rules §3.4).</p>
-<details><summary>Why bytes built by this page are safe to submit</summary>
-<p>The raster geometry (CRS EPSG:{e(man['grid']['crs'].split(':')[-1])}, {man['grid']['transform'][0]:.0f} m pixels, origin
-{man['grid']['transform'][2]:.0f}/{man['grid']['transform'][5]:.0f}) is copied from the official template raster, the pixel array is byte-identical to the
-published artifact, values are 1.0 on the emitted lines and 0.0 elsewhere inside the footprint with NaN outside, and the file is single-band float32.
-<code>scripts/validate_submission.py</code> accepts the direct download and <code>tests/test_browser_tools.py</code> proves this page's encoder reproduces the same pixels
-(see {link('research.html','verification notes')}). A local PASS is still not a server acceptance receipt: confirm the platform shows a score.</details>
-</section>
-<section class="card" id="check"><h2>Step 0 — check any .tif before you upload it</h2>
-<p>The 2026 group failure <em>"Predicted values must be in range [0, 1]"</em> came from NaN pixels inside the footprint. This checker runs the same rules in your browser:
-single band, float32, exact grid/CRS/transform, finite values in [0, 1] everywhere inside the template footprint, NaN outside. The file never leaves your device.</p>
-<input type="file" id="validate-file" accept=".tif,.tiff,.TIF">
-<p class="download-status" id="validate-status" role="status" aria-live="polite">Choose the .tif you are about to upload.</p>
-<div id="validate-report"></div></section>"""
-
 
 def card(m,title,label):
     return f'''<section class="hero"><p class="eyebrow">{e(label)} · LOCAL FORMAT PASS · NOT YET SCORED</p><h2>{e(title)}</h2>
@@ -111,6 +86,7 @@ def main():
     lprod=load('external/dem/lidar_scarp_features.json')
     gaps=load('knowledge/session5/lidar_gaps.json'); fp=load('knowledge/session5/lidar_fp_audit.json')
     feed=load('knowledge/feed.json'); sources=load('knowledge/sources.json'); team=load('knowledge/team_results.json')
+    provenance=load('knowledge/session8/label_provenance.json'); h14=load('knowledge/session8/emission_policy_experiment.json')
     session6_evidence=load('knowledge/session6/local_verification.json')
     h9=load('knowledge/session6/geodawn_experiment.json')
     h9b=load('knowledge/session7/radiometric_lineament_experiment.json')
@@ -192,6 +168,27 @@ It barely predicts away from visible catalogue traces. <strong>Do not treat H3 a
     scope='''<p>The task is to map <strong>geological faults</strong> across GeoDAWN—not to classify hot springs or prove geothermal vents. New expert-labeled faults drive initial scoring; expanded expert review determines final scoring. Scientific hypotheses below are not confirmed discoveries.</p>'''
     compliance=f'''<aside class="note"><strong>Rules flag:</strong> §3.4 allows <strong>three feedback submissions per week per participating entity</strong>, not per teammate account. One final submission across both rounds; teammates cannot submit separate finals.
 The supplied account list needs team-registration review. We do not multiply the budget across accounts. {link(RULES,'Official rules §3.4–3.6.2')}.</aside>'''
+    prov_v2=provenance['sources']['ingenious_v2_trace']; prov_res=provenance['sources']['ingenious_v2_not_in_labels']
+    prov_q=provenance['sources'].get('qfaults_any_band')
+    h14_rows=[[k]+[f"x{v['multiple']:.2f}" for _,v in sorted(h14['pooled'][k].items(), key=lambda kv: float(kv[0]))]
+              for k in ('raw','ridge','matched','matched_raw')]
+    science_ids=('gdr-383','osti-1148722','gdr-616','gdr-1351','gdr-1526','gdr-1501','gdr-1391')
+    science_rows=[[e(s['id']),link(s['url'],s['title']),e(s['claim']),e(s['license'])] for s in sources if s['id'] in science_ids]
+    session8=f'''<section class="card" id="session8"><h2>Session 8 — measured label provenance, the emission question, and the official source table</h2>
+<p><strong>1 · The scored labels cannot be a repackaging of the published record.</strong> Inside the competition footprint the shipped
+{prov_v2['px_in_footprint']:,} INGENIOUS v2 trace pixels contain every one of the {provenance['shipped_labels_px']:,} shipped labels within 1 px, and only
+<strong>{prov_res['px_in_footprint']}</strong> pixels of that official compilation are not already shipped. The QFFDB-derived raster agrees with the shipped labels on
+{prov_q['labels_within_1px']*100:.1f}% of label pixels. Copying any published catalogue into the study area therefore spends submission mass where the truth
+provably is not — this is why the group's most catalogue-concentrated uploads scored <em>below</em> the random-emission baseline. Audit:
+{link('knowledge/session8/label_provenance.json','label_provenance.json')} · tool {link('scripts/label_provenance.py','scripts/label_provenance.py')}.</p>
+<p><strong>2 · Emission policy is a smaller lever than the field itself (H14).</strong> At equal pixel budget on the frozen block folds, a threshold on the
+metric-kernel-smoothed field, the raw threshold and a non-normalised matched filter are within noise of each other, and the deliberately simple proximity-to-known-fault
+field stayed <em>below</em> the random baseline inside its own held-out blocks. Recorded as a negative result with its limitation (the field's maximum sits on the block
+boundary). Report: {link('knowledge/session8/emission_policy_experiment.json','emission_policy_experiment.json')}.</p>
+<p><strong>3 · Official sources for manual review.</strong> Deep-research base: {link('knowledge/session8/geothermal_vent_science.md','geothermal_vent_science.md')} (vent/structural-setting literature, licences, click-through checklist).</p>
+{table(['Source id','Official page','Verified claim','Licence'],science_rows)}
+<p>The recommended next upload is unchanged: the H1 lidar candidate above, one click, hash-checked. This session added no new candidate file because the
+label-provenance result removes the shortcut it was meant to test.</p>'''
     JS=( 'assets/geotiff_tools.js', 'assets/submission_payload.js', 'assets/submit_ui.js')
     page('index.html','Executive summary',f'''{browser_tools(payload_man,lidar,lidar['suggested_submission_note'])}
 <p class="eyebrow">DOWNLOAD → UPLOAD → PASTE THE NOTE</p><h2>Current H1 test: region-wide lidar scarp evidence.</h2>
@@ -201,6 +198,7 @@ The supplied account list needs team-registration review. We do not multiply the
 {session4}
 {session5}
 {session6}
+{session8}
 <h2>Preserved earlier candidates</h2>
 {card(structural,'H3 · Along-strike continuation','Experimental v2 · geographic stress test failed to establish discovery')}
 <p>Extends locally coherent fault traces preferentially along their strike (3 km support) rather than placing a broad halo everywhere (300 m cross-strike support). No deep model or geothermal thermal prior is included.</p>
