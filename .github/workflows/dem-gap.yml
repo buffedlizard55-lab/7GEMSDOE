@@ -96,13 +96,30 @@ jobs:
         env:
           LIMIT: "0"
         run: |
+          set -uo pipefail
           free -g; nproc; df -h /tmp | tail -1
+          find scratch -maxdepth 3 -type f | head -20
+          TILES=$(find scratch -name dem_tiles_gap.json | head -1)
+          if [ -z "$TILES" ]; then echo "FATAL: dem_tiles_gap.json not found in the downloaded artifact"; exit 1; fi
+          echo "tiles file: $TILES"
           a=$(( ${{ matrix.job }} * 2 )); b=$(( a + 1 ))
-          python scripts/dem_features.py --tiles scratch/dem_tiles_gap.json --shard $a --nshards 40 --out scratch/gap --workdir /tmp/dem_a --limit "$LIMIT" > log_a.txt 2>&1 &
-          python scripts/dem_features.py --tiles scratch/dem_tiles_gap.json --shard $b --nshards 40 --out scratch/gap --workdir /tmp/dem_b --limit "$LIMIT" > log_b.txt 2>&1 &
-          wait
-          tail -n 3 log_a.txt log_b.txt
-          grep -c '"status": "ok"' log_a.txt log_b.txt || true
+          python scripts/dem_features.py --tiles "$TILES" --shard $a --nshards 40 --out scratch/gap --workdir /tmp/dem_a --limit "${LIMIT:-0}" > log_a.txt 2>&1 &
+          pa=$!
+          python scripts/dem_features.py --tiles "$TILES" --shard $b --nshards 40 --out scratch/gap --workdir /tmp/dem_b --limit "${LIMIT:-0}" > log_b.txt 2>&1 &
+          pb=$!
+          wait $pa; ra=$?
+          wait $pb; rb=$?
+          tail -n 4 log_a.txt log_b.txt || true
+          echo "ok tiles: $(grep -c '"status": "ok"' log_a.txt log_b.txt || true)"
+          if [ "$ra" -ne 0 ] || [ "$rb" -ne 0 ]; then
+            echo "FATAL: shard process exited ra=$ra rb=$rb"
+            tail -30 log_a.txt; tail -30 log_b.txt
+            exit 1
+          fi
+          if [ "$(find scratch/gap -name '*.npz' | wc -l)" -eq 0 ]; then
+            echo "FATAL: no tile outputs were produced by this shard"
+            exit 1
+          fi
       - uses: actions/upload-artifact@v4
         with:
           name: dem-gap-shard-${{ matrix.job }}
