@@ -139,9 +139,11 @@ Full evidence: `knowledge/session7/geodawn_extension_experiment.json` and
   inside, NaN outside. This directly guards the reported rejection.
 * Static relative-link checks found zero missing paths across seven pages. The
   complete hermetic suite passed 140 tests (50 non-failing Rasterio warnings).
-  A local Playwright browser run was attempted, but Chromium download failed on
-  outbound TLS after all mirrors; no browser PASS is invented. Branch CI is the
-  authority for its hermetic suite, and a real-browser rerun remains explicit.
+  A local Playwright attempt could not download Chromium because outbound TLS
+  failed on all mirrors; that local failure is retained. The PR research runner
+  then installed Chromium and passed the real-browser suite at 1440/390 px,
+  including navigation, viewport overflow, copy Note, file/hash download,
+  mismatch blocking and JavaScript-error checks (run 36281074347).
 * No second candidate was generated because doing so before H1's score would
   violate the frozen experiment and waste feedback. Autonomous work completed
   every task not requiring a participant's authorized upload session.
@@ -167,9 +169,9 @@ H9 is not the winning primary path on current evidence. Maximize P(Win) now mean
   inaccessible without login; inherited hashes are not sponsor signatures.
 * GPU/storage for deep models only after spatial protocol integration; random
   pixel AUC is not a substitute.
-* Playwright Chromium download is TLS-blocked locally; browser behavior for the
-  rebuilt pages awaits a runner/browser environment even though static links
-  and generated-content tests pass.
+* Playwright Chromium download is TLS-blocked locally; the hosted runner passed
+  the rebuilt pages, but local browser reproduction still needs working browser
+  binaries/network.
 * Defensible fault-system IDs, independent channel/shoreline controls, missing
   lidar coverage and expert/field validation.
 * GDR 1391 remains an excerpt-review warning. Automated source monitoring is
